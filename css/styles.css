@@ -41,6 +41,7 @@ body {
 /****************************** HEADER **************************************/
 header {
   background-color: #023184;
+  /*background-color: #18265a;*/
   border-radius: 0;
   border: 0;
   width: 100%;
@@ -63,8 +64,8 @@ header {
   margin-top: -30px;
 }
 #logo-img {
-  background: url('../images/logo-emsa.png') no-repeat;
-  width: 300px;
+  background: url('../images/logo.png') no-repeat;
+  width: 260px;
   height: 100px;
   margin: 10px 10px 10px 0;
 }
@@ -201,6 +202,11 @@ a.detailObject:focus, a.detailObject:hover {
 }
 .panel-footer div.row {
   text-align: center;
+}
+
+#fechaActual{
+  color: #38ff1d;
+  color: #ccce8b;
 }
 /**************************** END FOOTER ************************************/
 
@@ -896,7 +902,7 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
   padding-right: 10px;
   }
   #logo-img {
-    background: url('../images/logo-emsa75.png') no-repeat;
+    background: url('../images/logo.png') no-repeat;
     width: 225px;
     height: 100px;
     margin: 10px 10px 10px 0;
@@ -935,7 +941,7 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
   }
 
   #logo-img {
-  background: url('../images/logo-emsa150.png') no-repeat;
+  background: url('../images/logo.png') no-repeat;
   width: 150px;
   height: 100px;
   margin: 20px 10px 10px 0;

@@ -5,7 +5,7 @@
 *  @brief Archivo con el seteo de las carpetas y direcciones usadas en todo el programa.
 *  @author Juan Martín Ortega
 *  @version 1.0
-*  @date Enero 2018
+*  @date Agosto 2019
 *
 *******************************************************/
 
@@ -17,7 +17,12 @@ define('DURACION', 600);
 /**
   \param TIEMPOCOOKIE Constante que indica el tiempo de vida del cookie a setear (en segundos).
 */
-define('TIEMPOCOOKIE', 610);
+define('TIEMPOCOOKIE', 603);
+
+/**
+  \param TAM_ARCHIVO Constante que define el tamaño máximo permitido del archivo a cargar en la base de datos (en bytes).
+*/
+define('TAM_ARCHIVO', 5120);
 
 ///Consulto nombre del HOST y en base al mismo, configuro la IP (porque el HSA tiene diferente rango de IPs):
 $hostname = getHostName();

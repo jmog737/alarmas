@@ -57,6 +57,7 @@
       </div><!-- .collapse .navbar-collapse -->
     </div><!-- .container -->
   </nav><!-- #header-nav -->
+  
   <script lang="javasript/text">
     var dir = window.location.pathname;
     var temp = dir.split("/");
@@ -73,7 +74,12 @@
         verificarSesion('¡Llamé desde setInterval!', 'n');
       }, tiempoChequeo);
     }
+    else {
+      /// Se agrega para sobre escribir el autocompletado del navegador con el usuario y contraseña:
+      //setTimeout(function(){vaciarFrmLogin()}, 600);
+    }
   </script>
+  
 <!-- Modal para cambiar la contraseña -->
 <div class="modal fade" id="modalPwd" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document"> 
