@@ -1,6 +1,7 @@
 ///Ahora las variables se toman de un único lugar que es el archivo config.php
 ///Las mismas, para que estén accesibles, se agregan a unos input "invisibles" que están en el HEAD (antes de incluir script.js para que estén disponibles).
 var duracionSesion = parseInt($("#duracionSesion").val(), 10);
+
 /**
 ///  \file script.js
 ///  \brief Archivo que contiene todas las funciones de Javascript.
@@ -43,7 +44,8 @@ function validarIngreso () {
  * \brief Función que valida el forma para cargar el archivo.
  */
 function validarSubmit(){
-  var archivoASubir = $("#uploadedFile").val();//alert(archivoASubir);
+  var archivoASubir = $("#uploadedFile").val();
+  
   if ((archivoASubir === undefined)||(archivoASubir === '')){
     alert('No se seleccionó archivo alguno.\nPor favor verifique!.');
   }
@@ -254,113 +256,8 @@ function todo () {
   
   ///Según en que url esté, es lo que se carga:
   switch (dir) {
-    case "movimiento.php":  {
-                            if (parametros) {
-                              var temp = parametros.split('?');
-                              var temp1 = temp[1].split('&');
-                              var temp2 = temp1[0].split('=');
-                              var temp3 = temp1[1].split('=');
-                              var temp4 = temp1[2].split('=');
-                              var temp5 = temp1[3].split('=');
-                              var h = temp2[1]; 
-                              var tipo = decodeURI(temp4[1]);
-                              var fecha = decodeURI(temp5[1]);
-                              var idprod = parseInt(temp3[1], 10);
-                              setTimeout(function(){cargarMovimiento("#main-content", h, idprod, tipo, fecha)}, 100);                                          
-                            }
-                            else {
-                              setTimeout(function(){cargarMovimiento("#main-content", "", "-1", "", "")}, 100);
-                            }
-                            break;    
-                          }
     case "index.php": break;
-                                    
-    case "producto.php":  if (parametros){
-                                          var temp = parametros.split('?');
-                                          var temp1 = temp[1].split('=');
-                                          var id = temp1[1];
-                                          setTimeout(function(){cargarProducto(id, "#content")}, 100);
-                                          setTimeout(function(){cargarBusquedaProductos("#selector")}, 100);                                          
-                                          setTimeout(function(){habilitarProducto()}, 450);
-                                          setTimeout(function(){$("#comentarios").focus()}, 460);
-                                        }
-                          else {
-                            setTimeout(function(){cargarBusquedaProductos("#selector")}, 100);
-                            setTimeout(function(){cargarProducto(0, "#content")}, 100);
-                          }
-                          break;                                                                      
-    case "busquedas.php": {
-                          if (parametros) {
-                            var temp = parametros.split('?');
-                            var temp1 = temp[1].split('&');
-                            var temp2 = temp1[0].split('=');
-                            var temp3 = temp1[1].split('=');
-                            var temp4 = temp1[2].split('=');
-                            var temp5 = temp1[3].split('=');
-                            var temp6 = temp1[4].split('=');
-                            var temp7 = temp1[5].split('=');
-                            var temp8 = temp1[6].split('=');
-                            var temp9 = temp1[7].split('=');
-                            var temp10 = temp1[8].split('=');
-                            var temp11 = temp1[9].split('=');
-                            var temp12 = temp1[10].split('=');
-                            var temp13 = temp1[11].split('=');
-                            var temp14 = temp1[12].split('=');
-                            var temp15 = temp1[13].split('=');
-
-                            var hint = temp2[1];
-                            var tipMov = temp3[1];
-                            var zip = temp4[1];
-                            var planilla = temp5[1];
-                            var marcaAgua = temp6[1];
-                            var id = temp7[1];
-                            var ent = decodeURIComponent(temp8[1]);
-                            var p = temp9[1];
-                            var d1 = temp10[1];
-                            var d2 = temp11[1];
-                            var tipo = decodeURI(temp12[1]);
-                            var user = temp13[1];
-                            var estadoMov = temp14[1];
-                            var mostrarEstado = temp15[1];
-                            //alert('hint: '+hint+'\ntipoMov: '+tipMov+'\nids: '+id+'\nent: '+ent+'\nzip: '+zip+'\nplanilla: '+planilla+'\nmarcaAgua: '+marcaAgua+'\np: '+p+'\nd1: '+d1+'\nd2: '+d2+'\ntipo: '+tipo+'\nuser: '+user);
-                            setTimeout(function(){cargarFormBusqueda("#fila", hint, tipMov, id, ent, zip, planilla, marcaAgua, p, d1, d2, tipo, user, estadoMov, mostrarEstado)}, 30); 
-                          }
-                          else {
-                            setTimeout(function(){cargarFormBusqueda("#fila", '', '', '', '', '', '', '', '', '', '', '', '', '', '')}, 30);
-                          }
-                          break;
-                          }
-    case "estadisticas.php":  if (parametros) {
-                                              var temp = parametros.split('?');
-                                              var temp1 = temp[1].split('&');
-                                              var tama = temp1.length;
-                                              var hacerGrafica = '0';
-                                              if (tama !== 1){
-                                                var temp2 = temp1[0].split('=');
-                                                hacerGrafica = temp2[1];
-                                              }
- 
-                                             if (hacerGrafica ===  '1') {
-                                                setTimeout(function(){cargarGrafica("#main-content")}, 100);
-                                              }
-                                              else {
-                                                setTimeout(function(){cargarFormEstadisticas("#main-content")}, 100);
-                                              }
-                                            }
-                              else {
-                                setTimeout(function(){cargarFormEstadisticas("#main-content")}, 100);
-                              }  
-                              break;  
-    case "editarMovimiento.php":  if (parametros) {
-                                                  var temp = parametros.split('?');
-                                                  var temp1 = temp[1].split('=');
-                                                  var idmov = temp1[1];
-                                                  setTimeout(function(){cargarEditarMovimiento(idmov, "#main-content")}, 30);
-                                                }
-                                  else {
-                                      setTimeout(function(){cargarEditarMovimiento(-1, "#main-content")}, 1000);
-                                    }  
-                                  break;                                       
+                                     
     default: break;
   }  
 
@@ -499,13 +396,28 @@ $(document).on("keypress", "#pw2", function(e) {
 $(document).on("click", "#btnCargar", function() {
   validarSubmit();
 });
-/********** fin on("keypress", "#pw2", function(e) **********/
+/********** fin on("click", "#btnCargar", function() **********/
 
 /*****************************************************************************************************************************
 /// **************************************************** FIN SUBIR ARCHIVO ***************************************************
 ******************************************************************************************************************************
 */
 
+/*****************************************************************************************************************************
+/// ************************************************ INICIO MUESTRA ARCHIVO **************************************************
+******************************************************************************************************************************
+*/
+
+///Disparar función al hacer SUBMIT del form para exportar los datos.
+$(document).on("click", "#btnExportar", function() {
+  alert('click en exportar');
+});
+/********** fin on("click", "#btnExportar", function() *********/
+
+/*****************************************************************************************************************************
+/// ************************************************** FIN MUESTRA ARCHIVO ***************************************************
+******************************************************************************************************************************
+*/
 
 }
 

@@ -26,7 +26,7 @@ require_once ('head.php');
     <main>
       <div id='main-content' class='container-fluid'>
         <br>  
-        <h1>Cargar archivo:</h1>
+        <h2>Cargar archivo:</h2>
         
         <form method="POST" name='frmSubir' id='frmSubir' action="cargar.php" enctype="multipart/form-data">
           <table id="estadisticas" name="estadisticas" class="tabla2">
@@ -42,11 +42,9 @@ require_once ('head.php');
                 <input type="file" name="uploadedFile" id="uploadedFile" accept=".csv"/>
               </td> 
             </tr>
-            <td colspan="2">
+            <td colspan="2" class="pieTabla">
               <input type="button" name="btnCargar" id="btnCargar" value="CARGAR" />
             </td>
-            <tr>
-            </tr>
           </table>  
         </form>
         

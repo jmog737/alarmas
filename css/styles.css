@@ -423,6 +423,22 @@ hr {
 }
 
 /******************************* FIN TABLAS ***********************************/
+
+/************************************ ALARMAS *********************************/
+.alCritica {
+  background-color:#fd5151;
+}
+.alMajor {
+  background-color:#ffa929;
+}
+.alMinor {
+  background-color:#ffff7c;
+}
+.alWarning {
+  background-color:#75ecec;
+}
+/****************************** FIN ALARMAS ***********************************/
+
 .btn {
   padding: .3rem .75rem !important;
 }
