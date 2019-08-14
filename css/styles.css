@@ -118,7 +118,7 @@ header {
 h2 {
   color:#ffcc66;
   font-weight: bold;
-  text-decoration: underline;
+  /*text-decoration: underline;*/
   margin: 20px;
   margin-top: 0px;
 }
@@ -420,6 +420,18 @@ hr {
   border: #c0c0c0 1px solid;
   line-height:none;
   width: 100%;
+}
+
+.tabla2 .enc {
+  background-color:#07ff00;
+  background-color: #0066cc;
+  color: #ffff00;
+  border: #c0c0c0 1px solid;
+  margin: 0px;
+  line-height:none;
+  max-width: 100%;
+  text-align: left;
+  font-weight: bold;
 }
 
 /******************************* FIN TABLAS ***********************************/

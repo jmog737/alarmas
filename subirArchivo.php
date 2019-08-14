@@ -22,6 +22,10 @@ require_once ('head.php');
   <body>
 <?php
   require_once ('header.php');
+  $query = "select distinct localidad from nodos order by localidad asc";
+  require_once ('data/selectQueryDirecto.php');
+  $localidades = $datos['resultado'];
+  $totalLocalidades = $datos['rows'];
 ?>
     <main>
       <div id='main-content' class='container-fluid'>
@@ -32,14 +36,30 @@ require_once ('head.php');
           <table id="estadisticas" name="estadisticas" class="tabla2">
           <caption>Formulario para subir el archivo a la base de datos.</caption>
             <tr>
-              <th colspan="2" class="centrado tituloTabla">SUBIR</th>
+              <th colspan="2" class="centrado tituloTabla">SUBIR ARCHIVO</th>
             </tr>
             <tr>
-              <td>
+              <th>
                 Archivo:
-              </td>  
+              </th>  
               <td>
-                <input type="file" name="uploadedFile" id="uploadedFile" accept=".csv"/>
+                <input type="file" name="uploadedFile" id="uploadedFile" accept=".csv" onchange="archivoElegido()"/>
+              </td> 
+            </tr>
+            <tr>
+              <th>
+                Nodo:
+              </th>  
+              <td>
+                <select name="nodo" id="nodo">
+                  <option value="nada">--- Seleccionar NODO ---</option>
+                  <?php
+                  foreach ($localidades as $i => $valor){
+                    $loc = $localidades[$i]['localidad'];
+                    echo "<option value='".$loc."'>".$loc."</option>";
+                  }
+                  ?>
+                </select>
               </td> 
             </tr>
             <td colspan="2" class="pieTabla">
@@ -47,7 +67,7 @@ require_once ('head.php');
             </td>
           </table>  
         </form>
-        
+        <br>
       </div>      
     </main>
 <?php

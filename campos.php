@@ -32,6 +32,7 @@ $campos[] = ['nombre'=>'periodo','nombreMostrar'=>'Período', 'orden'=>14, 'most
 $campos[] = ['nombre'=>'datos','nombreMostrar'=>'Datos', 'orden'=>15, 'mostrar'=>'si'];
 $campos[] = ['nombre'=>'filtroALM','nombreMostrar'=>'Filtro ALM', 'orden'=>16, 'mostrar'=>'no'];
 $campos[] = ['nombre'=>'filtroAID','nombreMostrar'=>'Filtro AID', 'orden'=>17, 'mostrar'=>'si'];
+$campos[] = ['nombre'=>'accion','nombreMostrar'=>'Acción', 'orden'=>18, 'mostrar'=>'si'];
 
 /// Función auxiliar para ordenar el array anterior según el campo 'orden':
 function sort_by_orden ($a, $b) {

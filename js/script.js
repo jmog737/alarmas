@@ -41,19 +41,34 @@ function validarIngreso () {
 /********** fin validarIngreso() **********/
 
 /**
+ * \brief Función que se dispara luego de haber seleccionado un archivo para cargar en la base de datos.
+ */
+function archivoElegido(){
+  var nombre = $("#uploadedFile").val();
+  alert('se seleccionó un archivo: '+nombre);
+}
+/********** fin archivoElegido() **********/
+
+/**
  * \brief Función que valida el forma para cargar el archivo.
  */
-function validarSubmit(){
+function validarSubmitCargar(){
   var archivoASubir = $("#uploadedFile").val();
   
   if ((archivoASubir === undefined)||(archivoASubir === '')){
     alert('No se seleccionó archivo alguno.\nPor favor verifique!.');
   }
   else {
-    $("#frmSubir").submit();
+    if ($("#nodo").val() === 'nada'){
+      alert('Hay que seleccionar un nodo.\nPor favor verifique!.');
+      $("#nodo").focus();
+    }
+    else {
+      $("#frmSubir").submit();
+    }
   }
 }
-/********** fin validarSubmit() **********/
+/********** fin validarSubmitCargar() **********/
 
 /**
  * \brief Función que chequea las variables de sesión para saber si la misma aún está activa o si ya expiró el tiempo.
@@ -394,7 +409,7 @@ $(document).on("keypress", "#pw2", function(e) {
 ///Disparar función al hacer SUBMIT del form para cargar el archivo.
 ///La idea es validar que al menos se haya elegido un archivo.
 $(document).on("click", "#btnCargar", function() {
-  validarSubmit();
+  validarSubmitCargar();
 });
 /********** fin on("click", "#btnCargar", function() **********/
 
