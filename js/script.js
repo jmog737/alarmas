@@ -41,16 +41,7 @@ function validarIngreso () {
 /********** fin validarIngreso() **********/
 
 /**
- * \brief Función que se dispara luego de haber seleccionado un archivo para cargar en la base de datos.
- */
-function archivoElegido(){
-  var nombre = $("#uploadedFile").val();
-  alert('se seleccionó un archivo: '+nombre);
-}
-/********** fin archivoElegido() **********/
-
-/**
- * \brief Función que valida el forma para cargar el archivo.
+ * \brief Función que valida el form para cargar el archivo.
  */
 function validarSubmitCargar(){
   var archivoASubir = $("#uploadedFile").val();
@@ -64,7 +55,29 @@ function validarSubmitCargar(){
       $("#nodo").focus();
     }
     else {
-      $("#frmSubir").submit();
+      var nombreNodoCorto = $("option:selected", "#nodo").attr("nombreCorto");
+      var temp = nombreNodoCorto.split("#");
+      var nombreSinOCS = temp[0];
+      
+      /// Extraigo la info de los atributos del option pues NO se pasan en el POST
+      /// En base a las mismas modifico el valor del option para poder pasarlos por el POST
+      var idnodo = $("option:selected", "#nodo").attr("idnodo");
+      var nodo = $("option:selected", "#nodo").val();
+      $("option:selected", "#nodo").val(nodo+'---'+nombreNodoCorto+'---'+idnodo);
+      
+      var temp1 = archivoASubir.split(".");
+      var archivo1 = temp1[0];
+      var archivo2 = archivo1.split("\\");
+      var tam = archivo2.length;
+      var nombreArchivo = archivo2[tam-1];
+      
+      if (nombreSinOCS === nombreArchivo){
+        //alert('Los nombres coinciden:\nnodo: '+nombreSinOCS+'\narchivo: '+nombreArchivo);
+        $("#frmSubir").submit();
+      }
+      else {
+        alert('El archivo seleccionado NO coincide con el nodo elegido:\nNodo: '+nombreSinOCS+'\nArchivo: '+nombreArchivo+'\nPor favor verifique.');
+      }
     }
   }
 }
@@ -178,6 +191,25 @@ function verificarSesion(mensaje, cookie) {
   xmlhttp.send();
 }
 /********** fin verificarSesion(mensaje, cookie) **********/
+
+/**
+ * \brief Función que valida el form para editar una alarma.
+ */
+function validarEditarAlarma(){
+  var causa = $("#causa").val();
+  var solucion = $("#sln").val();
+  var solucionOriginal = $("#solucionOriginal").val();
+  var causaOriginal = $("#causaOriginal").val();
+  alert('causa: '+causa+'\ncausaOriginal: '+causaOriginal+'\nsolucion: '+solucion+'\nSolucion Original: '+solucionOriginal);
+  if ((causa === causaOriginal)&&(solucion === solucionOriginal)){
+    alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+  }
+  else {
+    alert('antes del submit');
+    $("#frmEditarAlarma").submit();alert('despues del submit');
+  }
+}
+/********** fin validarEditarAlarma() **********/
 
 /***********************************************************************************************************************
 /// ************************************************* FUNCIONES USUARIOS ***********************************************
@@ -419,7 +451,7 @@ $(document).on("click", "#btnCargar", function() {
 */
 
 /*****************************************************************************************************************************
-/// ************************************************ INICIO MUESTRA ARCHIVO **************************************************
+/// ************************************************ INICIO MUESTRA ALARMAS **************************************************
 ******************************************************************************************************************************
 */
 
@@ -430,7 +462,29 @@ $(document).on("click", "#btnExportar", function() {
 /********** fin on("click", "#btnExportar", function() *********/
 
 /*****************************************************************************************************************************
-/// ************************************************** FIN MUESTRA ARCHIVO ***************************************************
+/// ************************************************** FIN MUESTRA ALARMAS ***************************************************
+******************************************************************************************************************************
+*/
+
+/*****************************************************************************************************************************
+/// ************************************************** INICIO EDITAR ALARMA **************************************************
+******************************************************************************************************************************
+*/
+
+//$(document).on("submit", "#frmEditarAlarma",function (e) {
+//  e.preventDefault();
+//  validarEditarAlarma();
+//});
+
+///Disparar función al hacer SUBMIT del form para editar una alarma.
+$(document).on("click", "#btnEditarAlarma", function(e) {
+  e.preventDefault();
+  validarEditarAlarma();
+});
+/********** fin on("click", "#btnEditarAlarma", function() *********/
+
+/*****************************************************************************************************************************
+/// **************************************************** FIN EDITAR ALARMA ***************************************************
 ******************************************************************************************************************************
 */
 

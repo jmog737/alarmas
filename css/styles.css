@@ -125,12 +125,14 @@ h2 {
 h3 h4{
   color:#fff;
 }
+
 .rango {
   font-style: italic;
 }
 input[type=checkbox] {
   zoom: 1.4;
 }
+
 .derecha {
   float: right;
 }
@@ -380,6 +382,7 @@ hr {
   border-collapse: separate;
   text-align: center;
   padding: 0px;
+  background-color:#c1c1bf;
   /*resize: none;*/
 }
 .tabla2 td select {
@@ -448,6 +451,12 @@ hr {
 }
 .alWarning {
   background-color:#75ecec;
+}
+.procesada {
+  background-color: #85ca5e;
+}
+.sinProcesar {
+  background-color:#f7ff00;
 }
 /****************************** FIN ALARMAS ***********************************/
 

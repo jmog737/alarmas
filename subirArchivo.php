@@ -22,8 +22,18 @@ require_once ('head.php');
   <body>
 <?php
   require_once ('header.php');
-  $query = "select distinct localidad from nodos order by localidad asc";
-  require_once ('data/selectQueryDirecto.php');
+  //$query = "select distinct localidad from nodos order by localidad asc";
+  /// Consulta sólo OCSs del área metro:
+  //$query = "select idnodo, nombre, localidad from nodos where tipo!='PSS 32' and areaMetro=true group by localidad";
+  
+  /// Consulta todos pero sólo del área metro y agrupadas por localidad:
+  //$query = "select idnodo, nombre, localidad from nodos where areaMetro=true group by localidad";
+  
+  /// Consulta sólo OCSs del área metro, pero sin agrupar por localidad:
+  $query = "select idnodo, nombre, localidad from nodos where areaMetro=true";
+  
+  require_once ('data/pdo.php');
+  $datos = hacerSelect($query);
   $localidades = $datos['resultado'];
   $totalLocalidades = $datos['rows'];
 ?>
@@ -43,7 +53,7 @@ require_once ('head.php');
                 Archivo:
               </th>  
               <td>
-                <input type="file" name="uploadedFile" id="uploadedFile" accept=".csv" onchange="archivoElegido()"/>
+                <input type="file" name="uploadedFile" id="uploadedFile" accept=".csv"/>
               </td> 
             </tr>
             <tr>
@@ -51,19 +61,22 @@ require_once ('head.php');
                 Nodo:
               </th>  
               <td>
-                <select name="nodo" id="nodo">
-                  <option value="nada">--- Seleccionar NODO ---</option>
+                <select name="nodo" id="nodo" title="Seleccione por favor el nodo del cual se obtuvo el archivo.">
+                  <option value="nada" nombreCorto="nada">--- Seleccionar NODO ---</option>
                   <?php
                   foreach ($localidades as $i => $valor){
                     $loc = $localidades[$i]['localidad'];
-                    echo "<option value='".$loc."'>".$loc."</option>";
+                    $nombreCorto = $localidades[$i]['nombre'];
+                    $idnodo = $localidades[$i]['idnodo'];
+                    echo "<option value='".$loc."' nombreCorto='".$nombreCorto."' idnodo=".$idnodo.">".$nombreCorto." - ".$loc."</option>";
+                    //echo "<option value='".$loc."---".$nombreCorto."---".$idnodo."'>".$nombreCorto." - ".$loc."</option>";
                   }
                   ?>
                 </select>
               </td> 
             </tr>
             <td colspan="2" class="pieTabla">
-              <input type="button" name="btnCargar" id="btnCargar" value="CARGAR" />
+              <input type="submit" name="btnCargar" id="btnCargar" value="CARGAR" />
             </td>
           </table>  
         </form>

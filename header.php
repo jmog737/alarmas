@@ -31,7 +31,7 @@
               Menu
             </a>
             <div id="drop" class="dropdown-menu dropdown-menu-right  " aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" title="Ingresar Movimientos" href="movimiento.php">Movimientos</a>
+              <a class="dropdown-item" title="Ver alarmas del archivo cargado" href="cargar.php">Archivo Cargado</a>
               <a class="dropdown-item" title="Realizar Consultas" href="busquedas.php">Consultas</a>
               <a class="dropdown-item" title="Editar Productos" href="producto.php">Productos</a>
               <div class="dropdown-divider"></div>
