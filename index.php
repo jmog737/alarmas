@@ -7,8 +7,8 @@ if(!isset($_SESSION))
 if ( isset($_POST["usuario"]) && isset($_POST["password"]) ) {
   unset($_SESSION["username"]);
   try {
-    $userDB = trim($_POST['usuario']);
-    $pwDB = trim($_POST['password']);
+    $userDB = htmlentities(trim($_POST['usuario']));
+    $pwDB = htmlentities(trim($_POST['password']));
     $pdo = new PDO('mysql:host=localhost;port=3306;dbname=controlalarmas;charset=utf8','conectar', 'conectar');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   } catch (PDOException $e) {
@@ -17,14 +17,23 @@ if ( isset($_POST["usuario"]) && isset($_POST["password"]) ) {
       //die();
   }
   
-  $sql = "SELECT COUNT(*) FROM usuarios WHERE appUser = '$userDB'";
-  $resultado = $pdo->query($sql);
+  $sth = $pdo->prepare('SELECT COUNT(*) FROM usuarios WHERE appUser = :user');
+  $sth->bindParam(':user', $userDB, PDO::PARAM_STR);
+  $sth->execute();
+  
+  //$sql = "SELECT COUNT(*) FROM usuarios WHERE appUser = '$userDB'";
+  //$resultado = $pdo->query($sql);
+  $resultado = $sth->execute();
   /// Si no devuelve false quiere decir que hay una coincidencia por lo cual el usuario existe
   if ($resultado !== false) {
     /* Comprobar el número de filas que coinciden con la sentencia SELECT */
-    if ($resultado->fetchColumn() > 0) {
-      $stmt = $pdo->query("SELECT idusuario, appUser, appPwd, nombre, apellido, estado FROM usuarios WHERE appUser = '$userDB'");
-      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($sth->fetchColumn() > 0) {
+      $sth1 = $pdo->prepare('SELECT idusuario, appUser, appPwd, nombre, apellido, estado FROM usuarios WHERE appUser = :usuario');
+      $sth1->bindParam(':usuario', $userDB, PDO::PARAM_STR);
+      $sth1->execute();
+      $row = $sth1->fetch(PDO::FETCH_ASSOC);
+      //$stmt = $pdo->query("SELECT idusuario, appUser, appPwd, nombre, apellido, estado FROM usuarios WHERE appUser = '$userDB'");
+      //$row = $stmt->fetch(PDO::FETCH_ASSOC);
       
       if ($row['appPwd'] === sha1($pwDB)){
         /// Chequeo si el usuario está o no activo:
@@ -71,7 +80,7 @@ else {
 }
 require_once ('head.php');
 ?>
-  <body onload="algo()">
+  <body>
 <?php
   require_once ('header.php');
 ?>

@@ -7,24 +7,52 @@ try {
     die();
 }
 
-function hacerSelect($query){
+function hacerSelect($query, $paramSelect = false){
   global $pdo;
-  $stmt = $pdo->query($query);
+  
+  $sth = $pdo->prepare($query);
+  if ($paramSelect){
+    $sth->execute($paramSelect);
+  }
+  else {
+    $sth->execute();
+  }
+  
+  //$stmt = $pdo->query($query);
+  //$stmt = $pdo->query($query);
 
   $queryTemp = explode('from', $query);
   $query1 = "select count(*) from ".$queryTemp[1];
+  $sth1 = $pdo->prepare($query1);
+  if ($paramSelect){
+    $sth1->execute($paramSelect);
+  }
+  else {
+    $sth1->execute();
+  }
 
   $datos = array();
-  $datos['rows'] = $pdo->query($query1)->fetchColumn();
-  while (($fila = $stmt->fetch(PDO::FETCH_ASSOC)) != NULL) { 
+  //$datos['rows'] = $pdo->query($query1)->fetchColumn();
+  $datos['rows'] = $sth1->fetchColumn();
+  //while (($fila = $stmt->fetch(PDO::FETCH_ASSOC)) != NULL) { 
+  while (($fila = $sth->fetch(PDO::FETCH_ASSOC)) != NULL) {  
     $datos['resultado'][] = $fila;
   }
   return $datos;
 }
 
-function hacerUpdate($queryInsert){
+function hacerUpdate($queryInsert, $paramUpdate = false){
   global $pdo;
-  $result = $pdo->query($queryInsert);
+  
+  $sth = $pdo->prepare($queryInsert);
+  if ($paramUpdate){
+    $result = $sth->execute($paramUpdate);
+  }
+  else {
+    $result = $sth->execute();
+  }
+  
+  //$result = $pdo->query($queryInsert);
 
   if ($result !== FALSE) {
     $dato = "OK";

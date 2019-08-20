@@ -196,18 +196,32 @@ function verificarSesion(mensaje, cookie) {
  * \brief Función que valida el form para editar una alarma.
  */
 function validarEditarAlarma(){
+  var seguir = false;
   var causa = $("#causa").val();
   var solucion = $("#sln").val();
   var solucionOriginal = $("#solucionOriginal").val();
   var causaOriginal = $("#causaOriginal").val();
-  alert('causa: '+causa+'\ncausaOriginal: '+causaOriginal+'\nsolucion: '+solucion+'\nSolucion Original: '+solucionOriginal);
-  if ((causa === causaOriginal)&&(solucion === solucionOriginal)){
-    alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+  //alert('causa: '+causa+' --- causaOriginal: '+causaOriginal+'\nsolucion: '+solucion+' --- Solucion Original: '+solucionOriginal);
+  if (causa === ''){
+    alert('La causa NO puede quedar vacía.\nPor favor verifique.');
+    $("#causa").focus();
   }
   else {
-    alert('antes del submit');
-    $("#frmEditarAlarma").submit();alert('despues del submit');
+    if (solucion === ''){
+      alert('La solución NO puede quedar vacía.\nPor favor verifique.');
+      $("#sln").focus();
+    }
+    else {
+      if ((causa === causaOriginal)&&(solucion === solucionOriginal)){
+        alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+      }
+      else {
+        seguir = true;
+      }
+    }
   }
+  
+  return seguir;
 }
 /********** fin validarEditarAlarma() **********/
 
@@ -471,15 +485,15 @@ $(document).on("click", "#btnExportar", function() {
 ******************************************************************************************************************************
 */
 
-//$(document).on("submit", "#frmEditarAlarma",function (e) {
-//  e.preventDefault();
-//  validarEditarAlarma();
-//});
-
 ///Disparar función al hacer SUBMIT del form para editar una alarma.
-$(document).on("click", "#btnEditarAlarma", function(e) {
-  e.preventDefault();
-  validarEditarAlarma();
+$(document).on("submit", "#frmEditarAlarma", function() {
+  var continuar = validarEditarAlarma();
+  if (continuar){
+    return true;
+  }
+  else {
+    return false;
+  }
 });
 /********** fin on("click", "#btnEditarAlarma", function() *********/
 
