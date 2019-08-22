@@ -471,7 +471,16 @@ $(document).on("click", "#btnCargar", function() {
 
 ///Disparar función al hacer SUBMIT del form para exportar los datos.
 $(document).on("click", "#btnExportar", function() {
-  alert('click en exportar');
+  /// Por el momento comento la validación para casos que se quiera estén todas las alarmas procesadas:
+//  $('td[name=estado]').each(function(){
+//    if ($(this).text() === 'Sin procesar'){
+//      var id = $(this).parent().find("td:first").html(); 
+//      alert('Aún hay alarmas sin procesar:\nId: '+id);
+//      return false;
+//    }
+//  });
+  alert('antes de ir a exportar');
+  $('#frmCargar').submit();
 });
 /********** fin on("click", "#btnExportar", function() *********/
 
@@ -499,6 +508,43 @@ $(document).on("submit", "#frmEditarAlarma", function() {
 
 /*****************************************************************************************************************************
 /// **************************************************** FIN EDITAR ALARMA ***************************************************
+******************************************************************************************************************************
+*/
+
+/*****************************************************************************************************************************
+/// Comienzan las funciones que manejan el DESPLAZAMIENTO dentro de la página
+******************************************************************************************************************************
+*/
+
+///Función que muestra/oculta las flechas para subir y bajar la página según el scroll:
+$(window).scroll(function() {
+//alert('en el scroll');
+  if ($(this).scrollTop() > 80) {
+    $('.arrow').fadeIn(50);
+  } else {
+    $('.arrow').fadeOut(400);
+  }
+});
+/********** fin scroll(function() **********/
+
+///Función que desplaza el foco hacia el final de la página:
+$(document).on("click", ".arrow-bottom", function() {
+  //event.preventDefault();
+  $('html, body').animate({scrollTop:$(document).height()}, '1000');
+        return false;
+});
+/********** fin on("click", ".arrow-bottom", function() **********/
+
+///Función que desplaza el foco hacia el comienzo de la página:
+$(document).on("click", ".arrow-top", function() {
+  //event.preventDefault();
+  $('html, body').animate({scrollTop:136}, '1000');
+  return false;
+});
+/********** fin on("click", ".arrow-top", function() **********/
+
+/*****************************************************************************************************************************
+/// *************************************************** FIN DESPLAZAMIENTO ***************************************************
 ******************************************************************************************************************************
 */
 

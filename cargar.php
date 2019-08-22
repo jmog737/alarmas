@@ -47,7 +47,8 @@ require_once ('data/pdo.php');
         $temp = explode('.', $nombreArchivo0);
         $nombre = $temp[0];
         $extension = $temp[1];
-
+        $fechaCarga = date('Y-m-d');
+        
         /// Chequeo que el archivo no tenga dobe extensión para evitar posibles ataques:
         $totalExtensiones = count($temp);
         if ($totalExtensiones > 2){
@@ -120,12 +121,13 @@ require_once ('data/pdo.php');
                     . "lines terminated by '\\r\\n' "
                     . "ignore 3 lines "
                     . "(nombre, compound, tipoAID, tipoAlarma, tipoCondicion, descripcion, afectacionServicio, @fechaCompleta, ubicacion, direccion, valorMonitoreado, nivelUmbral, periodo, datos, filtroALM, filtroAID) "
-                    . "set Dia=concat(year(now()), '-', substring(trim(@fechaCompleta), 1, 5)), Hora=concat(substring(trim(@fechaCompleta), 8, 2), ':', substring(trim(@fechaCompleta), 11, 2), ':', substring(trim(@fechaCompleta), 14, 2)), causa='', solucion='', usuario= :user_id, nodo= :idnodo, archivo= :archivo, estado='Sin procesar';";
+                    . "set Dia=concat(year(now()), '-', substring(trim(@fechaCompleta), 1, 5)), Hora=concat(substring(trim(@fechaCompleta), 8, 2), ':', substring(trim(@fechaCompleta), 11, 2), ':', substring(trim(@fechaCompleta), 14, 2)), causa='', solucion='', usuario= :user_id, nodo= :idnodo, fechaCarga= :fechaCarga, archivo= :archivo, estado='Sin procesar';";
             
             $sth = $pdo->prepare($queryCargar);
             $sth->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_STR);
             $sth->bindParam(':idnodo', $_SESSION['idnodo'], PDO::PARAM_STR);
             $sth->bindParam(':archivo', $_SESSION['archivo'], PDO::PARAM_STR);
+            $sth->bindParam(':fechaCarga', $fechaCarga, PDO::PARAM_STR);
             
   
             $dato = array();
@@ -150,7 +152,6 @@ require_once ('data/pdo.php');
           else {
             $seguir = false;
           }    
-          
         }/// Fin if $seguir 
         
       }/// Fin del caso en que vengo desde subirArchivo. Fin de la carga (u error de la misma)
@@ -187,6 +188,7 @@ require_once ('data/pdo.php');
           
           /// Si hay datos los muestro:
           if ($totalFilas > 0){
+            echo "<form id='frmCargar' name='frmCargar' method='post' action='exportar.php'>";
             /// Comienzo tabla para mostrar la consulta:
             echo "<table class='tabla2'>";
             echo "<caption>Tabla con las alarmas del nodo</caption>";
@@ -199,11 +201,11 @@ require_once ('data/pdo.php');
               if ($camposAlarmas[$key]['mostrarListado'] === 'si'){
                 $clase = '';
                 $totalCamposMostrar++;
-                if ($camposAlarmas[$key]['nombre'] === 'id'){
+                if ($camposAlarmas[$key]['nombreDB'] === 'id'){
                   $clase = "class='tituloTablaIzquierdo'";
                 }
                 else {
-                  if ($camposAlarmas[$key]['nombre'] === 'accion'){
+                  if ($camposAlarmas[$key]['nombreDB'] === 'accion'){
                     $clase = "class='tituloTablaDerecho'";
                   }
                 }
@@ -243,7 +245,7 @@ require_once ('data/pdo.php');
                                           
               foreach ($camposAlarmas as $key => $value) {   
                 if ($camposAlarmas[$key]['mostrarListado'] === 'si'){
-                  $indice = $camposAlarmas[$key]['nombre'];
+                  $indice = $camposAlarmas[$key]['nombreDB'];
                   
                   switch ($indice){
                     case 'id':  echo "<td>".$i."</td>";
@@ -258,6 +260,11 @@ require_once ('data/pdo.php');
                                     break;           
                     case 'nodo':  echo "<td></td>";
                                   break;
+                    case 'fechaCarga':  $dia1 = $fila[$indice];
+                                        $temp1 = explode('-', $dia1);
+                                        $diaMostrar1 = $temp1[2]."/".$temp1[1]."/".$temp1[0];
+                                        echo "<td>".$diaMostrar1."</td>";         
+                                        break;            
                     case 'causa': if ($fila['causa'] === ''){
                                     echo "<td>No Ingresada</td>";
                                   }
@@ -278,10 +285,15 @@ require_once ('data/pdo.php');
                                     else {
                                       $claseEstado = 'procesada';
                                     }
-                                    echo "<td class='".$claseEstado."'>".$fila[$indice]."</td>";
+                                    echo "<td name='estado' class='".$claseEstado."'>".$fila[$indice]."</td>";
                                     break;                  
                     case 'accion':  $j = $i - 1;
-                                    echo "<td><a href='editarAlarma.php?al=".$idalarma."&k=". serialize($keys)."&tot=".$totalFilas."'>Editar</a></td>";
+                                    $parAlCodif = "al=".base64_encode($idalarma);
+                                    $parKeysCodif = "&k=".base64_encode(serialize($keys));
+                                                                        
+                                    $url = "editarAlarma.php?".$parAlCodif.$parKeysCodif;
+                                    $parCod = base64_encode($url);//echo "url: ".$url."<br>url encoded: ".$parCod."<br>";
+                                    echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
                                     break;         
                     default:  echo "<td>".$fila[$indice]."</td>";
                               break;
@@ -294,6 +306,7 @@ require_once ('data/pdo.php');
             
             echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportar' name='btnExportar'><input type='button' value='Exportar'></td></tr>";
             echo "</table>";
+            echo "</form>";
           } /// Fin if totalFilas > 0
           else {
             echo "¡No hay registros a mostrar!<br>";

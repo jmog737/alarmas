@@ -26,26 +26,34 @@ require_once ('head.php');
   require_once('data/camposAlarmas.php');
   
   if (isset($_GET['al'])){
-    $idalarma = $_GET['al'];
+    $idalarma = base64_decode($_GET['al']);
   }
   if (isset($_GET['k'])){
-    $keys = unserialize($_GET['k']);
+    $keys = unserialize(base64_decode($_GET['k']));
     $id = array_search($idalarma, $keys);
+    $idMostrar = $id + 1;
     $totalFilas = count($keys);
-    $primero = $keys[0];
-    $ultimo = $keys[$totalFilas-1];
+    $primero = base64_encode($keys[0]);
+    $ultimo = base64_encode($keys[$totalFilas-1]);
+    $inhabilitarPrimero = '';
+    $inhabilitarUltimo = '';
+    
+    $keysCodif = base64_encode(serialize($keys));
+    
     if ($id !== false){
       if ($id === 0){
-        $anterior = $keys[$id];
+        $anterior = base64_encode($keys[$id]);
+        $inhabilitarPrimero = 'inhabilitar';
       }
       else {
-        $anterior = $keys[$id-1];
+        $anterior = base64_encode($keys[$id-1]);
       }
       if ($id === ($totalFilas-1)){
-        $siguiente = $keys[$totalFilas-1];
+        $siguiente = base64_encode($keys[$totalFilas-1]);
+        $inhabilitarUltimo = 'inhabilitar';
       }
       else {
-        $siguiente = $keys[$id+1];
+        $siguiente = base64_encode($keys[$id+1]);
       }
     }
     else {
@@ -70,8 +78,14 @@ require_once ('head.php');
     }
   } /// Fin isset($_POST)
 
-  $query = "select * from alarmas where idalarma=?";
+  $queryParam = "select nodos.localidad as localidad, usuarios.nombre, usuarios.apellido from alarmas inner join nodos on alarmas.nodo=nodos.idnodo inner join usuarios on alarmas.usuario=usuarios.idusuario where alarmas.idalarma=?";
   $param1 = array($idalarma);
+  $datosParam = hacerSelect($queryParam, $param1);
+  $datosMostrar0 = $datosParam['resultado'][0];
+  $usuarioMostrar = $datosMostrar0['nombre']." ".$datosMostrar0['apellido'];
+  $localidad = $datosMostrar0['localidad'];
+  
+  $query = "select * from alarmas where idalarma=?";
   $datos = hacerSelect($query, $param1);
   $datosMostrar = $datos['resultado'][0];
   
@@ -79,8 +93,14 @@ require_once ('head.php');
   $solucionOriginal = $datosMostrar['solucion'];
   $temp = explode('-', $datosMostrar['dia']);
   $diaMostrar = $temp[2]."/".$temp[1]."/".$temp[0];
+  $temp1 = explode('-', $datosMostrar['fechaCarga']);
+  $diaMostrar1 = $temp1[2]."/".$temp1[1]."/".$temp1[0];
+  
 ?>
 <main>
+  <script>
+    window.location = '#tituloEditarAlarma';
+  </script>
   <div id='main-content' class='container-fluid'>
     <?php
     if (isset($_POST['btnEditarAlarma'])){
@@ -88,7 +108,7 @@ require_once ('head.php');
     }
     ?>
     <br>
-    <h2>Datos de la alarma:</h2>
+    <h2 id="tituloEditarAlarma">Datos de la alarma <?php echo $idMostrar?></h2>
 
     <form id='frmEditarAlarma' name='frmEditarAlarma' method='post'>
       <table name='tblEditarAlarma' id='tblEditarAlarma' class='tabla2'>
@@ -129,7 +149,7 @@ require_once ('head.php');
         /// Para los que hay que hacerlo, veo si es alguno que requiera un formato especial (la fecha o el tipo de alarma) o no.
         foreach ($camposAlarmas as $key => $value) {   
           if ($camposAlarmas[$key]['mostrarEditar'] === 'si'){
-            $indice = $camposAlarmas[$key]['nombre'];
+            $indice = $camposAlarmas[$key]['nombreDB'];
 
             switch ($indice){
               case 'id': break;
@@ -138,6 +158,11 @@ require_once ('head.php');
                                   <td>".$diaMostrar."</td>
                                 </tr>";
                           break;
+              case 'fechaCarga':  echo "<tr>
+                                          <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                                          <td>".$diaMostrar1."</td>
+                                        </tr>";
+                                  break;          
               case 'causa': echo "<tr>
                                     <td class='enc'>Posible Causa</td>
                                     <td>
@@ -154,6 +179,16 @@ require_once ('head.php');
                                       </td>
                                     </tr>"; 
                                 break;
+              case 'usuario': echo "<tr>
+                                      <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                                      <td>".$usuarioMostrar."</td>
+                                    </tr>";
+                              break;  
+              case 'nodo':  echo "<tr>
+                                    <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                                    <td>".$localidad."</td>
+                                 </tr>";
+                            break;              
               case 'tipoAlarma': echo "<tr>
                                         <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
                                         <td class='".$claseAlarma."'>".$datosMostrar[$indice]."</td>
@@ -182,13 +217,17 @@ require_once ('head.php');
       </table>
     </form>
 
+    <div id="navegacion" class="pagination">
     <?php
       echo "<ul>";
-      echo "<a title='Ir a la primer alarma' href='editarAlarma.php?al=".$primero."&k=". serialize($keys)."'>|<  </a>";
-      echo "<a title='Ir a la alarma anterior' href='editarAlarma.php?al=".$anterior."&k=". serialize($keys)."'>  <<  </a>";
-      echo "<a title='Ir a la siguiente alarma' href='editarAlarma.php?al=".$siguiente."&k=". serialize($keys)."'>  >>  </a>";
-      echo "<a title='Ir a la última alarma' href='editarAlarma.php?al=".$ultimo."&k=". serialize($keys)."'>  >|</a>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la primer alarma' href='editarAlarma.php?al=".$primero."&k=".$keysCodif."'>|<  </a></li>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la alarma anterior' href='editarAlarma.php?al=".$anterior."&k=".$keysCodif."'>  <<  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la siguiente alarma' href='editarAlarma.php?al=".$siguiente."&k=".$keysCodif."'>  >>  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la última alarma' href='editarAlarma.php?al=".$ultimo."&k=".$keysCodif."'>  >|</a></li>";
       echo "</ul>";
+    ?>
+    </div>
+    <?php
       $volver = "<br><a href='cargar.php?i=1'>Volver a las alarmas</a><br><br>";
       echo $volver;
     ?>

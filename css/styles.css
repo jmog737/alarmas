@@ -354,7 +354,7 @@ hr {
   margin: 0px;
   line-height:none;
   max-width: 100%;
-  text-align: center;
+  text-align: center !important;
 }
 .tabla2 tr {
   border: #c0c0c0 1px solid;
@@ -760,54 +760,66 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 
 /********************************* PAGINAS ***********************************/
 .pagination {
-    /*height: 36px;*/
-    margin: auto;
-    width: 80%;
+  /*height: 36px;*/
+  margin: auto;
+  width: 80%;
 }
 .pagination ul {
-    border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
 /*    box-shadow: 0 10px 10px rgba(255, 255, 255, 0.2);*/
 /*    display: inline-block !important;*/
-    margin: auto;
+  margin: auto;
 }
 .pagination li {
   display: inline !important;
   margin: auto;
 }
 .pagination a {
-    -moz-border-bottom-colors: none;
-    -moz-border-image: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    border-color: #DDDDDD;
-    /*border-color: #fb4f4a;*/
-    border-style: solid;
-    border-width: 1px 1px 1px 1px;
-    float: left;
-    line-height: 34px;
-    padding: 0 10px;
-    text-decoration: none;
-    /*background-color: #159e62;*/
+  -moz-border-bottom-colors: none;
+  -moz-border-image: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  border-color: #DDDDDD;
+  border-color: #f1643a;
+  /*border-color: #fb4f4a;*/
+  /*border-style: solid;*/
+  /*border-width: 1px 1px 1px 1px;*/
+  float: left;
+  line-height: 34px;
+  padding: 0 10px;
+  text-decoration: none;
+  background-color: #f1643a;
+  margin: 0px 10px 0px 10px;
+  color: #000;
 }
 .pagination a:hover {
-    background-color: #f36464;
-    font-size: 1.5em;
-    cursor: pointer;
+  background-color: #f36464;
+  border-color: #f36464;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: #ffffff;
 }
 .pagination a:active {
-    color: #999999;
-    cursor: default;
+  color: #999999;
+  cursor: default;
 }
 .pagination li:first-child a{
-    border-left-width: 1px;
-    border-radius: 30px 0 0 30px;
+  border-left-width: 1px;
+  border-radius: 30px 0 0 30px;
 }
 .pagination li:last-child a {
-    border-radius: 0 30px 30px 0;
+  border-radius: 0 30px 30px 0;
 }
 .pageActive {
   background-color: #f36464;
+}
+
+.inhabilitar{
+  pointer-events: none;
+  cursor: default;
+  background-color: #d8d8d8 !important;
+  color: #d8d8d8;
 }
 /******************************** FIN PAGINAS ********************************/
 
