@@ -42,7 +42,7 @@ if ( isset($_POST["usuario"]) && isset($_POST["password"]) ) {
           //Si el usuario existe, seteo las variables de sesión y cookies (user_id y username), y lo redirijo a la página principal:
           $_SESSION['user_id'] = $row['idusuario'];
           $_SESSION['username'] = $row['appUser'];
-  //        ///Recupero los parámetros del usuario:
+          $_SESSION['usuarioReal'] = $row['nombre']." ".$row['apellido'];
 
           require_once('data/config.php');
           setcookie('tiempo', time(), time()+TIEMPOCOOKIE);

@@ -479,7 +479,6 @@ $(document).on("click", "#btnExportar", function() {
 //      return false;
 //    }
 //  });
-  alert('antes de ir a exportar');
   $('#frmCargar').submit();
 });
 /********** fin on("click", "#btnExportar", function() *********/

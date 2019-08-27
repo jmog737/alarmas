@@ -78,11 +78,13 @@ require_once ('head.php');
     }
   } /// Fin isset($_POST)
 
-  $queryParam = "select nodos.localidad as localidad, usuarios.nombre, usuarios.apellido from alarmas inner join nodos on alarmas.nodo=nodos.idnodo inner join usuarios on alarmas.usuario=usuarios.idusuario where alarmas.idalarma=?";
+  //$queryParam = "select nodos.localidad as localidad, usuarios.nombre, usuarios.apellido from alarmas inner join nodos on alarmas.nodo=nodos.idnodo inner join usuarios on alarmas.usuario=usuarios.idusuario where alarmas.idalarma=?";
+  $queryParam = "select nodos.localidad as localidad from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
   $param1 = array($idalarma);
   $datosParam = hacerSelect($queryParam, $param1);
   $datosMostrar0 = $datosParam['resultado'][0];
-  $usuarioMostrar = $datosMostrar0['nombre']." ".$datosMostrar0['apellido'];
+  //$usuarioMostrar = $datosMostrar0['nombre']." ".$datosMostrar0['apellido'];
+  $usuarioMostrar = $_SESSION['usuarioReal'];
   $localidad = $datosMostrar0['localidad'];
   
   $query = "select * from alarmas where idalarma=?";

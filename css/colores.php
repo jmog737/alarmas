@@ -16,21 +16,39 @@ if(!isset($_SESSION))
 ///**************************************************** COLORES PDFs *************************************************************
 ///Color para la marca de agua:
 define("colorMarcaAgua", array(255,180,203));
+
 ///Color para el título del Header:
-define("colorTituloHeader", array(120, 200, 120));
+define("colorHeaderTituloTexto", array(0, 0, 0));
+define("colorHeaderTituloFondo", array(237, 233, 232));
+
+///Color para el texto del Footer:
+define("colorFooterTexto", array(0, 0, 0));
+///Color para el fondo del Footer:
+define("colorFooterFondo", array(255, 255, 255));
+
 ///Color para el texto legal en el footer:
 define("colorTextoLegal", array(234, 229, 227));
 
+///Color Título del reporte:
+define("colorTituloReporte", array(255, 0, 0));
+
 ///Color Título de la tabla:
-define("colorTituloTabla", array(2, 49, 136));
+define("colorTituloTablaTexto", array(255, 255, 255));
+define("colorTituloTablaFondo", array(2, 49, 136));
 
 ///Color Subtítulo:
 define("colorSubtitulo", array(134, 144, 144));
 
 ///Borde redondeado intermedio:
 define("colorBordeRedondeado", array(157, 176, 243));
-define("colorCampos", array(157, 176, 243));
-define("colorFondoRegistro", array(220, 223, 232));
+
+///Color Campos:
+define("colorCamposFondo", array(0, 176, 243));
+define("colorCamposTexto", array(255, 255, 255));
+
+///Color Registros:
+define("colorRegistrosTexto", array(0, 0, 0));
+define("colorRegistrosFondo", array(220, 223, 232));
 
 ///Colores para los comentarios:
 define("colorComPlastico", array(234, 140, 160));

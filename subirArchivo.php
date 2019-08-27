@@ -24,13 +24,13 @@ require_once ('head.php');
   require_once ('header.php');
   //$query = "select distinct localidad from nodos order by localidad asc";
   /// Consulta sólo OCSs del área metro:
-  //$query = "select idnodo, nombre, localidad from nodos where tipo!='PSS 32' and areaMetro=true group by localidad";
+  $query = "select idnodo, nombre, localidad from nodos where tipo!='PSS 32' and areaMetro=true";
   
   /// Consulta todos pero sólo del área metro y agrupadas por localidad:
   //$query = "select idnodo, nombre, localidad from nodos where areaMetro=true group by localidad";
   
   /// Consulta sólo OCSs del área metro, pero sin agrupar por localidad:
-  $query = "select idnodo, nombre, localidad from nodos where areaMetro=true";
+  //$query = "select idnodo, nombre, localidad from nodos where areaMetro=true";
   
   require_once ('data/pdo.php');
   $datos = hacerSelect($query);

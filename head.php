@@ -1,5 +1,13 @@
 <?php
-  $estilos = 'styles.css';
+  if (isset($_SESSION["username"])){
+    $user = $_SESSION["username"];
+    $estilos = 'styles_'.$user.'.php';
+  }  
+  if (!isset($_SESSION["username"])||(!file_exists("css/".$estilos))){
+    $estilos = 'styles.php';
+  }
+  //$estilos = 'styles.css';
+  
   require 'vendor/autoload.php';
   require_once 'data/config.php';
 ?>

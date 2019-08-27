@@ -183,6 +183,8 @@ require_once ('data/pdo.php');
           /// Armo la consulta
           $consulta = "select * from alarmas where archivo= ? order by dia desc, hora desc";
           $param = array($_SESSION['archivo']);
+          /// Serializo los parámetros para poder pasarlos en el post:
+          $paramSerial = serialize($param);
           $datos = hacerSelect($consulta, $param);
           $totalFilas = $datos['rows'];
           
@@ -306,6 +308,11 @@ require_once ('data/pdo.php');
             
             echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportar' name='btnExportar'><input type='button' value='Exportar'></td></tr>";
             echo "</table>";
+            
+            echo "<input type='hidden' name='consulta' value='".$consulta."'>"
+              . "<input type='hidden' name='param' value='".$paramSerial."'>"
+              . "<input type='hidden' name='origen' value='cargar'>";
+            
             echo "</form>";
           } /// Fin if totalFilas > 0
           else {

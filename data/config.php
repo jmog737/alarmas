@@ -12,12 +12,12 @@
 /**
   \param DURACION Constante que indica el tiempo de sesión permitido sin actividad (en segundos).
 */
-define('DURACION', 600);
+define('DURACION', 3600);
 
 /**
   \param TIEMPOCOOKIE Constante que indica el tiempo de vida del cookie a setear (en segundos).
 */
-define('TIEMPOCOOKIE', 603);
+define('TIEMPOCOOKIE', 3603);
 
 /**
   \param TAM_ARCHIVO Constante que define el tamaño máximo permitido del archivo a cargar en la base de datos (en bytes).
@@ -32,6 +32,8 @@ $ip = '';
 
 $unidad = "C:";
 $dirCargados = "C:\\\ArchivosCargados";
+
+$dir = $unidad."/Reportes/";
 
 $rutaFotos = "images/snapshots";
 
