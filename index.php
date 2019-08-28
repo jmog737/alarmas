@@ -45,8 +45,12 @@ if ( isset($_POST["usuario"]) && isset($_POST["password"]) ) {
           $_SESSION['usuarioReal'] = $row['nombre']." ".$row['apellido'];
 
           require_once('data/config.php');
+          require_once('data/escribirLog.php');
           setcookie('tiempo', time(), time()+TIEMPOCOOKIE);
           $_SESSION["success"] = " -- ¡¡Bienvenid@ ".strtoupper($row['appUser'])."!! --";
+          $inicioSesion = "Inició sesión.";
+          $log = true;
+          escribirLog($inicioSesion, $log);
           header( 'Location: subirArchivo.php' ) ;
           return;
         }

@@ -210,6 +210,7 @@ class PDF extends PDF_MC_Table
     $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
     $this->SetFont('Courier', '', 9);
     $fill = 1;
+    $fillAnterior = $fill;
     $a = 'C';
     $this->Ln();
     $this->SetX($xTabla);
@@ -277,12 +278,13 @@ class PDF extends PDF_MC_Table
       foreach ($camposAlarmas as $ind0 => $campo){
         if ($campo['mostrarReporte'] === 'si'){
           $this->SetFont('Courier', '', 9);
+          
           switch ($campo['nombreDB']){
             case 'dia': $temp = explode('-', $fila[$campo['nombreDB']]);
                         $datito = $temp[2].'/'.$temp[1].'/'.$temp[0];
                         break;
             case 'id':  $datito = $indice + 1;
-                        break;
+                        break;         
             default:  $datito = trim(utf8_decode(html_entity_decode($fila[$campo['nombreDB']])));
                       break;
           }
@@ -293,9 +295,33 @@ class PDF extends PDF_MC_Table
           //Save the current position
           $x1=$this->GetX();
           $y=$this->GetY();
+      
+          if ($campo['nombreDB'] === 'tipoAlarma'){
+            $fillAnterior = $fill;
+            $fill = true;
+            $tipoAlarma = $fila['tipoAlarma'];
+            switch ($tipoAlarma){
+              case 'MN':  $this->setFillColor(colorAlarmaMNFondo[0], colorAlarmaMNFondo[1], colorAlarmaMNFondo[2]);
+
+                          break;
+              case 'CR':  $this->setFillColor(colorAlarmaCRFondo[0], colorAlarmaCRFondo[1], colorAlarmaCRFondo[2]);
+
+                          break;
+              case 'MJ':  $this->setFillColor(colorAlarmaMJFondo[0], colorAlarmaMJFondo[1], colorAlarmaMJFondo[2]);
+
+                          break;
+              case 'WR':  $this->setFillColor(colorAlarmaWRFondo[0], colorAlarmaWRFondo[1], colorAlarmaWRFondo[2]);
+
+                          break;
+              default:  $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+                        break;
+            }
+          }
+          else {
+            $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+          }
           
           $f = ($fill) ? 'F' : '';
-          
           //Draw the border
           $this->Rect($x1,$y,$anchoCampo,$h0, $f);
           $h1 = $h0/$nb1;
@@ -306,7 +332,10 @@ class PDF extends PDF_MC_Table
           }
           else {
             $this->MultiCell($anchoCampo, $h0, $datito,1, $a, $fill);
-          }  
+          } 
+          if ($campo['nombreDB'] === 'tipoAlarma'){
+            $fill = $fillAnterior;
+          }
           
           //Put the position to the right of the cell
           $this->SetXY($x1+$anchoCampo,$y);

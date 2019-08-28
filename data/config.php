@@ -31,13 +31,21 @@ $ip = '';
 //echo "host: ".$hostname."<br>ip: ".$ip;
 
 $unidad = "C:";
-$dirCargados = "C:\\\ArchivosCargados";
+if (!file_exists($unidad)) {
+  $unidad = "C:";
+}
+$dirCargados = $unidad."\\\ArchivosCargados";
+$dirReportes = $unidad."/Reportes/";
 
-$dir = $unidad."/Reportes/";
-
+$dirExcel = $dirReportes."/Excel/";
+$dirLog = $dirReportes."Logs/";
+$dirGraficas = $dirReportes."/graficas/";
 $rutaFotos = "images/snapshots";
 
 
+if (!file_exists($dirReportes)){
+  echo "No existe la carpeta: $dir. <br>Por favor verifique.";
+}
 
 
 ?>

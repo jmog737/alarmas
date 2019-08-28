@@ -50,6 +50,12 @@ define("colorCamposTexto", array(255, 255, 255));
 define("colorRegistrosTexto", array(0, 0, 0));
 define("colorRegistrosFondo", array(220, 223, 232));
 
+///Colores para los tipos de alarma:
+define("colorAlarmaMNFondo", array(255, 255, 124));
+define("colorAlarmaMJFondo", array(255, 169, 41));
+define("colorAlarmaCRFondo", array(253, 81, 81));
+define("colorAlarmaWRFondo", array(117, 236, 236));
+
 ///Colores para los comentarios:
 define("colorComPlastico", array(234, 140, 160));
 define("colorComStock", array(4, 255, 20));

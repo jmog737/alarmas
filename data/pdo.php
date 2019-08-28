@@ -1,4 +1,6 @@
 <?php
+require_once('escribirLog.php');
+
 try {
   $pdo = new PDO('mysql:host=localhost;port=3306;dbname=controlalarmas;charset=utf8','jm', 'jm');
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -7,7 +9,7 @@ try {
     die();
 }
 
-function hacerSelect($query, $paramSelect = false){
+function hacerSelect($query, $log, $paramSelect = false){
   global $pdo;
   
   $sth = $pdo->prepare($query);
@@ -38,10 +40,20 @@ function hacerSelect($query, $paramSelect = false){
   while (($fila = $sth->fetch(PDO::FETCH_ASSOC)) != NULL) {  
     $datos['resultado'][] = $fila;
   }
+  if ($log){
+    if ($paramSelect){
+      $paramAString = implode(' --- ', $paramSelect);
+      $guardar = $query." --- ".$paramAString;
+    }
+    else {
+      $guardar = $query;
+    }
+    escribirLog($guardar);
+  }
   return $datos;
 }
 
-function hacerUpdate($queryInsert, $paramUpdate = false){
+function hacerUpdate($queryInsert, $log, $paramUpdate = false){
   global $pdo;
   
   $sth = $pdo->prepare($queryInsert);
@@ -59,6 +71,16 @@ function hacerUpdate($queryInsert, $paramUpdate = false){
   }
   else {
     $dato = "ERROR";
+  }
+  if ($log){
+    if ($paramUpdate){
+      $paramAString = implode(' --- ', $paramUpdate);
+      $guardar = $queryInsert." --- ".$paramAString;
+    }
+    else {
+      $guardar = $queryInsert;
+    }
+    escribirLog($guardar);
   }
   return $dato;
 }

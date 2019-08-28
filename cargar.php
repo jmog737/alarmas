@@ -160,7 +160,8 @@ require_once ('data/pdo.php');
       if ($seguir){    
         if (!(isset($_SESSION['nodo']))){
           $queryUltimo = "select nodos.idnodo, nodos.localidad, alarmas.archivo from alarmas inner join nodos on nodos.idnodo=alarmas.nodo order by idalarma desc limit 1";
-          $datosUltimo = hacerSelect($queryUltimo);
+          $log = false;
+          $datosUltimo = hacerSelect($queryUltimo, $log);
           $registro = $datosUltimo['resultado'][0];
           $_SESSION['nodo'] = $registro['localidad'];
           $_SESSION['idnodo'] = $registro['idnodo'];
@@ -185,12 +186,13 @@ require_once ('data/pdo.php');
           $param = array($_SESSION['archivo']);
           /// Serializo los parámetros para poder pasarlos en el post:
           $paramSerial = serialize($param);
-          $datos = hacerSelect($consulta, $param);
+          $log1 = false;
+          $datos = hacerSelect($consulta, $log1, $param);
           $totalFilas = $datos['rows'];
           
           /// Si hay datos los muestro:
           if ($totalFilas > 0){
-            echo "<form id='frmCargar' name='frmCargar' method='post' action='exportar.php'>";
+            echo "<form id='frmCargar' name='frmCargar' method='post' target='_blank' action='exportar.php'>";
             /// Comienzo tabla para mostrar la consulta:
             echo "<table class='tabla2'>";
             echo "<caption>Tabla con las alarmas del nodo</caption>";
@@ -306,7 +308,7 @@ require_once ('data/pdo.php');
               echo "</tr>";
             } /// Fin del procesamiento de las filas con datos
             
-            echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportar' name='btnExportar'><input type='button' value='Exportar'></td></tr>";
+            echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportar' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
             echo "</table>";
             
             echo "<input type='hidden' name='consulta' value='".$consulta."'>"

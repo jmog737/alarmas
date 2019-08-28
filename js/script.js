@@ -225,6 +225,32 @@ function validarEditarAlarma(){
 }
 /********** fin validarEditarAlarma() **********/
 
+/**
+ * \brief Función que valida el form para cargar el archivo.
+ */
+function validarBusqueda(){
+  verificarSesion('', 's');
+  ///Recupero los parámetros de la consulta:
+  var radio = $('input:radio[name=criterio]:checked').val();
+  var nodos = new Array();
+  $("#nodo option:selected").each(function() {
+    nodos.push($(this).val());
+  });
+  var radioFecha = $('input:radio[name=criterioFecha]:checked').val();
+  var inicio = $("#inicio").val();
+  var fin = $("#fin").val();
+  var mes = $("#mes").val();
+  var año = $("#año").val();
+  var tipoAlarma = $("#alarma").find('option:selected').val( );
+  var equipo = $("#equipo").find('option:selected').val( );
+  var usuarios = new Array();
+  $("#usuarios option:selected").each(function() {
+    usuarios.push($(this).val());
+  });
+  alert('criterio: '+radio+'\nnodo: '+nodos+'\nfecha: '+radioFecha+'\ninicio: '+inicio+' - fin: '+fin+'\nmes: '+mes+' - año: '+año+'\nalarma: '+tipoAlarma+'\nequipo: '+equipo+'\nusuario: '+usuarios);
+}
+/********** fin validarBusqueda() **********/
+
 /***********************************************************************************************************************
 /// ************************************************* FUNCIONES USUARIOS ***********************************************
 ************************************************************************************************************************
@@ -390,6 +416,23 @@ $(document).on("click", "#login", function(e) {
 
 /*****************************************************************************************************************************
 /// Fin de las funciones para el form de INGRESO.
+******************************************************************************************************************************
+*/
+
+/*****************************************************************************************************************************
+/// Comienzan las funciones para el form de CONSULTAS.
+******************************************************************************************************************************
+*/
+
+///Disparar función al hacer click en el botón de BUSCAR del from de CONSULTAS.
+///Esto hace que se llame a la función que valida la consulta y luego hace el submit.
+$(document).on("click", "#buscar", function(){
+  verificarSesion('', 's');
+  validarBusqueda();
+});
+
+/*****************************************************************************************************************************
+/// Fin de las funciones para el form de CONSULTAS.
 ******************************************************************************************************************************
 */
 

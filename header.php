@@ -32,7 +32,7 @@
             </a>
             <div id="drop" class="dropdown-menu dropdown-menu-right  " aria-labelledby="navbarDropdown">
               <a class="dropdown-item" title="Ver alarmas del archivo cargado" href="cargar.php?i=1">Archivo Cargado</a>
-              <a class="dropdown-item" title="Realizar Consultas" href="busquedas.php">Consultas</a>
+              <a class="dropdown-item" title="Realizar Consultas" href="consultas.php">Consultas</a>
               <a class="dropdown-item" title="Editar Productos" href="producto.php">Productos</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" title="Ver Estad&iacute;siticas" href="estadisticas.php">Estadisticas</a>
@@ -41,7 +41,7 @@
             </div>
             
             <a class="d-block d-sm-none" title="Ver alarmas del archivo cargado" href="cargar.php?i=1">Archivo Cargado</a>
-            <a class='d-block d-sm-none' title="Realizar Consultas" href="busquedas.php">Consultas</a>
+            <a class='d-block d-sm-none' title="Realizar Consultas" href="consultas.php">Consultas</a>
             <a class='d-block d-sm-none' title="Editar Productos" href="producto.php">Productos</a>
             <a class='d-block d-sm-none' title="Ver Estad&iacute;siticas" href="estadisticas.php">Estadisticas</a> 
           </li>

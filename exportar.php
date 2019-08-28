@@ -82,7 +82,8 @@ if($vida_session < DURACION ) {
     }
     
     if ($seguir){
-      $datos = hacerSelect($consulta, $param);
+      $log = false;
+      $datos = hacerSelect($consulta, $log, $param);
       $registros = $datos['resultado'];
       $totalFilas = $datos['rows'];
       
@@ -154,7 +155,7 @@ if($vida_session < DURACION ) {
         //********************************* Generación de la carpeta y sub carpetas necesarias segun nombre del nodo y fecha: ***************************
         if ($guardarDisco){
           $sigo = true;
-          $rutaCarpetaNodo = $dir.$nombreNodoMostrar;
+          $rutaCarpetaNodo = $dirReportes.$nombreNodoMostrar;
           if (is_dir($rutaCarpetaNodo)){
             //echo "La carpeta del cliente ya existe: $rutaCarpetaNodo.<br>";
           }
@@ -197,7 +198,7 @@ if($vida_session < DURACION ) {
           /// Si por algún motivo, la creación de alguna de las carpetas dio error, guardo en la carpeta ya configurada y creada que sé existe.
           /// Si no hubo problemas en la creación, guardo en la carpeta creada:
           if (!($sigo)){
-            $salida = $dir.$nombreArchivo;
+            $salida = $dirReportes.$nombreArchivo;
           }
           else {
             $salida = $subRuta."/".$nombreArchivo;
@@ -223,7 +224,7 @@ if($vida_session < DURACION ) {
   ini_set('error_reporting', E_ALL);
   ini_set('display_errors',1);
 } /// Fin if(isset($_SESSION['tiempo']))
-else {echo "jlkdjlfks";
+else {
   echo '<script type="text/javascript">'
   . 'alert("Tú sesión expiró.\n¡Por favor vuelve a loguearte!.");window.close();
     window.location.assign("salir.php");

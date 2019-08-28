@@ -69,7 +69,8 @@ require_once ('head.php');
     $solucion = htmlentities($_POST['sln']);
     $query = "update alarmas set causa=?, solucion=?, estado='Procesada' where idalarma=?";
     $paramUpdate = array($causa, $solucion, $idalarma);
-    $resultadoInsert = hacerUpdate($query, $paramUpdate);
+    $log = true;
+    $resultadoInsert = hacerUpdate($query, $log, $paramUpdate);
     if ($resultadoInsert === 'ERROR'){
       $mensaje = "Hubo un problema al actualizar los datos.<br>Por favor verifique.";
     }
@@ -79,17 +80,20 @@ require_once ('head.php');
   } /// Fin isset($_POST)
 
   //$queryParam = "select nodos.localidad as localidad, usuarios.nombre, usuarios.apellido from alarmas inner join nodos on alarmas.nodo=nodos.idnodo inner join usuarios on alarmas.usuario=usuarios.idusuario where alarmas.idalarma=?";
-  $queryParam = "select nodos.localidad as localidad from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
+  //$queryParam = "select nodos.localidad as localidad from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
+  $queryParam = "select * from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
   $param1 = array($idalarma);
-  $datosParam = hacerSelect($queryParam, $param1);
-  $datosMostrar0 = $datosParam['resultado'][0];
-  //$usuarioMostrar = $datosMostrar0['nombre']." ".$datosMostrar0['apellido'];
-  $usuarioMostrar = $_SESSION['usuarioReal'];
-  $localidad = $datosMostrar0['localidad'];
+  $log = false;
+  $datosParam = hacerSelect($queryParam, $log, $param1);
+  $datosMostrar = $datosParam['resultado'][0];
   
-  $query = "select * from alarmas where idalarma=?";
-  $datos = hacerSelect($query, $param1);
-  $datosMostrar = $datos['resultado'][0];
+  $usuarioMostrar = $_SESSION['usuarioReal'];
+  $localidad = $datosMostrar['localidad'];
+  
+  //$query = "select * from alarmas where idalarma=?";
+  //$log1 = false;
+  //$datos = hacerSelect($query, $log1, $param1);
+  //$datosMostrar = $datos['resultado'][0];
   
   $causaOriginal = $datosMostrar['causa'];
   $solucionOriginal = $datosMostrar['solucion'];
@@ -213,7 +217,7 @@ require_once ('head.php');
         
         <tr>
           <td colspan='2' class='pieTabla'>
-            <input type='submit' name='btnEditarAlarma' id='btnEditarAlarma' value='EDITAR'>
+            <input type='submit' class='btn btn-danger' name='btnEditarAlarma' id='btnEditarAlarma' value='EDITAR'>
           </td>
         </tr>
       </table>

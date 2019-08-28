@@ -33,7 +33,8 @@ require_once ('head.php');
   //$query = "select idnodo, nombre, localidad from nodos where areaMetro=true";
   
   require_once ('data/pdo.php');
-  $datos = hacerSelect($query);
+  $log = false;
+  $datos = hacerSelect($query, $log);
   $localidades = $datos['resultado'];
   $totalLocalidades = $datos['rows'];
 ?>
@@ -76,7 +77,7 @@ require_once ('head.php');
               </td> 
             </tr>
             <td colspan="2" class="pieTabla">
-              <input type="submit" name="btnCargar" id="btnCargar" value="CARGAR" />
+              <input type="submit"  class="btn btn-danger" name="btnCargar" id="btnCargar" value="CARGAR" />
             </td>
           </table>  
         </form>
