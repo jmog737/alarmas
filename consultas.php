@@ -6,7 +6,7 @@ if(!isset($_SESSION))
 /**
 ******************************************************
 *  @file consultas.php
-*  @brief Archivo que se encarga de generar y mostrar las consultas a la base de datos.
+*  @brief Archivo que se encarga de valiadar y generar las consultas a la base de datos.
 *  @author Juan Martín Ortega
 *  @version 1.0
 *  @date Agosto 2019
@@ -24,13 +24,13 @@ require_once ('data/pdo.php');
 /// Consulta sólo OCSs del área metro:
 $query = "select idnodo, nombre, localidad from nodos where tipo!='PSS 32' and areaMetro=true";
 $log = false;
-$datos = hacerSelect($query, $log);
+$datos = json_decode(hacerSelect($query, $log), true);
 $localidades = $datos['resultado'];
 $totalLocalidades = $datos['rows'];
 
 /// Consulta usuarios:
 $query1 = "select idusuario, nombre, apellido from usuarios where estado='activo' order by apellido, nombre";
-$datos1 = hacerSelect($query1, $log);
+$datos1 = json_decode(hacerSelect($query1, $log), true);
 $usuarios = $datos1['resultado'];
 $totalUsuarios = $datos['rows'];
 
@@ -38,8 +38,6 @@ $totalUsuarios = $datos['rows'];
   <body>
 <?php
   require_once ('header.php');
-
-  
 ?>
   <main>
     <div id='main-content' class='container-fluid'>
@@ -59,8 +57,8 @@ $totalUsuarios = $datos['rows'];
             <td class="fondoVerde"><input type="radio" name="criterio"  checked="checked" title="Elegir el origen a consultar. Seleccionar si se quiere buscar por NODO." value="nodo"></td>
             <th>Nodo:</th>  
             <td colspan="3">
-              <select name="nodo" id="nodo" title="Seleccione por favor el nodo del cual consultar.">
-                <option value="nada" nombreCorto="nada">--- Seleccionar NODO ---</option>
+              <select name="nodo" id="nodo" tabindex="1" style="width: 100%" title="Seleccione por favor el nodo del cual consultar.">
+                <option value="todos" nombreCorto="todos">--- TODOS LOS NODOS ---</option>
                 <?php
                 foreach ($localidades as $i => $valor){
                   $loc = $localidades[$i]['localidad'];
@@ -75,7 +73,7 @@ $totalUsuarios = $datos['rows'];
           <tr>
             <td class="fondoVerde"><input type="radio" name="criterio" title="Elegir el origen a consultar. Seleccionar si se quiere buscar por ARCHIVO." value="file"></td>
             <th>Archivo</th>
-            <td colspan="3"><input type="text" title="Elegir el archivo a consultar." name="fileSearch" id="fileSearch"></td>
+            <td colspan="3"><input type="text" tabindex="2" placeholder="Elegir archivo" title="Elegir el archivo a consultar." name="fileSearch" id="fileSearch" class="agrandar" size="9" onkeyup="showHint(this.value, '#fileSearch', '')"></td>
           </tr>
           <tr>
             <th colspan="5" class="subTituloTabla1">FECHA</th>
@@ -86,11 +84,11 @@ $totalUsuarios = $datos['rows'];
             </td>
             <th>Entre:</th>
             <td>
-              <input type="date" name="inicio" id="inicio" title="Elegir la fecha de inicio. Sólo si se optó por una consulta por fechas." tabindex="6" style="width:100%; text-align: center" min="2019-08-01">
+              <input type="date" name="inicio" id="inicio" tabindex="3" title="Elegir la fecha de inicio. Sólo si se optó por una consulta por fechas." tabindex="6" style="width:100%; text-align: center" min="2019-08-01">
             </td>
             <td>y:</td>
             <td>
-              <input type="date" name="fin" id="fin" title="Elegir la fecha de finalización. Sólo si se optó por una consulta por fechas." tabindex="7" style="width:100%; text-align: center" min="2019-08-01">
+              <input type="date" name="fin" id="fin" tabindex="4" title="Elegir la fecha de finalización. Sólo si se optó por una consulta por fechas." tabindex="7" style="width:100%; text-align: center" min="2019-08-01">
             </td>
           </tr>
           <tr>
@@ -99,7 +97,7 @@ $totalUsuarios = $datos['rows'];
             </td>
             <th>Mes:</th>
             <td>
-              <select id="mes" name="mes" title="Elegir el mes a buscar. Sólo si se optó por una consulta por mes." tabindex="8" style="width:100%">
+              <select id="mes" name="mes" tabindex="5" title="Elegir el mes a buscar. Sólo si se optó por una consulta por mes." tabindex="8" style="width:100%">
                 <option value="todos" selected="yes">--TODOS--</option>
                 <option value="01">Enero</option>
                 <option value="02">Febrero</option>
@@ -117,7 +115,7 @@ $totalUsuarios = $datos['rows'];
             </td>
             <th>Año:</th>
             <td>
-              <select id="año" name="año" title="Elegir el año. Sólo si se optó por una consulta por mes y/o año." tabindex="9" style="width:100%">
+              <select id="año" name="año" tabindex="6" title="Elegir el año. Sólo si se optó por una consulta por mes y/o año." tabindex="9" style="width:100%">
                 <option value="2019" selected="yes">2019</option>
                 <option value="2020">2020</option>
                 <option value="2021">2021</option>
@@ -140,12 +138,12 @@ $totalUsuarios = $datos['rows'];
           <tr>
             <th colspan="2">Alarma:</th>  
             <td colspan="3">
-              <select name="alarma" id="alarma" title="Elegir el tipo de alarma.">
+              <select name="alarma" id="alarma" tabindex="7" title="Elegir el tipo de alarma.">
                 <option value="todas">--- TODAS ---</option>
-                <option value="cr" title="Alarma CRITICAL">CR</option>
-                <option value="wr" title="Alarma WARNING">WR</option>  
-                <option value="mj" title="Alarma MAJOR">MJ</option>
-                <option value="mn" title="Alarma MINOR">MN</option>
+                <option value="CR" title="Alarma CRITICAL">CR</option>
+                <option value="WR" title="Alarma WARNING">WR</option>  
+                <option value="MJ" title="Alarma MAJOR">MJ</option>
+                <option value="MN" title="Alarma MINOR">MN</option>
               </select>
             </td> 
           </tr>
@@ -168,7 +166,7 @@ $totalUsuarios = $datos['rows'];
           <tr>
             <th colspan="2">Usuario:</th>  
             <td colspan="3">
-              <select name="usuarios" id="usuarios" title="Elegir el usuario.">
+              <select name="usuarios" id="usuarios" tabindex="8" title="Elegir el usuario.">
                 <option value="todos">--- TODOS ---</option>
                 <?php
                 foreach ($usuarios as $i => $valor1){
@@ -181,23 +179,25 @@ $totalUsuarios = $datos['rows'];
               </select>
             </td> 
           </tr>
-          <tr>
+<!--          <tr>
             <th colspan="2">Equipo:</th>  
             <td colspan="3">
-              <select name="equipo" id="equipo" title="Elegir el tipo de equipo.">
+              <select name="equipo" id="equipo" tabindex="9" title="Elegir el tipo de equipo.">
                 <option value="todas">--- TODOS ---</option>
                 <option value="pss32" title="PSS 32">PSS 32</option>
                 <option value="ocs36" title="OCS 36">OCS 36</option>  
                 <option value="ocs64" title="OCS 64">OCS 64</option>
               </select>
             </td> 
-          </tr>
+          </tr>-->
           <tr>
             <td colspan="5" class="pieTabla">
-              <input type="button" class="btn btn-success" name="buscar" id="buscar" title="Ejecutar la consulta" tabindex="16" value="Consultar" align="center">
+              <input type="button" class="btn btn-success" tabindex="10" name="buscar" id="buscar" title="Ejecutar la consulta" tabindex="16" value="Consultar" align="center">
             </td>
           </tr>
         </table>
+        <input type="hidden" name="query" id="query" value="">
+        <input type="hidden" name="mensaje" id="mensaje" value="">
       </form> 
       
     <?php

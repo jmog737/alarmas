@@ -50,7 +50,9 @@ function hacerSelect($query, $log, $paramSelect = false){
     }
     escribirLog($guardar);
   }
-  return $datos;
+
+  $json = json_encode($datos);
+  return $json;
 }
 
 function hacerUpdate($queryInsert, $log, $paramUpdate = false){

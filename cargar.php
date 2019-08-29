@@ -161,7 +161,7 @@ require_once ('data/pdo.php');
         if (!(isset($_SESSION['nodo']))){
           $queryUltimo = "select nodos.idnodo, nodos.localidad, alarmas.archivo from alarmas inner join nodos on nodos.idnodo=alarmas.nodo order by idalarma desc limit 1";
           $log = false;
-          $datosUltimo = hacerSelect($queryUltimo, $log);
+          $datosUltimo = json_decode(hacerSelect($queryUltimo, $log), true);
           $registro = $datosUltimo['resultado'][0];
           $_SESSION['nodo'] = $registro['localidad'];
           $_SESSION['idnodo'] = $registro['idnodo'];
@@ -187,7 +187,7 @@ require_once ('data/pdo.php');
           /// Serializo los parámetros para poder pasarlos en el post:
           $paramSerial = serialize($param);
           $log1 = false;
-          $datos = hacerSelect($consulta, $log1, $param);
+          $datos = json_decode(hacerSelect($consulta, $log1, $param), true);
           $totalFilas = $datos['rows'];
           
           /// Si hay datos los muestro:
@@ -293,9 +293,10 @@ require_once ('data/pdo.php');
                                     break;                  
                     case 'accion':  $j = $i - 1;
                                     $parAlCodif = "al=".base64_encode($idalarma);
+                                    $parOrigen = "&o=".base64_encode('cargar');
                                     $parKeysCodif = "&k=".base64_encode(serialize($keys));
                                                                         
-                                    $url = "editarAlarma.php?".$parAlCodif.$parKeysCodif;
+                                    $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parKeysCodif;
                                     $parCod = base64_encode($url);//echo "url: ".$url."<br>url encoded: ".$parCod."<br>";
                                     echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
                                     break;         

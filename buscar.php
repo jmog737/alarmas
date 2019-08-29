@@ -6,7 +6,7 @@ if(!isset($_SESSION))
 /**
 ******************************************************
 *  @file buscar.php
-*  @brief Archivo que se encarga de generar y ejecutar las consultas a la base de datos.
+*  @brief Archivo que se encarga de ejecutar y mostrar las consultas a la base de datos.
 *  @author Juan Martín Ortega
 *  @version 1.0
 *  @date Agosto 2019
@@ -21,176 +21,161 @@ require_once ('head.php');
 require_once ('data/config.php');
 require_once ('data/pdo.php');
 
-
-
+$mensaje = $_POST['mensaje'];
+$consulta = $_POST['query'];
+$log = false;
+$datos = json_decode(hacerSelect($consulta, $log), true);
+$totalFilas = $datos['rows'];
+          
 ?>
   <body>
 <?php
   require_once ('header.php');
-
-  
 ?>
   <main>
     <div id='main-content' class='container-fluid'>
       <br>  
-      <h2>Consultas hist&oacute;ricas:</h2>
+      <h2>Resultado de la consulta:</h2>
+      <h3><?php echo $mensaje." (Total: ".$totalFilas.")" ?></h3>
+      <br>
+      <?php
+      /// Si hay datos los muestro:
+      if ($totalFilas > 0){
+        require_once('data/camposAlarmas.php');
+        
+        echo "<form id='frmResultado' name='frmResultado' method='post' target='_blank' action='exportar.php'>";
+        /// Comienzo tabla para mostrar la consulta:
+        echo "<table class='tabla2'>";
+        echo "<caption>Tabla con el resultado de la consulta</caption>";
+        $i = 1;
+        $totalCamposMostrar = 1;
 
-      <form method="POST" name='frmConsultas' id='frmConsultas' action="buscar.php">
-        <table id="consultas" name="consultas" class="tabla2">
-        <caption>Formulario para hacer consultas hist&oacute;ricas a la base de datos.</caption>
-          <tr>
-            <th colspan="5" class="centrado tituloTabla">CONSULTAS</th>
-          </tr>
-          <tr>
-            <th colspan="5" class="subTituloTabla1">FUENTE</th>
-          </tr>
-          <tr>
-            <td class="fondoVerde"><input type="radio" name="criterio"  checked="checked" title="Elegir el origen a consultar. Seleccionar si se quiere buscar por NODO." value="nodo"></td>
-            <th>Nodo:</th>  
-            <td colspan="3">
-              <select name="nodo" id="nodo" title="Seleccione por favor el nodo del cual consultar.">
-                <option value="nada" nombreCorto="nada">--- Seleccionar NODO ---</option>
-                <?php
-                foreach ($localidades as $i => $valor){
-                  $loc = $localidades[$i]['localidad'];
-                  $nombreCorto = $localidades[$i]['nombre'];
-                  $idnodo = $localidades[$i]['idnodo'];
-                  echo "<option value='".$loc."' nombreCorto='".$nombreCorto."' idnodo=".$idnodo.">".$nombreCorto." - ".$loc."</option>";
-                }
-                ?>
-              </select>
-            </td> 
-          </tr>
-          <tr>
-            <td class="fondoVerde"><input type="radio" name="criterio" title="Elegir el origen a consultar. Seleccionar si se quiere buscar por ARCHIVO." value="file"></td>
-            <th>Archivo</th>
-            <td colspan="3"><input type="text" title="Elegir el archivo a consultar." name="fileSearch" id="fileSearch"></td>
-          </tr>
-          <tr>
-            <th colspan="5" class="subTituloTabla1">FECHA</th>
-          </tr>
-          <tr>
-            <td class="fondoNaranja">
-              <input type="radio" name="criterioFecha" title="Elegir el período a buscar. Seleccionar si se quiere buscar por fechas." value="intervalo">
-            </td>
-            <th>Entre:</th>
-            <td>
-              <input type="date" name="inicio" id="inicio" title="Elegir la fecha de inicio. Sólo si se optó por una consulta por fechas." tabindex="6" style="width:100%; text-align: center" min="2019-08-01">
-            </td>
-            <td>y:</td>
-            <td>
-              <input type="date" name="fin" id="fin" title="Elegir la fecha de finalización. Sólo si se optó por una consulta por fechas." tabindex="7" style="width:100%; text-align: center" min="2019-08-01">
-            </td>
-          </tr>
-          <tr>
-            <td class="fondoNaranja">
-              <input type="radio" name="criterioFecha" title="Elegir el período a buscar. Seleccionar si se quiere buscar por mes." value="mes">
-            </td>
-            <th>Mes:</th>
-            <td>
-              <select id="mes" name="mes" title="Elegir el mes a buscar. Sólo si se optó por una consulta por mes." tabindex="8" style="width:100%">
-                <option value="todos" selected="yes">--TODOS--</option>
-                <option value="01">Enero</option>
-                <option value="02">Febrero</option>
-                <option value="03">Marzo</option>
-                <option value="04">Abril</option>
-                <option value="05">Mayo</option>
-                <option value="06">Junio</option>
-                <option value="07">Julio</option>
-                <option value="08">Agosto</option>
-                <option value="09">Setiembre</option>
-                <option value="10">Octubre</option>
-                <option value="11">Noviembre</option>
-                <option value="12">Diciembre</option>
-              </select>
-            </td>
-            <th>Año:</th>
-            <td>
-              <select id="año" name="año" title="Elegir el año. Sólo si se optó por una consulta por mes y/o año." tabindex="9" style="width:100%">
-                <option value="2019" selected="yes">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td class="fondoNaranja">
-              <input type="radio" name="criterioFecha" title="Elegir el período a buscar. Seleccionar si se quieren TODOS los movimientos" value="todos" checked="checked">
-            </td>
-            <th>TODOS</th>
-          </tr>
-          <tr>
-            <th colspan="5" class="subTituloTabla1">FILTROS</th>
-          </tr>
-          <tr>
-            <th colspan="2">Alarma:</th>  
-            <td colspan="3">
-              <select name="alarma" id="alarma" title="Elegir el tipo de alarma.">
-                <option value="todas">--- TODAS ---</option>
-                <option value="cr" title="Alarma CRITICAL">CR</option>
-                <option value="wr" title="Alarma WARNING">WR</option>  
-                <option value="mj" title="Alarma MAJOR">MJ</option>
-                <option value="mn" title="Alarma MINOR">MN</option>
-              </select>
-            </td> 
-          </tr>
-<!--          <tr>
-            <th colspan="2">Condici&oacute;n:</th>  
-            <td colspan="3">
-              <select name="condicion" id="condicion" title="Elegir el tipo de condición.">
-                <option value="todas">--- TODAS ---</option>
-                //<?php
-//                foreach ($localidades as $i => $valor){
-//                  $loc = $localidades[$i]['localidad'];
-//                  $nombreCorto = $localidades[$i]['nombre'];
-//                  $idnodo = $localidades[$i]['idnodo'];
-//                  echo "<option value='".$loc."' nombreCorto='".$nombreCorto."' idnodo=".$idnodo.">".$nombreCorto." - ".$loc."</option>";
-//                }
-//                ?>
-              </select>
-            </td> 
-          </tr>-->
-          <tr>
-            <th colspan="2">Usuario:</th>  
-            <td colspan="3">
-              <select name="usuarios" id="usuarios" title="Elegir el usuario.">
-                <option value="todos">--- TODOS ---</option>
-                <?php
-                foreach ($usuarios as $i => $valor1){
-                  $apellidoUsuario = $usuarios[$i]['apellido'];
-                  $nombreUsuario = $usuarios[$i]['nombre'];
-                  $idusuario = $usuarios[$i]['idusuario'];
-                  echo "<option value='".$idusuario."'>".$nombreUsuario." ".$apellidoUsuario."</option>";
-                }
-                ?>
-              </select>
-            </td> 
-          </tr>
-          <tr>
-            <th colspan="2">Equipo:</th>  
-            <td colspan="3">
-              <select name="equipo" id="equipo" title="Elegir el tipo de equipo.">
-                <option value="todas">--- TODOS ---</option>
-                <option value="pss32" title="PSS 32">PSS 32</option>
-                <option value="ocs36" title="OCS 36">OCS 36</option>  
-                <option value="ocs64" title="OCS 64">OCS 64</option>
-              </select>
-            </td> 
-          </tr>
-          <tr>
-            <td colspan="5" class="pieTabla">
-              <input type="button" class="btn btn-success" name="buscar" id="buscar" title="Ejecutar la consulta" tabindex="16" value="Consultar" align="center">
-            </td>
-          </tr>
-        </table>
-      </form> 
+        /// Muestro el encabezado:
+        echo "<tr>";
+        foreach ($camposAlarmas as $key => $value) {   
+          if ($camposAlarmas[$key]['mostrarListado'] === 'si'){
+            $clase = '';
+            $totalCamposMostrar++;
+            if ($camposAlarmas[$key]['nombreDB'] === 'id'){
+              $clase = "class='tituloTablaIzquierdo'";
+            }
+            else {
+              if ($camposAlarmas[$key]['nombreDB'] === 'accion'){
+                $clase = "class='tituloTablaDerecho'";
+              }
+            }
+            echo "<th $clase>".$camposAlarmas[$key]['nombreMostrar']."</th>";
+          }
+        } /// Fin foreach camposAlarmas para encabezados
+        echo "</tr>";
+        /// Fin encabezados
+
+        $keys = array();
+        foreach ($datos['resultado'] as $key0 => $fila0 ) {
+          $idalarma0 = $fila0['idalarma'];
+          $keys[] = $idalarma0;
+        } /// Fin foreach datos para sacar los keys
+
+        /// Comienzo proceso de cada fila:
+        foreach ($datos['resultado'] as $key1 => $fila ) {
+
+          /// Extraigo tipo de alarma para poder resaltar en consecuencia:
+          $tipoAlarma = $fila['tipoAlarma'];
+          switch ($tipoAlarma) {
+            case 'CR': $clase = 'alCritica';
+                       break;
+            case 'MJ': $clase = 'alMajor';
+                       break;
+            case 'MN': $clase = 'alMinor';
+                       break;
+            case 'WR': $clase = 'alWarning';
+                       break;     
+            default: $clase = '';
+                     break;
+          } /// Fin switch tipoAlarma
+
+          echo "<tr class='".$clase."'>";
+
+          $idalarma = $fila['idalarma'];
+
+          foreach ($camposAlarmas as $key => $value) {   
+            if ($camposAlarmas[$key]['mostrarListado'] === 'si'){
+              $indice = $camposAlarmas[$key]['nombreDB'];
+
+              switch ($indice){
+                case 'id':  echo "<td>".$i."</td>";
+                            $i++;
+                            break;
+                case 'dia': $dia = $fila[$indice];
+                            $temp = explode('-', $dia);
+                            $diaMostrar = $temp[2]."/".$temp[1]."/".$temp[0];
+                            echo "<td>".$diaMostrar."</td>";         
+                            break;
+                case 'usuario': echo "<td></td>";
+                                break;           
+                case 'nodo':  echo "<td></td>";
+                              break;
+                case 'fechaCarga':  $dia1 = $fila[$indice];
+                                    $temp1 = explode('-', $dia1);
+                                    $diaMostrar1 = $temp1[2]."/".$temp1[1]."/".$temp1[0];
+                                    echo "<td>".$diaMostrar1."</td>";         
+                                    break;            
+                case 'causa': if ($fila['causa'] === ''){
+                                echo "<td>No Ingresada</td>";
+                              }
+                              else {
+                                echo "<td>".$fila['causa']."</td>";
+                              }
+                              break;
+                case 'solucion': if ($fila['solucion'] === ''){
+                                    echo "<td>No ingresada</td>";
+                                  }
+                                  else {
+                                    echo "<td>".$fila['solucion']."</td>";
+                                  }
+                                  break;
+                case 'estado':  if ($fila['estado'] === 'Sin procesar'){
+                                  $claseEstado = "sinProcesar";
+                                }
+                                else {
+                                  $claseEstado = 'procesada';
+                                }
+                                echo "<td name='estado' class='".$claseEstado."'>".$fila[$indice]."</td>";
+                                break;                  
+                case 'accion':  $j = $i - 1;
+                                $parAlCodif = "al=".base64_encode($idalarma);
+                                $parOrigen = "&o=".base64_encode('buscar');
+                                $parKeysCodif = "&k=".base64_encode(serialize($keys));
+
+                                $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parKeysCodif;
+                                echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
+                                break;         
+                default:  echo "<td>".$fila[$indice]."</td>";
+                          break;
+              } /// Fin switch indice      
+            } /// Fin if mostrarListado 
+          } /// Fin foreach camposAlarmas
+
+          echo "</tr>";
+        } /// Fin del procesamiento de las filas con datos
+
+        echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportar' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
+        echo "</table>";
+
+        echo "<input type='hidden' name='consulta' value='".$consulta."'>"
+          . "<input type='hidden' name='origen' value='buscar'>";
+
+        echo "</form>";
+      } /// Fin if totalFilas > 0
+      else {
+        echo "¡No hay registros a mostrar!<br>";
+      } /// Fin else totalFilas > 0
+      
+      
+      ?>
       
     <?php
-    $volver = "<br><a href='subirArchivo.php'>Volver a Inicio</a><br><br>";
+    $volver = "<br><a href='consultas.php'>Volver a Consultas</a><br><br>";
     echo $volver;
     ?>
     </div>      

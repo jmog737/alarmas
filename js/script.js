@@ -16,6 +16,102 @@ var duracionSesion = parseInt($("#duracionSesion").val(), 10);
 */
 
 /**
+ * 
+ * @param {String} str String con la cadena de texto a buscar como parte del archivo.
+ * @param {String} id String con el id del campo luego del cual se tienen que agregar los datos.
+ * @param {String} seleccionado String que indica, si es que es disitinto de nulo, el archivo seleccionado.
+ * \brief Función que muestra las sugerencias de los archivos disponibles.
+ */
+function showHint(str, id, seleccionado) {
+  if (str.length === 0) { 
+    //$("#hint").remove();
+    $("[name='hint']").remove();
+    $("#fileSearch").val("");
+    return;
+  } 
+  else {
+    var url = "data/getJSON.php";
+    var log = false;
+    var query = "select distinct archivo from alarmas where (alarmas.archivo like '%"+str+"%' or alarmas.fechaCarga like '%"+str+"%') order by alarmas.fechaCarga desc, alarmas.archivo asc";
+
+    if (seleccionado !== ''){
+      var archivosTemp = seleccionado.split(',');
+    }
+    $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
+      var sugerencias = request.resultado;
+      var totalSugerencias = parseInt(request.rows, 10);
+      $("[name='hint']").remove();
+      
+      var mostrar = '';
+      var unico = '';
+      if (totalSugerencias >= 1) {
+        if ((parseInt($("#productoGrafica").length, 10) > 0)||(parseInt($("#producto").length, 10) > 0)){
+          mostrar = '<select name="hint" id="hint" class="hint" size="15">';
+        }
+        else {
+          mostrar = '<select name="hint" id="hint" class="hint" multiple size="15">';
+        }
+        if (totalSugerencias > 1) {
+          mostrar += '<option value="NADA" name="NADA">--Seleccionar--</option>';
+        }
+        for (var i in sugerencias) {
+          if (totalSugerencias === 1){
+            unico = sugerencias[i]["archivo"];
+          }          
+          if (seleccionado !== ''){
+            var sel = "";
+//            for (var k in archivosTemp){
+//              var selEntero = parseInt(archivosTemp[k], 10);
+//              if (parseInt(sugerencias[i]["idprod"], 10) === selEntero) {
+//                sel = 'selected="yes"';
+//              }
+//            }
+          }
+         
+          var resaltarOption = 'class="fondoSelect"';
+          //mostrar += '<option value="'+sugerencias[i]["idprod"]+'" name="'+snapshot+'" stock='+sugerencias[i]["stock"]+' alarma='+sugerencias[i]["alarma"]+' '+sel+ '>[' + sugerencias[i]["entidad"]+'] '+sugerencias[i]["nombre_plastico"] + ' {' +bin+'} --'+ codigo_emsa +'--</option>';
+          mostrar += '<option value="'+sugerencias[i]["archivo"]+'"'+resaltarOption+'>' + sugerencias[i]["archivo"] + '</option>';
+        }
+        mostrar += '</select>';
+      }
+      else {
+        mostrar = '<p name="hint" value="">No se encontraron sugerencias!</p>';
+      }
+      $(id).after(mostrar);
+      
+      /// Agregado a pedido de Diego para que se abra el select automáticamente:
+      var length = parseInt($('#hint> option').length, 10);
+      if (length > 10) {
+        length = 10;
+      }
+      else {
+        length++;
+      }
+      if (length > totalSugerencias){
+        length = totalSugerencias + 2;
+      }
+      //open dropdown
+      $("#hint").attr('size',length);
+      
+      if (seleccionado !== ''){
+        $("#hint").focus();
+      }
+      else {
+        $("#fileSearch").focus();    
+      }
+      
+      if (totalSugerencias === 1){
+        ///Comentado por ahora pues Diego prefiere que NO salte de forma automática:
+        //$("#comentarios").focus();
+        $("#hint option[value='"+unico+"'] ").attr("selected", true);
+        //$("#cantidad").focus();
+      }      
+    });
+  }
+}
+/********** fin showHint(str, id, seleccionado) **********/
+
+/**
  * \brief Función que vacía los campos del form frmLogin. 
  *        Se hace para sobre escribir el autocompletado del navegador.
  */
@@ -225,29 +321,267 @@ function validarEditarAlarma(){
 }
 /********** fin validarEditarAlarma() **********/
 
+function validarFecha(rango, inicioObject, finObject, mesObject, añoObject){
+  var validado = true;
+  var inicio = inicioObject.val();
+  var fin = finObject.val();
+  var mes = mesObject.val();
+  var año = añoObject.val();
+  var hoy = new Date();
+  var diaHoy = hoy.getDate();
+  var mesHoy = hoy.getMonth()+1;
+  if (diaHoy < 10) 
+    {
+    diaHoy = '0'+diaHoy;
+  }                     
+  if (mesHoy < 10) 
+    {
+    mesHoy = '0'+mesHoy;
+  }
+  var hoyFecha = hoy.getFullYear()+'-'+mesHoy+'-'+diaHoy;
+  var hoyMostrar = diaHoy+'/'+mesHoy+'/'+hoy.getFullYear();
+  var hourTemp = hoy.getHours();
+  var minTemp = hoy.getMinutes();
+  var secTemp = hoy.getSeconds();
+  if (hourTemp < 10) 
+    {
+    hourTemp = '0'+hourTemp;
+  } 
+  if (minTemp < 10) 
+    {
+    minTemp = '0'+minTemp;
+  } 
+  if (secTemp < 10) 
+    {
+    secTemp = '0'+secTemp;
+  }
+  
+  var horaMostrar = hourTemp+':'+minTemp;
+  var mensajeFecha = '';
+  var rangoFecha = null;
+  var d1 = '';
+  var d2 = ''; 
+
+  switch (rango) {
+    case 'intervalo': ///Comienzo la validación de las fechas:  
+                      if ((inicio === '') && (fin === '')) 
+                        {
+                        alert('Debe seleccionar al menos una de las dos fechas. Por favor verifique!.');
+                        inicioObject.focus();
+                        validado = false;
+                        //return false;
+                      }
+                      else 
+                        {
+                        if (inicio === '') 
+                          {
+                          inicio = inicioObject.attr("min");
+                        }
+                        if ((fin === '') || (fin > hoyFecha))
+                          {
+                          fin = hoyFecha;
+                        }
+
+                        if (inicio>fin) 
+                          {
+                          alert('Error. La fecha inicial NO puede ser mayor que la fecha final. Por favor verifique.');
+                          validado = false;
+                          //return false;
+                        }
+                        else 
+                          {
+                          validado = true;  
+                          if (inicio === fin){
+                            var diaTemp = inicio.split('-');
+                            var diaMostrar = diaTemp[2]+"/"+diaTemp[1]+"/"+diaTemp[0];
+                            rangoFecha = "(dia ='"+inicio+"')";
+                            mensajeFecha = "del día: "+diaMostrar;
+                          }
+                          else {
+                            var inicioTemp = inicio.split('-');
+                            var inicioMostrar = inicioTemp[2]+"/"+inicioTemp[1]+"/"+inicioTemp[0];
+                            var finTemp = fin.split('-');
+                            var finMostrar = finTemp[2]+"/"+finTemp[1]+"/"+finTemp[0];
+                            rangoFecha = "(dia >='"+inicio+"') and (dia <='"+fin+"')";
+                            mensajeFecha = "entre las fechas: "+inicioMostrar+" y "+finMostrar;
+                          }
+                        }
+                      } /// FIN validación de las fechas intervalo.
+                      
+                      d1 = inicio;
+                      d2 = fin;
+                      break;
+    case 'mes': if (mes === 'todos') {
+                  inicio = año+"-01-01";
+                  fin = año+"-12-31";
+                  fin = hoyFecha;
+                  mensajeFecha = "del año "+año;
+                }
+                else {
+                  inicio = año+"-"+mes+"-01";
+                  var añoFin = parseInt(año, 10);
+                  var mesSiguiente = parseInt(mes, 10) + 1;
+                  if (mesSiguiente === 13) {
+                    mesSiguiente = 1;
+                    añoFin = parseInt(año, 10) + 1;
+                  }
+                  if (mesSiguiente < 10) 
+                    {
+                    mesSiguiente = '0'+mesSiguiente;
+                  }
+                  fin = añoFin+"-"+mesSiguiente+"-01";
+                  var mesMostrar = '';
+                  switch (mes) {
+                    case '01': mesMostrar = "Enero";
+                               break;
+                    case '02': mesMostrar = "Febrero";
+                               break;
+                    case '03': mesMostrar = "Marzo";
+                               break;
+                    case '04': mesMostrar = "Abril";
+                               break;
+                    case '05': mesMostrar = "Mayo";
+                               break;
+                    case '06': mesMostrar = "Junio";
+                               break;
+                    case '07': mesMostrar = "Julio";
+                               break;
+                    case '08': mesMostrar = "Agosto";
+                               break;
+                    case '09': mesMostrar = "Setiembre";
+                               break;
+                    case '10': mesMostrar = "Octubre";
+                               break;
+                    case '11': mesMostrar = "Noviembre";
+                               break;
+                    case '12': mesMostrar = "Diciembre";
+                               break;
+                    default: break;         
+                  }
+                  mensajeFecha = "del mes de "+mesMostrar+" de "+año;
+                }
+                validado = true;
+                rangoFecha = "(dia >='"+inicio+"') and (dia <'"+fin+"')";
+                d1 = mes;
+                d2 = año;
+                break;
+    case 'todos': break;
+    default: break;
+  }
+  var datos = new Array();
+  datos['validado'] = validado;
+  datos['rango'] = rangoFecha;
+  datos['mensaje'] = mensajeFecha;
+  return datos;
+}
+
 /**
  * \brief Función que valida el form para cargar el archivo.
  */
 function validarBusqueda(){
   verificarSesion('', 's');
+  
   ///Recupero los parámetros de la consulta:
-  var radio = $('input:radio[name=criterio]:checked').val();
-  var nodos = new Array();
-  $("#nodo option:selected").each(function() {
-    nodos.push($(this).val());
-  });
+  var criterio = $('input:radio[name=criterio]:checked').val();
+  var nodo = $("#nodo option:selected").val();
+  var nodoNombre = $("#nodo option:selected").text();
+  var archivo = $("#hint option:selected").val();
   var radioFecha = $('input:radio[name=criterioFecha]:checked').val();
-  var inicio = $("#inicio").val();
-  var fin = $("#fin").val();
-  var mes = $("#mes").val();
-  var año = $("#año").val();
+  var inicio = $("#inicio");
+  var fin = $("#fin");
+  var mes = $("#mes");
+  var año = $("#año");
   var tipoAlarma = $("#alarma").find('option:selected').val( );
-  var equipo = $("#equipo").find('option:selected').val( );
-  var usuarios = new Array();
-  $("#usuarios option:selected").each(function() {
-    usuarios.push($(this).val());
-  });
-  alert('criterio: '+radio+'\nnodo: '+nodos+'\nfecha: '+radioFecha+'\ninicio: '+inicio+' - fin: '+fin+'\nmes: '+mes+' - año: '+año+'\nalarma: '+tipoAlarma+'\nequipo: '+equipo+'\nusuario: '+usuarios);
+  var usuario = $("#usuarios option:selected").val();
+  var usuarioNombre = $("#usuarios option:selected").text();
+
+  if (criterio === 'nodo'){
+    if (nodo === 'nada'){
+      alert('Se debe seleccionar un nodo.\nPor favor verifique!.');
+      $("#nodo").focus();
+      return false;
+    }
+  }
+  else {
+    if ((archivo === '')||(archivo === undefined)){
+      alert('Se debe seleccionar un archivo.\nPor favor verifique!.');
+      $("#hint").focus();
+      return false;
+    }
+  }
+  
+  var mensaje = 'Alarmas';
+  
+  var resultado= validarFecha(radioFecha, inicio, fin, mes, año);
+  var validado = resultado['validado'];
+  var rangoFecha = resultado['rango'];
+  var mensajeFecha = resultado['mensaje'];
+  
+  if (validado){
+    var query = "select * from alarmas ";
+    
+    if ((criterio === 'nodo')&&(nodo !== 'todos')){
+      query += "where nodo="+nodo; 
+      mensaje += " del nodo "+nodoNombre;
+    }
+    else {
+      //mensaje += "de todos los nodos";
+    }
+    if (criterio === 'file') {
+      query += "where archivo='"+archivo+"'";
+      mensaje += " del archivo "+archivo;
+    }
+    
+    if (rangoFecha !== null){
+      if ((criterio === 'nodo')&&(nodo === 'todos')){
+        query += "where ";
+      }
+      else {
+        query += " and ";
+      }
+      query += rangoFecha;
+      if (mensajeFecha !== ''){
+        mensaje += " "+mensajeFecha;
+      }
+    }
+    
+    if (tipoAlarma !== 'todas'){
+      if ((criterio === 'nodo')&&(nodo === 'todos')&&(rangoFecha === null)){
+        query += "where ";
+      }
+      else {
+        query += " and ";
+      }
+      query += "tipoAlarma='"+tipoAlarma+"'";
+      mensaje += " del tipo "+tipoAlarma;
+    }
+    else {
+      //mensaje += " de todos los tipos";
+    }
+    
+    if (usuario !== 'todos'){
+      if ((criterio === 'nodo')&&(nodo === 'todos')&&(rangoFecha === null)&&(tipoAlarma === 'todas')){
+        query += "where ";
+      }
+      else {
+        query += " and ";
+      }
+      query += "usuario="+usuario;
+      mensaje += " del usuario "+usuarioNombre;
+    }
+    else {
+      //mensaje += " de todos los usuarios";
+    }
+    if (mensaje === 'Alarmas'){
+      mensaje = "Todas las alarmas";
+    }
+    $("#query").val(query);
+    $("#mensaje").val(mensaje);
+    $("#frmConsultas").submit();
+  }
+  else {
+    return false;  
+  }
 }
 /********** fin validarBusqueda() **********/
 
@@ -430,6 +764,54 @@ $(document).on("click", "#buscar", function(){
   verificarSesion('', 's');
   validarBusqueda();
 });
+
+///Disparar funcion al cambiar el elemento elegido en el select con las sugerencias para los archivos.
+///Cambia el color de fondo para resaltarlo
+$(document).on("change focusin", "#hint", function (){
+  //verificarSesion('', 's');
+  /// Selecciono radio button correspondiente:
+  $(this).parent().prev().prev().children().prop("checked", true);
+});
+/********** fin on("change focusin", "#hint", function () **********/
+
+///Disparar función al cambiar la entidad elegida en el select NODO. 
+///Lo que hace es seleccionar automáticamente el radio button correspondiente.
+$(document).on("change", "[name=nodo]", function (){
+  $(this).parent().prev().prev().children().prop("checked", true);
+});
+/********** fin on("change", "[name=nodo]", function () **********/
+
+///Disparar función al cambiar el mes elegido como parámetro para la búsqueda.
+///Si se eligió algún mes quiere decir que la búsqueda es por mes/año 
+///Lo que hace es seleccionar automáticamente el radio button correspondiente.
+$(document).on("change", "#mes", function (){
+  $(this).parent().prev().prev().children().prop("checked", true);
+});
+/********** fin on("change", "#mes", function () **********/
+
+///Disparar función al cambiar el año elegido como parámetro para la búsqueda.
+///Si se eligió algún año quiere decir que la búsqueda por mes/año 
+///Lo que hace es seleccionar automáticamente el radio button correspondiente.
+$(document).on("change", "#año", function (){
+  $(this).parent().prev().prev().prev().prev().children().prop("checked", true);
+});
+/********** fin on("change", "#año", function () **********/
+
+///Disparar función al cambiar el mes elegido como parámetro para la búsqueda.
+///Si se eligió alguna fecha de inicio quiere decir que la búsqueda es por rango (inicio/fin) 
+///Lo que hace es seleccionar automáticamente el radio button correspondiente.
+$(document).on("change", "#inicio", function (){
+  $(this).parent().prev().prev().children().prop("checked", true);
+});
+/********** fin on("change", "#inicio", function () **********/
+
+///Disparar función al cambiar el mes elegido como parámetro para la búsqueda.
+///Si se eligió alguna fecha de fin quiere decir que la búsqueda es por rango (inicio/fin) 
+///Lo que hace es seleccionar automáticamente el radio button correspondiente.
+$(document).on("change", "#fin", function (){
+  $(this).parent().prev().prev().prev().prev().children().prop("checked", true);
+});
+/********** fin on("change", "#fin", function () **********/
 
 /*****************************************************************************************************************************
 /// Fin de las funciones para el form de CONSULTAS.

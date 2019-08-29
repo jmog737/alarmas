@@ -24,9 +24,13 @@ require_once ('head.php');
   require_once ('header.php');
   require_once('data/pdo.php');
   require_once('data/camposAlarmas.php');
-  
+  echo "m,.d.s";
   if (isset($_GET['al'])){
     $idalarma = base64_decode($_GET['al']);
+  }
+  if (isset($_GET['o'])){
+    $origen = base64_decode($_GET['o']);
+    $origenCodif = base64_encode($origen);
   }
   if (isset($_GET['k'])){
     $keys = unserialize(base64_decode($_GET['k']));
@@ -61,7 +65,7 @@ require_once ('head.php');
     }
   }
 
-  //echo "idalarma: ".$idalarma."<br>keys: <br>";var_dump($keys);
+  echo "idalarma: ".$idalarma."<br>keys: <br>";var_dump($keys);echo"<br>origen: ".$origen."<br>primero: $primero<br>anterior: $anterior<br>siguiente: $siguiente<br>ultimo: $ultimo<br>";
   
   /// Chequeo si vengo del listado de alarmas para editarla, o de la propia página luego de la edición:
   if (isset($_POST['btnEditarAlarma'])){
@@ -70,7 +74,7 @@ require_once ('head.php');
     $query = "update alarmas set causa=?, solucion=?, estado='Procesada' where idalarma=?";
     $paramUpdate = array($causa, $solucion, $idalarma);
     $log = true;
-    $resultadoInsert = hacerUpdate($query, $log, $paramUpdate);
+    $resultadoInsert = json_decode(hacerUpdate($query, $log, $paramUpdate), true);
     if ($resultadoInsert === 'ERROR'){
       $mensaje = "Hubo un problema al actualizar los datos.<br>Por favor verifique.";
     }
@@ -84,7 +88,7 @@ require_once ('head.php');
   $queryParam = "select * from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
   $param1 = array($idalarma);
   $log = false;
-  $datosParam = hacerSelect($queryParam, $log, $param1);
+  $datosParam = json_decode(hacerSelect($queryParam, $log, $param1), true);
   $datosMostrar = $datosParam['resultado'][0];
   
   $usuarioMostrar = $_SESSION['usuarioReal'];
@@ -226,16 +230,21 @@ require_once ('head.php');
     <div id="navegacion" class="pagination">
     <?php
       echo "<ul>";
-      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la primer alarma' href='editarAlarma.php?al=".$primero."&k=".$keysCodif."'>|<  </a></li>";
-      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la alarma anterior' href='editarAlarma.php?al=".$anterior."&k=".$keysCodif."'>  <<  </a></li>";
-      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la siguiente alarma' href='editarAlarma.php?al=".$siguiente."&k=".$keysCodif."'>  >>  </a></li>";
-      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la última alarma' href='editarAlarma.php?al=".$ultimo."&k=".$keysCodif."'>  >|</a></li>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la primer alarma' href='editarAlarma.php?al=".$primero."&o=".$origenCodif."&k=".$keysCodif."'>|<  </a></li>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la alarma anterior' href='editarAlarma.php?al=".$anterior."&o=".$origenCodif."&k=".$keysCodif."'>  <<  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la siguiente alarma' href='editarAlarma.php?al=".$siguiente."&o=".$origenCodif."&k=".$keysCodif."'>  >>  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la última alarma' href='editarAlarma.php?al=".$ultimo."&o=".$origenCodif."&k=".$keysCodif."'>  >|</a></li>";
       echo "</ul>";
     ?>
     </div>
     <?php
-      $volver = "<br><a href='cargar.php?i=1'>Volver a las alarmas</a><br><br>";
-      echo $volver;
+//      if ($origen === "cargar"){
+//        $volver = "<br><a href='cargar.php?i=1'>Volver a las alarmas</a><br><br>";
+//      }
+//      else {
+//        $volver = "<br><a href='buscar.php?'>Volver a consultas</a><br><br>";
+//      }
+//      echo $volver;
     ?>
   </div>      
 </main>      

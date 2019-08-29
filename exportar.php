@@ -83,7 +83,7 @@ if($vida_session < DURACION ) {
     
     if ($seguir){
       $log = false;
-      $datos = hacerSelect($consulta, $log, $param);
+      $datos = json_decode(hacerSelect($consulta, $log, $param), true);
       $registros = $datos['resultado'];
       $totalFilas = $datos['rows'];
       

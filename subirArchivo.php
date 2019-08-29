@@ -34,7 +34,7 @@ require_once ('head.php');
   
   require_once ('data/pdo.php');
   $log = false;
-  $datos = hacerSelect($query, $log);
+  $datos = json_decode(hacerSelect($query, $log),  true);
   $localidades = $datos['resultado'];
   $totalLocalidades = $datos['rows'];
 ?>
