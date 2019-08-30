@@ -15,7 +15,7 @@ if(!isset($_SESSION))
 
 /// Defino array con todos los campos presentes en la base de datos, su nombre a mostrar en pantalla, el orden a mostrar y si se
 /// tienen que mostrar o no.
-$camposAlarmas[] = ['nombreDB'=>'id','nombreMostrar'=>'Id', 'orden'=>0, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'tam'=>0.6, 'especial'=>'no', 'formato'=>''];///id
+$camposAlarmas[] = ['nombreDB'=>'id','nombreMostrar'=>'Id', 'orden'=>0, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'tam'=>0.8, 'especial'=>'no', 'formato'=>''];///id
 $camposAlarmas[] = ['nombreDB'=>'idalarma','nombreMostrar'=>'Id Alarma', 'orden'=>1, 'mostrarListado'=>'no', 'mostrarEditar'=>'no', 'mostrarReporte'=>'no', 'tam'=>1, 'especial'=>'no', 'formato'=>''];///idalarma
 $camposAlarmas[] = ['nombreDB'=>'dia','nombreMostrar'=>'Fecha', 'orden'=>2, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'tam'=>2, 'especial'=>'no', 'formato'=>''];///fecha
 $camposAlarmas[] = ['nombreDB'=>'hora','nombreMostrar'=>'Hora', 'orden'=>3, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'tam'=>1.7, 'especial'=>'no', 'formato'=>''];///hora

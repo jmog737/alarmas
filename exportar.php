@@ -59,13 +59,13 @@ if($vida_session < DURACION ) {
   $seguir = true;
   
   if (isset($_POST)){
-    if (isset($_POST['origen'])){
-      $origen = $_POST['origen'];
-    }
-    else {
-      $seguir = false;
-      echo "Hubo un error. Por favor verifique!.";
-    }
+//    if (isset($_POST['origen'])){
+//      $origen = $_POST['origen'];
+//    }
+//    else {
+//      $seguir = false;
+//      echo "Hubo un error. Por favor verifique!.";
+//    }
     if (isset($_POST['param'])){
       $param = unserialize($_POST['param']);
     }
@@ -117,11 +117,11 @@ if($vida_session < DURACION ) {
         /// ******************************************************* FIN PARAMETROS GENERALES ***********************************************************
 
         $nombreReporte = 'alarmas';
-        $tituloReporte = "Alarmas del nodo en: ".$_SESSION['nodo']." (".$_SESSION['archivo'].")";
+        $tituloReporte = $_POST['titulo'];
         $tituloTabla = "Alarmas";
         
         //*********************************************** Adaptación nombre del nodo sin tildes ni caracteres especiales *******************************
-        $nodo = $_SESSION['nodo'];  
+        $nodo = $_POST['nodo'];  
         /// Acomodo el nombre del nodo para NO tener problemas con el nombre del archivo:
         
         /////Se define el tamaño máximo aceptable para el nombre teniendo en cuenta que el excel admite un máximo de 31 caracteres, y que además, 

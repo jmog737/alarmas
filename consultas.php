@@ -64,7 +64,7 @@ $totalUsuarios = $datos['rows'];
                   $loc = $localidades[$i]['localidad'];
                   $nombreCorto = $localidades[$i]['nombre'];
                   $idnodo = $localidades[$i]['idnodo'];
-                  echo "<option value='".$idnodo."' nombreCorto='".$nombreCorto."'>".$nombreCorto." - ".$loc."</option>";
+                  echo "<option value='".$idnodo."' nombreCorto='".$nombreCorto."'>".$loc." [".$nombreCorto."]</option>";
                 }
                 ?>
               </select>
@@ -197,11 +197,12 @@ $totalUsuarios = $datos['rows'];
           </tr>
         </table>
         <input type="hidden" name="query" id="query" value="">
+        <input type="hidden" name="param" id="param" value="">
         <input type="hidden" name="mensaje" id="mensaje" value="">
       </form> 
       
     <?php
-    $volver = "<br><a href='subirArchivo.php'>Volver a Inicio</a><br><br>";
+    $volver = "<a href='subirArchivo.php'>Volver a Inicio</a><br><br>";
     echo $volver;
     ?>
     </div>      

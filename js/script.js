@@ -471,6 +471,8 @@ function validarFecha(rango, inicioObject, finObject, mesObject, añoObject){
   var datos = new Array();
   datos['validado'] = validado;
   datos['rango'] = rangoFecha;
+  datos['inicio'] = inicio;
+  datos['fin'] = fin;
   datos['mensaje'] = mensajeFecha;
   return datos;
 }
@@ -515,21 +517,25 @@ function validarBusqueda(){
   var resultado= validarFecha(radioFecha, inicio, fin, mes, año);
   var validado = resultado['validado'];
   var rangoFecha = resultado['rango'];
+  var inicioValidado = resultado['inicio'];
+  var finValidado = resultado['fin'];
   var mensajeFecha = resultado['mensaje'];
   
   if (validado){
     var query = "select * from alarmas ";
-    
+    var param = '';
     if ((criterio === 'nodo')&&(nodo !== 'todos')){
-      query += "where nodo="+nodo; 
+      query += "where nodo=?";
+      param += nodo;
       mensaje += " del nodo "+nodoNombre;
     }
-    else {
-      //mensaje += "de todos los nodos";
-    }
     if (criterio === 'file') {
-      query += "where archivo='"+archivo+"'";
+      query += "where archivo=?";
+      param += archivo;
       mensaje += " del archivo "+archivo;
+    }
+    if (param === ''){
+      param = "TODOS";
     }
     
     if (rangoFecha !== null){
@@ -539,10 +545,27 @@ function validarBusqueda(){
       else {
         query += " and ";
       }
-      query += rangoFecha;
+      //query += rangoFecha;
+      if (radioFecha === 'mes'){
+        query += "(dia >= ?) and (dia < ?)";
+        param += "&"+inicioValidado+"&"+finValidado;
+      }
+      else {
+        if (inicioValidado === finValidado){
+          query += "dia=?";
+          param += "&"+inicioValidado+"&FIN";
+        }
+        else {
+          query += "(dia >= ?) and (dia <= ?)";
+          param += "&"+inicioValidado+"&"+finValidado;
+        }
+      }
       if (mensajeFecha !== ''){
         mensaje += " "+mensajeFecha;
       }
+    }
+    else {
+      param += "&INICIO&FIN";
     }
     
     if (tipoAlarma !== 'todas'){
@@ -552,11 +575,14 @@ function validarBusqueda(){
       else {
         query += " and ";
       }
-      query += "tipoAlarma='"+tipoAlarma+"'";
+      //query += "tipoAlarma='"+tipoAlarma+"'";
+      query += "tipoAlarma=?";
+      param += "&"+tipoAlarma;
       mensaje += " del tipo "+tipoAlarma;
     }
     else {
       //mensaje += " de todos los tipos";
+      param += "&TIPO";
     }
     
     if (usuario !== 'todos'){
@@ -566,16 +592,20 @@ function validarBusqueda(){
       else {
         query += " and ";
       }
-      query += "usuario="+usuario;
+      //query += "usuario="+usuario;
+      query += "usuario=?";
+      param += "&"+usuario;
       mensaje += " del usuario "+usuarioNombre;
     }
     else {
       //mensaje += " de todos los usuarios";
+      param += "&USUARIO";
     }
     if (mensaje === 'Alarmas'){
       mensaje = "Todas las alarmas";
     }
     $("#query").val(query);
+    $("#param").val(param);
     $("#mensaje").val(mensaje);
     $("#frmConsultas").submit();
   }
@@ -895,7 +925,7 @@ $(document).on("click", "#btnCargar", function() {
 */
 
 ///Disparar función al hacer SUBMIT del form para exportar los datos.
-$(document).on("click", "#btnExportar", function() {
+$(document).on("click", "[name=btnExportar]", function() {
   /// Por el momento comento la validación para casos que se quiera estén todas las alarmas procesadas:
 //  $('td[name=estado]').each(function(){
 //    if ($(this).text() === 'Sin procesar'){
@@ -904,7 +934,13 @@ $(document).on("click", "#btnExportar", function() {
 //      return false;
 //    }
 //  });
-  $('#frmCargar').submit();
+  var id = $(this).attr("id");
+  if (id === 'btnExportarCargar'){
+    $('#frmCargar').submit();
+  }
+  else {
+    $('#frmResultado').submit();
+  }
 });
 /********** fin on("click", "#btnExportar", function() *********/
 

@@ -19,9 +19,6 @@ function hacerSelect($query, $log, $paramSelect = false){
   else {
     $sth->execute();
   }
-  
-  //$stmt = $pdo->query($query);
-  //$stmt = $pdo->query($query);
 
   $queryTemp = explode('from', $query);
   $query1 = "select count(*) from ".$queryTemp[1];
@@ -34,9 +31,7 @@ function hacerSelect($query, $log, $paramSelect = false){
   }
 
   $datos = array();
-  //$datos['rows'] = $pdo->query($query1)->fetchColumn();
   $datos['rows'] = $sth1->fetchColumn();
-  //while (($fila = $stmt->fetch(PDO::FETCH_ASSOC)) != NULL) { 
   while (($fila = $sth->fetch(PDO::FETCH_ASSOC)) != NULL) {  
     $datos['resultado'][] = $fila;
   }
@@ -66,8 +61,6 @@ function hacerUpdate($queryInsert, $log, $paramUpdate = false){
     $result = $sth->execute();
   }
   
-  //$result = $pdo->query($queryInsert);
-
   if ($result !== FALSE) {
     $dato = "OK";
   }

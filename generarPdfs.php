@@ -57,7 +57,7 @@ class PDF extends PDF_MC_Table
     $this->Cell($anchoTitle, $nuevoAlto-3, strtoupper(utf8_decode($tituloHeader)), 0, 0, 'C', false);
     
     $this->setY($yLogo+1);
-    $xFecha = $nuevoAncho+$anchoTitle+$xLogo;
+    $xFecha = $nuevoAncho+$anchoTitle+$xLogo-1;
     $this->setX($xFecha);
     
     $this->SetFont('Arial');

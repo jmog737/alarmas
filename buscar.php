@@ -21,10 +21,55 @@ require_once ('head.php');
 require_once ('data/config.php');
 require_once ('data/pdo.php');
 
+/// Recupero los parámetros pasados:
 $mensaje = $_POST['mensaje'];
 $consulta = $_POST['query'];
+/// Parámetros asociados a la consulta:
+$param = $_POST['param'];
+$paramArray = explode("&", $param);
+$source = $paramArray[0];
+$inicio = $paramArray[1];
+$fin = $paramArray[2];
+$tipo = $paramArray[3];
+$user = $paramArray[4];
+
 $log = false;
-$datos = json_decode(hacerSelect($consulta, $log), true);
+/// Armo array con los parámetros según corresponda acorde a la consulta:
+$parametros = array();
+if ($source !== 'TODOS'){
+  $parametros[] = $source;
+  $consultaNodo = "select localidad from nodos where idnodo=?";
+  $paramNodo = array($source);
+  $datosNodo = json_decode(hacerSelect($consultaNodo, $log, $paramNodo), true);
+  $nombreNodo = $datosNodo['resultado'][0]['localidad'];
+}
+else {
+  $nombreNodo = 'TODOS';
+}
+if ($fin === 'FIN'){
+  if ($inicio !== 'INICIO'){
+    $parametros[] = $inicio;
+  }
+}
+else {
+  $parametros[] = $inicio;
+  $parametros[] = $fin;
+}
+if ($tipo !== 'TIPO'){
+  $parametros[] = $tipo;
+}
+if ($user !== 'USUARIO'){
+  $parametros[] = $user;
+}
+
+/// Mando o no el array con los parámetros según la consulta:
+//if (count($parametros) === 0){
+//  $datos = json_decode(hacerSelect($consulta, $log), true);
+//}
+//else {
+$datos = json_decode(hacerSelect($consulta, $log, $parametros), true);
+//}
+
 $totalFilas = $datos['rows'];
           
 ?>
@@ -36,7 +81,7 @@ $totalFilas = $datos['rows'];
     <div id='main-content' class='container-fluid'>
       <br>  
       <h2>Resultado de la consulta:</h2>
-      <h3><?php echo $mensaje." (Total: ".$totalFilas.")" ?></h3>
+      <h3><?php $mensaje .= " (Total: ".$totalFilas.")"; echo $mensaje ?></h3>
       <br>
       <?php
       /// Si hay datos los muestro:
@@ -145,9 +190,11 @@ $totalFilas = $datos['rows'];
                 case 'accion':  $j = $i - 1;
                                 $parAlCodif = "al=".base64_encode($idalarma);
                                 $parOrigen = "&o=".base64_encode('buscar');
-                                $parKeysCodif = "&k=".base64_encode(serialize($keys));
+                                //$parKeysCodif = "&k=".base64_encode(serialize($keys));
+                                $parConsulta = "&c=".base64_encode($consulta);
+                                $parParam = "&p=".base64_encode(serialize($parametros));
 
-                                $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parKeysCodif;
+                                $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parConsulta.$parParam;
                                 echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
                                 break;         
                 default:  echo "<td>".$fila[$indice]."</td>";
@@ -159,23 +206,26 @@ $totalFilas = $datos['rows'];
           echo "</tr>";
         } /// Fin del procesamiento de las filas con datos
 
-        echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportar' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
+        echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarBuscar' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
         echo "</table>";
 
-        echo "<input type='hidden' name='consulta' value='".$consulta."'>"
-          . "<input type='hidden' name='origen' value='buscar'>";
-
+        echo "<input type='hidden' name='consulta' value='".$consulta."'>";
+        echo "<input type='hidden' name='param' value='".serialize($parametros)."'>";
+        echo "<input type='hidden' name='titulo' value='".$mensaje."'>";
+        echo "<input type='hidden' name='nodo' value='".$nombreNodo."'>";
+        echo "<input type='hidden' name='origen' value='buscar'>";
+        
         echo "</form>";
       } /// Fin if totalFilas > 0
       else {
-        echo "¡No hay registros a mostrar!<br>";
+        echo "<h3>¡No hay registros a mostrar!</h3><br>";
       } /// Fin else totalFilas > 0
       
       
       ?>
       
     <?php
-    $volver = "<br><a href='consultas.php'>Volver a Consultas</a><br><br>";
+    $volver = "<a href='consultas.php'>Volver a Consultas</a><br><br>";
     echo $volver;
     ?>
     </div>      

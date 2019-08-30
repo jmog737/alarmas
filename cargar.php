@@ -169,10 +169,6 @@ require_once ('data/pdo.php');
           echo "<h3>Aún no se ha cargado ningún archivo.<br>Se muestran las alarmas del último archivo cargado: ".$_SESSION['archivo']."</h3>";
         } /// Fin if isset $_SESSION
 
-        echo "<br>
-              <h2>Alarmas del nodo en: <span class='resaltado'>".$_SESSION['nodo']."</span><span>(".$_SESSION['archivo'].")</span></h2>
-              <br>";
-        
         /// Si hubo error muestro el mensaje de error. De lo contrario, muestro contenido del archivo:
         if ($mostrarError) {
           echo $dato["resultado"]."<br>";
@@ -186,9 +182,16 @@ require_once ('data/pdo.php');
           $param = array($_SESSION['archivo']);
           /// Serializo los parámetros para poder pasarlos en el post:
           $paramSerial = serialize($param);
+          
           $log1 = false;
           $datos = json_decode(hacerSelect($consulta, $log1, $param), true);
           $totalFilas = $datos['rows'];
+          $tituloReporte = "Alarmas del archivo ".$_SESSION['archivo']." [".$_SESSION['nodo']."] (Total: ".$totalFilas.")";
+          
+          echo "<br>";
+          echo "<h2>Resultado de la carga:</h2>";
+          echo "<h3>".$tituloReporte."</h3>";
+          echo "<br>";
           
           /// Si hay datos los muestro:
           if ($totalFilas > 0){
@@ -294,10 +297,13 @@ require_once ('data/pdo.php');
                     case 'accion':  $j = $i - 1;
                                     $parAlCodif = "al=".base64_encode($idalarma);
                                     $parOrigen = "&o=".base64_encode('cargar');
+                                    $parConsulta = "&c=".base64_encode($consulta);
+                                    $paramCodif = "&p=".base64_encode($paramSerial);
                                     $parKeysCodif = "&k=".base64_encode(serialize($keys));
                                                                         
-                                    $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parKeysCodif;
-                                    $parCod = base64_encode($url);//echo "url: ".$url."<br>url encoded: ".$parCod."<br>";
+                                    //$url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parKeysCodif;
+                                    $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parConsulta.$paramCodif;
+                                    //$parCod = base64_encode($url);//echo "url: ".$url."<br>url encoded: ".$parCod."<br>";
                                     echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
                                     break;         
                     default:  echo "<td>".$fila[$indice]."</td>";
@@ -309,12 +315,14 @@ require_once ('data/pdo.php');
               echo "</tr>";
             } /// Fin del procesamiento de las filas con datos
             
-            echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportar' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
+            echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarCargar' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
             echo "</table>";
             
-            echo "<input type='hidden' name='consulta' value='".$consulta."'>"
-              . "<input type='hidden' name='param' value='".$paramSerial."'>"
-              . "<input type='hidden' name='origen' value='cargar'>";
+            echo "<input type='hidden' name='consulta' value='".$consulta."'>";
+            echo "<input type='hidden' name='param' value='".$paramSerial."'>";
+            echo "<input type='hidden' name='titulo' value='".$tituloReporte."'>";
+            echo "<input type='hidden' name='nodo' value='".$_SESSION['nodo']."'>";
+            echo "<input type='hidden' name='origen' value='cargar'>";
             
             echo "</form>";
           } /// Fin if totalFilas > 0
@@ -326,7 +334,7 @@ require_once ('data/pdo.php');
         
       } /// Fin if seguir
       
-      $volver = "<br><a href='subirArchivo.php'>Volver a Inicio</a><br><br>";
+      $volver = "<a href='subirArchivo.php'>Volver a Inicio</a><br><br>";
       echo $volver;
     ?>
     </div>      

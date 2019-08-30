@@ -24,7 +24,7 @@ require_once ('head.php');
   require_once ('header.php');
   require_once('data/pdo.php');
   require_once('data/camposAlarmas.php');
-  echo "m,.d.s";
+  
   if (isset($_GET['al'])){
     $idalarma = base64_decode($_GET['al']);
   }
@@ -32,41 +32,55 @@ require_once ('head.php');
     $origen = base64_decode($_GET['o']);
     $origenCodif = base64_encode($origen);
   }
-  if (isset($_GET['k'])){
-    $keys = unserialize(base64_decode($_GET['k']));
-    $id = array_search($idalarma, $keys);
-    $idMostrar = $id + 1;
-    $totalFilas = count($keys);
-    $primero = base64_encode($keys[0]);
-    $ultimo = base64_encode($keys[$totalFilas-1]);
-    $inhabilitarPrimero = '';
-    $inhabilitarUltimo = '';
-    
-    $keysCodif = base64_encode(serialize($keys));
-    
-    if ($id !== false){
-      if ($id === 0){
-        $anterior = base64_encode($keys[$id]);
-        $inhabilitarPrimero = 'inhabilitar';
-      }
-      else {
-        $anterior = base64_encode($keys[$id-1]);
-      }
-      if ($id === ($totalFilas-1)){
-        $siguiente = base64_encode($keys[$totalFilas-1]);
-        $inhabilitarUltimo = 'inhabilitar';
-      }
-      else {
-        $siguiente = base64_encode($keys[$id+1]);
-      }
-    }
-    else {
-      echo "Hubo un error.<br>El índice recibido ($idalarma) no está incluido en el array de índices.<br>Por favor verifique.";
-    }
+  if (isset($_GET['c'])){
+    $consulta = base64_decode($_GET['c']);
+    $consultaCodif = $_GET['c'];
+  }
+  if (isset($_GET['p'])){
+    $param = unserialize(base64_decode($_GET['p']));
+    $paramCodif = $_GET['p'];
   }
 
-  echo "idalarma: ".$idalarma."<br>keys: <br>";var_dump($keys);echo"<br>origen: ".$origen."<br>primero: $primero<br>anterior: $anterior<br>siguiente: $siguiente<br>ultimo: $ultimo<br>";
+  /// ***************************************** GENERACIÓN NAVEGACIÓN ************************************************************************
+  /// Vuelvo a realizar la consulta para poder obtener el array con los índices y así poder generar la navegación:
+  $log1 = false;
+  $datos = json_decode(hacerSelect($consulta, $log1, $param), true);
   
+  $keys = array();
+  foreach ($datos['resultado'] as $key0 => $fila0 ) {
+    $idalarma0 = $fila0['idalarma'];
+    $keys[] = $idalarma0;
+  } /// Fin foreach datos para sacar los keys
+  
+  $id = array_search($idalarma, $keys);
+  $idMostrar = $id + 1;
+  $totalFilas = count($keys);
+  $primero = base64_encode($keys[0]);
+  $ultimo = base64_encode($keys[$totalFilas-1]);
+  $inhabilitarPrimero = '';
+  $inhabilitarUltimo = '';
+
+  if ($id !== false){
+    if ($id === 0){
+      $anterior = base64_encode($keys[$id]);
+      $inhabilitarPrimero = 'inhabilitar';
+    }
+    else {
+      $anterior = base64_encode($keys[$id-1]);
+    }
+    if ($id === ($totalFilas-1)){
+      $siguiente = base64_encode($keys[$totalFilas-1]);
+      $inhabilitarUltimo = 'inhabilitar';
+    }
+    else {
+      $siguiente = base64_encode($keys[$id+1]);
+    }
+  }
+  else {
+    echo "Hubo un error.<br>El índice recibido ($idalarma) no está incluido en el array de índices.<br>Por favor verifique.";
+  }
+  /// ************************************* FIN GENERACIÓN NAVEGACIÓN ************************************************************************
+
   /// Chequeo si vengo del listado de alarmas para editarla, o de la propia página luego de la edición:
   if (isset($_POST['btnEditarAlarma'])){
     $causa = htmlentities($_POST['causa']);
@@ -83,6 +97,7 @@ require_once ('head.php');
     }
   } /// Fin isset($_POST)
 
+  /// Luego de la posible actualización, consulto los datos del registro en cuestión: 
   //$queryParam = "select nodos.localidad as localidad, usuarios.nombre, usuarios.apellido from alarmas inner join nodos on alarmas.nodo=nodos.idnodo inner join usuarios on alarmas.usuario=usuarios.idusuario where alarmas.idalarma=?";
   //$queryParam = "select nodos.localidad as localidad from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
   $queryParam = "select * from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
@@ -94,23 +109,18 @@ require_once ('head.php');
   $usuarioMostrar = $_SESSION['usuarioReal'];
   $localidad = $datosMostrar['localidad'];
   
-  //$query = "select * from alarmas where idalarma=?";
-  //$log1 = false;
-  //$datos = hacerSelect($query, $log1, $param1);
-  //$datosMostrar = $datos['resultado'][0];
-  
   $causaOriginal = $datosMostrar['causa'];
   $solucionOriginal = $datosMostrar['solucion'];
   $temp = explode('-', $datosMostrar['dia']);
   $diaMostrar = $temp[2]."/".$temp[1]."/".$temp[0];
   $temp1 = explode('-', $datosMostrar['fechaCarga']);
   $diaMostrar1 = $temp1[2]."/".$temp1[1]."/".$temp1[0];
-  
 ?>
 <main>
   <script>
     window.location = '#tituloEditarAlarma';
   </script>
+  
   <div id='main-content' class='container-fluid'>
     <?php
     if (isset($_POST['btnEditarAlarma'])){
@@ -176,7 +186,7 @@ require_once ('head.php');
               case 'causa': echo "<tr>
                                     <td class='enc'>Posible Causa</td>
                                     <td>
-                                      <textarea type='text' name='causa' id='causa' class='agrandar' rows='5' placeholder='Ingrese el motivo que puede haber causado la alarma.'>".$datosMostrar[$indice]."</textarea>
+                                      <textarea type='text' name='causa' id='causa' class='agrandar' rows='5' placeholder='Ingrese el motivo probable.'>".$datosMostrar[$indice]."</textarea>
                                       <input name='causaOriginal' id='causaOriginal' type='hidden' value='".$causaOriginal."'>  
                                     </td>
                                   </tr>"; 
@@ -184,7 +194,7 @@ require_once ('head.php');
               case 'solucion': echo "<tr>
                                       <td class='enc'>Posible Soluci&oacute;n</td>
                                       <td>
-                                        <textarea type='text' name='sln' id='sln' class='agrandar' rows='5' placeholder='Ingrese la posible soluci&oacute;n a la alarma.'>".$datosMostrar[$indice]."</textarea>
+                                        <textarea type='text' name='sln' id='sln' class='agrandar' rows='5' placeholder='Ingrese la posible soluci&oacute;n.'>".$datosMostrar[$indice]."</textarea>
                                         <input name='solucionOriginal' id='solucionOriginal' type='hidden' value='".$solucionOriginal."'>
                                       </td>
                                     </tr>"; 
@@ -230,22 +240,23 @@ require_once ('head.php');
     <div id="navegacion" class="pagination">
     <?php
       echo "<ul>";
-      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la primer alarma' href='editarAlarma.php?al=".$primero."&o=".$origenCodif."&k=".$keysCodif."'>|<  </a></li>";
-      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la alarma anterior' href='editarAlarma.php?al=".$anterior."&o=".$origenCodif."&k=".$keysCodif."'>  <<  </a></li>";
-      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la siguiente alarma' href='editarAlarma.php?al=".$siguiente."&o=".$origenCodif."&k=".$keysCodif."'>  >>  </a></li>";
-      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la última alarma' href='editarAlarma.php?al=".$ultimo."&o=".$origenCodif."&k=".$keysCodif."'>  >|</a></li>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la primer alarma' href='editarAlarma.php?al=".$primero."&o=".$origenCodif."&c=".$consultaCodif."&p=".$paramCodif."'>|<  </a></li>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la alarma anterior' href='editarAlarma.php?al=".$anterior."&o=".$origenCodif."&c=".$consultaCodif."&p=".$paramCodif."'>  <<  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la siguiente alarma' href='editarAlarma.php?al=".$siguiente."&o=".$origenCodif."&c=".$consultaCodif."&p=".$paramCodif."'>  >>  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la última alarma' href='editarAlarma.php?al=".$ultimo."&o=".$origenCodif."&c=".$consultaCodif."&p=".$paramCodif."'>  >|</a></li>";
       echo "</ul>";
     ?>
     </div>
     <?php
-//      if ($origen === "cargar"){
-//        $volver = "<br><a href='cargar.php?i=1'>Volver a las alarmas</a><br><br>";
-//      }
-//      else {
-//        $volver = "<br><a href='buscar.php?'>Volver a consultas</a><br><br>";
-//      }
-//      echo $volver;
+      if ($origen === "cargar"){
+        $volver = "<br><a href='cargar.php?i=1'>Volver a las alarmas</a><br><br>";
+      }
+      else {
+        $volver = '<br><a href="javascript:close()">Cerrar y volver al resultado</a><br><br>';
+      }
+      echo $volver;
     ?>
+    <br>
   </div>      
 </main>      
 <?php
