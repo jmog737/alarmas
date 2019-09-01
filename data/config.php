@@ -30,7 +30,7 @@ $ip = '';
 
 //echo "host: ".$hostname."<br>ip: ".$ip;
 
-$unidad = "C:";
+$unidad = "D:";
 if (!file_exists($unidad)) {
   $unidad = "C:";
 }

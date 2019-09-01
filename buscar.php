@@ -38,10 +38,13 @@ $log = false;
 $parametros = array();
 if ($source !== 'TODOS'){
   $parametros[] = $source;
-  $consultaNodo = "select localidad from nodos where idnodo=?";
-  $paramNodo = array($source);
-  $datosNodo = json_decode(hacerSelect($consultaNodo, $log, $paramNodo), true);
-  $nombreNodo = $datosNodo['resultado'][0]['localidad'];
+  $temp = stripos($source, '.csv');
+  if ($temp === FALSE){
+    $consultaNodo = "select localidad from nodos where idnodo=?";
+    $paramNodo = array($source);
+    $datosNodo = json_decode(hacerSelect($consultaNodo, $log, $paramNodo), true);
+    $nombreNodo = $datosNodo['resultado'][0]['localidad'];
+  }
 }
 else {
   $nombreNodo = 'TODOS';
