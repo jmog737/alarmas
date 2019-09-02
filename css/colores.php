@@ -39,6 +39,10 @@ define("colorTituloTablaFondo", array(2, 49, 136));
 ///Color Subtítulo:
 define("colorSubtitulo", array(134, 144, 144));
 
+///Color SubtítuloTabla:
+define("colorSubtituloTablaTexto", array(255, 0, 0));
+define("colorSubtituloTablaFondo", array(40, 206, 68));
+
 ///Borde redondeado intermedio:
 define("colorBordeRedondeado", array(157, 176, 243));
 

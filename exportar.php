@@ -81,6 +81,22 @@ if($vida_session < DURACION ) {
       echo "Hubo un error. Por favor verifique!.";
     }
     
+    $arrayNodos = array();
+    if (isset($_POST['nodo'])){
+      $nombreNodo = $_POST['nodo'];
+    }
+    
+    if ($nombreNodo === 'TODOS'){
+      $log = false;
+      /// Consulto por el listado del nodo para poder hacer el "cambio de nodo":                                                                                                                                                                           
+      $consultaNodos = "select distinct idnodo, localidad, nombre from nodos";
+      $datosNodos = json_decode(hacerSelect($consultaNodos, $log), true);
+      $nombreNodos = $datosNodos['resultado'];
+      foreach ($nombreNodos as $ind => $valor){
+        $arrayNodos[$valor['idnodo']] = $valor['localidad']." [".$valor['nombre']."]";
+      }
+    }
+
     if ($seguir){
       $log = false;
       $datos = json_decode(hacerSelect($consulta, $log, $param), true);

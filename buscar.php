@@ -45,10 +45,22 @@ if ($source !== 'TODOS'){
     $datosNodo = json_decode(hacerSelect($consultaNodo, $log, $paramNodo), true);
     $nombreNodo = $datosNodo['resultado'][0]['localidad'];
   }
+  else {
+    $nombreNodo = "archivo";
+  }
 }
 else {
   $nombreNodo = 'TODOS';
+  /// Consulto por el listado del nodo para poder hacer el "cambio de nodo":                                                                                                                                                                           
+  $consultaNodos = "select distinct idnodo, localidad, nombre from nodos";
+  $datosNodos = json_decode(hacerSelect($consultaNodos, $log), true);
+  $nombreNodos = $datosNodos['resultado'];
+  $arrayNodos = array();
+  foreach ($nombreNodos as $ind => $valor){
+    $arrayNodos[$valor['idnodo']] = $valor['localidad']." [".$valor['nombre']."]";
+  }
 }
+
 if ($fin === 'FIN'){
   if ($inicio !== 'INICIO'){
     $parametros[] = $inicio;
@@ -58,9 +70,11 @@ else {
   $parametros[] = $inicio;
   $parametros[] = $fin;
 }
+
 if ($tipo !== 'TIPO'){
   $parametros[] = $tipo;
 }
+
 if ($user !== 'USUARIO'){
   $parametros[] = $user;
 }
@@ -102,14 +116,14 @@ $totalFilas = $datos['rows'];
         echo "<tr>";
         foreach ($camposAlarmas as $key => $value) {   
           if ($camposAlarmas[$key]['mostrarListado'] === 'si'){
-            $clase = '';
+            $clase = "";
             $totalCamposMostrar++;
             if ($camposAlarmas[$key]['nombreDB'] === 'id'){
-              $clase = "class='tituloTablaIzquierdo'";
+              $clase .= "class='tituloTablaIzquierdo'";
             }
             else {
               if ($camposAlarmas[$key]['nombreDB'] === 'accion'){
-                $clase = "class='tituloTablaDerecho'";
+                $clase .= "class='tituloTablaDerecho'";
               }
             }
             echo "<th $clase>".$camposAlarmas[$key]['nombreMostrar']."</th>";
@@ -124,9 +138,21 @@ $totalFilas = $datos['rows'];
           $keys[] = $idalarma0;
         } /// Fin foreach datos para sacar los keys
 
+        if ($nombreNodo === 'TODOS'){
+          $nodoAnterior = '';
+        }
         /// Comienzo proceso de cada fila:
         foreach ($datos['resultado'] as $key1 => $fila ) {
-
+          if (isset($nodoAnterior)&&($nodoAnterior === '')){
+            $nodoAnterior = $fila['nodo'];
+            echo "<tr><th class='subTituloTabla1' colspan='$totalCamposMostrar'>$arrayNodos[$nodoAnterior]</th></tr>";
+          }
+          $nodoActual = $fila['nodo'];
+          if (isset($nodoAnterior)&&($nodoActual !== $nodoAnterior)){
+            $nodoAnterior = $nodoActual;
+            echo "<tr><th class='subTituloTabla1' colspan='$totalCamposMostrar'>$arrayNodos[$nodoAnterior]</th></tr>";
+            $i = 1;
+          }      
           /// Extraigo tipo de alarma para poder resaltar en consecuencia:
           $tipoAlarma = $fila['tipoAlarma'];
           switch ($tipoAlarma) {
@@ -149,7 +175,8 @@ $totalFilas = $datos['rows'];
           foreach ($camposAlarmas as $key => $value) {   
             if ($camposAlarmas[$key]['mostrarListado'] === 'si'){
               $indice = $camposAlarmas[$key]['nombreDB'];
-
+              //$nodoActual = $fila['nodo'];
+              
               switch ($indice){
                 case 'id':  echo "<td>".$i."</td>";
                             $i++;
@@ -224,10 +251,6 @@ $totalFilas = $datos['rows'];
         echo "<h3>¡No hay registros a mostrar!</h3><br>";
       } /// Fin else totalFilas > 0
       
-      
-      ?>
-      
-    <?php
     $volver = "<a href='consultas.php'>Volver a Consultas</a><br><br>";
     echo $volver;
     ?>

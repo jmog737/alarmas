@@ -140,15 +140,18 @@ function validarIngreso () {
  * \brief Función que valida el form para cargar el archivo.
  */
 function validarSubmitCargar(){
+  verificarSesion('', 's');
   var archivoASubir = $("#uploadedFile").val();
   
   if ((archivoASubir === undefined)||(archivoASubir === '')){
     alert('No se seleccionó archivo alguno.\nPor favor verifique!.');
+    return false;
   }
   else {
     if ($("#nodo").val() === 'nada'){
       alert('Hay que seleccionar un nodo.\nPor favor verifique!.');
       $("#nodo").focus();
+      return false;
     }
     else {
       var nombreNodoCorto = $("option:selected", "#nodo").attr("nombreCorto");
@@ -173,6 +176,7 @@ function validarSubmitCargar(){
       }
       else {
         alert('El archivo seleccionado NO coincide con el nodo elegido:\nNodo: '+nombreSinOCS+'\nArchivo: '+nombreArchivo+'\nPor favor verifique.');
+        return false;
       }
     }
   }
@@ -513,16 +517,22 @@ function validarBusqueda(){
   }
   
   var mensaje = 'Alarmas';
+  var validado = true;
+  var rangoFecha = null;
   
-  var resultado= validarFecha(radioFecha, inicio, fin, mes, año);
-  var validado = resultado['validado'];
-  var rangoFecha = resultado['rango'];
-  var inicioValidado = resultado['inicio'];
-  var finValidado = resultado['fin'];
-  var mensajeFecha = resultado['mensaje'];
+  if (radioFecha !== 'todos'){
+    var resultado= validarFecha(radioFecha, inicio, fin, mes, año);
+    validado = resultado['validado'];
+    rangoFecha = resultado['rango'];
+    var inicioValidado = resultado['inicio'];
+    var finValidado = resultado['fin'];
+    var mensajeFecha = resultado['mensaje'];
+  }
+  
   
   if (validado){
     var query = "select * from alarmas ";
+    var ordenar = ' order by dia desc, hora desc';
     var param = '';
     if ((criterio === 'nodo')&&(nodo !== 'todos')){
       query += "where nodo=?";
@@ -604,6 +614,12 @@ function validarBusqueda(){
     if (mensaje === 'Alarmas'){
       mensaje = "Todas las alarmas";
     }
+    
+    if ((criterio === 'nodo')&&(nodo === 'todos')){
+      ordenar = ' order by nodo, dia desc, hora desc';
+    }
+    query += ordenar;
+    
     $("#query").val(query);
     $("#param").val(param);
     $("#mensaje").val(mensaje);
@@ -791,7 +807,6 @@ $(document).on("click", "#login", function(e) {
 ///Disparar función al hacer click en el botón de BUSCAR del from de CONSULTAS.
 ///Esto hace que se llame a la función que valida la consulta y luego hace el submit.
 $(document).on("click", "#buscar", function(){
-  verificarSesion('', 's');
   validarBusqueda();
 });
 

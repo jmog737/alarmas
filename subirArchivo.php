@@ -77,7 +77,7 @@ require_once ('head.php');
               </td> 
             </tr>
             <td colspan="2" class="pieTabla">
-              <input type="submit"  class="btn btn-danger" name="btnCargar" id="btnCargar" value="CARGAR" />
+              <input type="button"  class="btn btn-danger" name="btnCargar" id="btnCargar" value="CARGAR" />
             </td>
           </table>  
         </form>
