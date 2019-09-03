@@ -1,6 +1,9 @@
 ///Ahora las variables se toman de un único lugar que es el archivo config.php
 ///Las mismas, para que estén accesibles, se agregan a unos input "invisibles" que están en el HEAD (antes de incluir script.js para que estén disponibles).
 var duracionSesion = parseInt($("#duracionSesion").val(), 10);
+var limiteSeleccion = parseInt($("#limiteSeleccion").val(), 10);
+var tamPagina = parseInt($("#tamPagina").val(), 10);
+var limiteSelects = parseInt($("#limiteSelects").val(), 10);
 
 /**
 ///  \file script.js
@@ -810,6 +813,23 @@ $(document).on("click", "#buscar", function(){
   validarBusqueda();
 });
 
+///Disparar función al hacer click en alguno de los links con las PÁGINAS de los resultados.
+///Básicamente arma la consulta para mostrar la pagina solicitada y llama a la función para ejecutarla.
+$(document).on("click", ".paginate", function (){
+  var page = parseInt($(this).attr('data'), 10);
+
+  ///Vuelvo a definir una variable local tamPagina para actualizar el valor que ya tiene.
+  ///Esto es para que tome el último valor en caso de que se haya modificado desde el modal (que no cambia hasta recargar la página).
+  var tamPagina = parseInt($("#tamPagina").val(), 10);
+  var offset = (page-1)*tamPagina;
+  $("#offset").val(offset);
+  $("#page").val(page);
+  $("#frmResultado").attr("action", "buscar.php");
+  $("#frmResultado").submit();
+ 
+});
+/********** fin on("click", ".paginate", function () **********/
+
 ///Disparar funcion al cambiar el elemento elegido en el select con las sugerencias para los archivos.
 ///Cambia el color de fondo para resaltarlo
 $(document).on("change focusin", "#hint", function (){
@@ -954,6 +974,8 @@ $(document).on("click", "[name=btnExportar]", function() {
     $('#frmCargar').submit();
   }
   else {
+    $("#frmResultado").attr("action", "exportar.php");
+    $("#frmResultado").attr("target", "_blank");
     $('#frmResultado').submit();
   }
 });

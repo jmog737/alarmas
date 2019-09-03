@@ -198,6 +198,7 @@ $totalUsuarios = $datos['rows'];
         </table>
         <input type="hidden" name="query" id="query" value="">
         <input type="hidden" name="param" id="param" value="">
+        <input type="hidden" name="offset" id="offset" value="0">
         <input type="hidden" name="mensaje" id="mensaje" value="">
       </form> 
       

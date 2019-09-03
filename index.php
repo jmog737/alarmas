@@ -43,6 +43,7 @@ if ( isset($_POST["usuario"]) && isset($_POST["password"]) ) {
           $_SESSION['user_id'] = $row['idusuario'];
           $_SESSION['username'] = $row['appUser'];
           $_SESSION['usuarioReal'] = $row['nombre']." ".$row['apellido'];
+          $_SESSION['tamPagina'] = 50;
 
           require_once('data/config.php');
           require_once('data/escribirLog.php');

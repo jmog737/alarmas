@@ -66,15 +66,24 @@ if($vida_session < DURACION ) {
 //      $seguir = false;
 //      echo "Hubo un error. Por favor verifique!.";
 //    }
-    if (isset($_POST['param'])){
-      $param = unserialize($_POST['param']);
+    $param = $_POST["param"];
+    if (isset($_POST["param"])){
+      $t = stripos($param, "&");
+      if ($t === FALSE){
+        $param = unserialize($param);
+      }
+      else {
+        $paramSerial = $_POST['paramSerial'];
+        $param = unserialize($paramSerial);
+      }
     }
     else {
-      $seguir = false;
-      echo "Hubo un error. Por favor verifique!.";
+      $param = null;
+      //$seguir = false;
+      //echo "Hubo un error. Por favor verifique!.";
     }
-    if (isset($_POST['consulta'])){
-      $consulta = $_POST['consulta'];
+    if (isset($_POST['query'])){
+      $consulta = $_POST['query'];
     }
     else {
       $seguir = false;
@@ -133,7 +142,7 @@ if($vida_session < DURACION ) {
         /// ******************************************************* FIN PARAMETROS GENERALES ***********************************************************
 
         $nombreReporte = 'alarmas';
-        $tituloReporte = $_POST['titulo'];
+        $tituloReporte = $_POST['mensaje'];
         $tituloTabla = "Alarmas";
         
         //*********************************************** Adaptación nombre del nodo sin tildes ni caracteres especiales *******************************

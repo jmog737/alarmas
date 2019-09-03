@@ -24,9 +24,18 @@ require_once ('data/pdo.php');
 /// Recupero los parámetros pasados:
 $mensaje = $_POST['mensaje'];
 $consulta = $_POST['query'];
+$offset = $_POST['offset'];
+
 /// Parámetros asociados a la consulta:
-$param = $_POST['param'];
-$paramArray = explode("&", $param);
+$param = $_POST["param"];
+$t = stripos($param, "&");
+if ($t === FALSE){
+  $paramArray = unserialize($param);
+}
+else {
+  $paramArray = explode("&", $param);
+}
+
 $source = $paramArray[0];
 $inicio = $paramArray[1];
 $fin = $paramArray[2];
@@ -79,16 +88,43 @@ if ($user !== 'USUARIO'){
   $parametros[] = $user;
 }
 
-/// Mando o no el array con los parámetros según la consulta:
-//if (count($parametros) === 0){
-//  $datos = json_decode(hacerSelect($consulta, $log), true);
-//}
-//else {
-$datos = json_decode(hacerSelect($consulta, $log, $parametros), true);
-//}
+$paramSerial = serialize($parametros);
+/// Rearmo la consulta SOLO para conocer el total de datos:
+$temp0 = explode("from", $consulta);
+$consultaTotal = "select count(*) from".$temp0[1];
+$datosTotal = json_decode(hacerSelect($consultaTotal, $log, $parametros), true);
+$totalDatos = $datosTotal['rows'];
 
-$totalFilas = $datos['rows'];
-          
+$tamPagina = $_SESSION['tamPagina'];
+$totalPaginas = (int)ceil($totalDatos/$tamPagina);
+if (!isset($_POST['page'])){
+  $page = 1;
+}
+else {
+  $page = (int)$_POST['page'];
+}
+if ($page === $totalPaginas){
+  $ultimoRegistro = $totalDatos;
+}
+else {
+  $ultimoRegistro = $page*$tamPagina;
+}
+
+$primerRegistro = ($page-1)*$tamPagina + 1;
+if ($tamPagina > $totalDatos){
+  $ultimoRegistro = $totalDatos;
+  $consultaNueva = $consulta;
+}
+else {
+  $consultaNueva = $consulta." limit ".$tamPagina;
+  if ($offset !== "-1"){
+    $consultaNueva .= " offset ".$offset;
+  }
+}
+
+/// Ejecuto la consulta regular para recuperar los datos, PERO la limito a mostrar la primer página:
+$datos = json_decode(hacerSelect($consultaNueva, $log, $parametros), true);
+$mensajeNuevo = '';
 ?>
   <body>
 <?php
@@ -98,18 +134,27 @@ $totalFilas = $datos['rows'];
     <div id='main-content' class='container-fluid'>
       <br>  
       <h2>Resultado de la consulta:</h2>
-      <h3><?php $mensaje .= " (Total: ".$totalFilas.")"; echo $mensaje ?></h3>
-      <br>
+      <h3><?php $mensajeNuevo = $mensaje." (Total: ".$totalDatos.")"; echo $mensajeNuevo ?></h3>
+      
       <?php
       /// Si hay datos los muestro:
-      if ($totalFilas > 0){
+      if ($totalDatos > 0){
         require_once('data/camposAlarmas.php');
         
-        echo "<form id='frmResultado' name='frmResultado' method='post' target='_blank' action='exportar.php'>";
+        if ($totalPaginas > 1){
+          $rango = "<h5 id='rango' class='rango'>(P&aacute;gina ".$page."/".$totalPaginas.": registros del ".$primerRegistro." al ".$ultimoRegistro.")</h5>";   
+        }
+        else {
+          $rango = "<h5 id='rango' class='rango'>(P&aacute;gina ".$page."/".$totalPaginas.": registros del ".$primerRegistro." al ".$ultimoRegistro.")</h5>";
+        }
+        echo $rango;
+        echo "<br>";
+        echo "<form id='frmResultado' name='frmResultado' method='post'>";
+        
         /// Comienzo tabla para mostrar la consulta:
         echo "<table class='tabla2'>";
         echo "<caption>Tabla con el resultado de la consulta</caption>";
-        $i = 1;
+        $i = $primerRegistro;
         $totalCamposMostrar = 1;
 
         /// Muestro el encabezado:
@@ -151,7 +196,7 @@ $totalFilas = $datos['rows'];
           if (isset($nodoAnterior)&&($nodoActual !== $nodoAnterior)){
             $nodoAnterior = $nodoActual;
             echo "<tr><th class='subTituloTabla1' colspan='$totalCamposMostrar'>$arrayNodos[$nodoAnterior]</th></tr>";
-            $i = 1;
+            //$i = 1;
           }      
           /// Extraigo tipo de alarma para poder resaltar en consecuencia:
           $tipoAlarma = $fila['tipoAlarma'];
@@ -239,13 +284,45 @@ $totalFilas = $datos['rows'];
         echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarBuscar' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
         echo "</table>";
 
-        echo "<input type='hidden' name='consulta' value='".$consulta."'>";
-        echo "<input type='hidden' name='param' value='".serialize($parametros)."'>";
-        echo "<input type='hidden' name='titulo' value='".$mensaje."'>";
+        echo "<input type='hidden' name='query' id='query' value='".$consulta."'>";
+        echo "<input type='hidden' name='param' id='param' value='".$param."'>";
+        echo "<input type='hidden' name='paramSerial' id='paramSerial' value='".$paramSerial."'>";
+        echo "<input type='hidden' name='offset' id='offset' value=''>";
+        echo "<input type='hidden' name='page' id='page' value=''>";
+        echo "<input type='hidden' name='mensaje' id='mensaje' value='".$mensaje."'>";
+        
         echo "<input type='hidden' name='nodo' value='".$nombreNodo."'>";
         echo "<input type='hidden' name='origen' value='buscar'>";
         
         echo "</form>";
+        
+        ///********************************************* Comienzo paginación *****************************************************************
+        if ($totalPaginas > 1) {
+          $paginas = '<div class="pagination" id="paginas">';
+          $paginas .= '<input style="display: none" type="text" id="totalPaginas" value="'.$totalPaginas.'">';
+          $paginas .= '<input style="display: none" type="text" id="totalRegistros" value="'.$totalDatos.'"><ul>';
+          if ($page !== 1) {
+            $paginas .= '<li><a class="paginate anterior" data="'.($page-1).'">Anterior</a></li>';
+          } 
+          for ($k=1;$k<=$totalPaginas;$k++) {
+            if ($page === $k) {
+              //si muestro el índice de la página actual, no coloco enlace
+              $paginas .= '<li ><a class="paginate pageActive" data="'.$k.'">'.$k.'</a></li>';
+            }  
+            else {
+              //si el índice no corresponde con la página mostrada actualmente,
+              //coloco el enlace para ir a esa página
+              $paginas .= '<li><a class="paginate" data="'.$k.'">'.$k.'</a></li>';
+            }
+          }
+          if ($page !== $totalPaginas) {
+            $paginas .= '<li><a class="paginate siguiente" data="'.($page+1).'">Siguiente</a></li>';
+          } 
+          $paginas .= '</ul>';
+          $paginas .= '</div><br>';
+          echo $paginas;
+        }
+        ///************************************************** FIN paginación *****************************************************************
       } /// Fin if totalFilas > 0
       else {
         echo "<h3>¡No hay registros a mostrar!</h3><br>";

@@ -47,5 +47,10 @@ if (!file_exists($dirReportes)){
   echo "No existe la carpeta: $dir. <br>Por favor verifique.";
 }
 
-
+if (!isset($_SESSION["tamPagina"])){
+  $_SESSION["tamPagina"] = 50;
+}
+if (!isset($_SESSION["limiteSelects"])){
+  $_SESSION["limiteSelects"] = 15;
+}
 ?>

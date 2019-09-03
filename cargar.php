@@ -167,7 +167,11 @@ require_once ('data/pdo.php');
           $_SESSION['idnodo'] = $registro['idnodo'];
           $_SESSION['archivo'] = $registro['archivo'];
           echo "<h3>Aún no se ha cargado ningún archivo.<br>Se muestran las alarmas del último archivo cargado: ".$_SESSION['archivo']."</h3>";
+          $tituloPagina = "Resultado de la &uacute;ltima carga";
         } /// Fin if isset $_SESSION
+        else {
+          $tituloPagina = "Resultado de la carga:";
+        }
 
         /// Si hubo error muestro el mensaje de error. De lo contrario, muestro contenido del archivo:
         if ($mostrarError) {
@@ -189,7 +193,7 @@ require_once ('data/pdo.php');
           $tituloReporte = "Alarmas del archivo ".$_SESSION['archivo']." [".$_SESSION['nodo']."] (Total: ".$totalFilas.")";
           
           echo "<br>";
-          echo "<h2>Resultado de la carga:</h2>";
+          echo "<h2>".$tituloPagina."</h2>";
           echo "<h3>".$tituloReporte."</h3>";
           echo "<br>";
           
@@ -318,9 +322,9 @@ require_once ('data/pdo.php');
             echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarCargar' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
             echo "</table>";
             
-            echo "<input type='hidden' name='consulta' value='".$consulta."'>";
+            echo "<input type='hidden' name='query' value='".$consulta."'>";
             echo "<input type='hidden' name='param' value='".$paramSerial."'>";
-            echo "<input type='hidden' name='titulo' value='".$tituloReporte."'>";
+            echo "<input type='hidden' name='mensaje' value='".$tituloReporte."'>";
             echo "<input type='hidden' name='nodo' value='".$_SESSION['nodo']."'>";
             echo "<input type='hidden' name='origen' value='cargar'>";
             
