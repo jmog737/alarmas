@@ -131,7 +131,7 @@ class PDF extends PDF_MC_Table
   }
     
   function armarTabla(){
-    global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $arrayNodos, $nombreNodo;
+    global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $arrayNodos, $nombreNodo;
     require_once('data/camposAlarmas.php');
     
     $hTitulo = 16;
@@ -159,6 +159,7 @@ class PDF extends PDF_MC_Table
 
     $this->SetTextColor(colorTituloReporte[0], colorTituloReporte[1], colorTituloReporte[2]);
     
+    $tituloReporte .= " (Total: ".$totalFilas.")";
 
     if ($nbTitulo > 1) {
       $this->MultiCell($anchoTitulo, $hTituloMulti, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
@@ -235,7 +236,7 @@ class PDF extends PDF_MC_Table
         $this->SetTextColor(colorSubtituloTablaTexto[0], colorSubtituloTablaTexto[1], colorSubtituloTablaTexto[2]);
         $this->setFillColor(colorSubtituloTablaFondo[0], colorSubtituloTablaFondo[1], colorSubtituloTablaFondo[2]);
         $this->Cell($anchoTabla, $h, trim(utf8_decode(html_entity_decode($arrayNodos[$nodoAnterior]))), 1, 10, 'C', true);
-        $j = 1;
+        //$j = 1;
       }
       $this->SetFont('Courier', '', 9); 
       ///********************************************* Fin detección de cambio de nodo *******************************************************

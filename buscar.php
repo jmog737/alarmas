@@ -302,21 +302,35 @@ $mensajeNuevo = '';
           $paginas .= '<input style="display: none" type="text" id="totalPaginas" value="'.$totalPaginas.'">';
           $paginas .= '<input style="display: none" type="text" id="totalRegistros" value="'.$totalDatos.'"><ul>';
           if ($page !== 1) {
-            $paginas .= '<li><a class="paginate anterior" data="'.($page-1).'">Anterior</a></li>';
-          } 
+            $paginas .= '<li><a name="buscar" class="paginate anterior" data="'.($page-1).'">Anterior</a></li>';
+          }
+          
           for ($k=1;$k<=$totalPaginas;$k++) {
+            if (($page === 1)&&($k === 1)){
+              $inhabilitarPrimero = ' inhabilitar';
+            }
+            else {
+              $inhabilitarPrimero = '';
+            }
+            if (($page === $totalPaginas)&&($k === $totalPaginas)){
+              $inhabilitarUltimo = ' inhabilitar';
+            }
+            else {
+              $inhabilitarUltimo = '';
+            }
             if ($page === $k) {
               //si muestro el índice de la página actual, no coloco enlace
-              $paginas .= '<li ><a class="paginate pageActive" data="'.$k.'">'.$k.'</a></li>';
+              $paginas .= '<li ><a name="buscar" class="paginate pageActive'.$inhabilitarPrimero.$inhabilitarUltimo.'" data="'.$k.'">'.$k.'</a></li>';
             }  
             else {
               //si el índice no corresponde con la página mostrada actualmente,
               //coloco el enlace para ir a esa página
-              $paginas .= '<li><a class="paginate" data="'.$k.'">'.$k.'</a></li>';
+              $paginas .= '<li><a name="buscar" class="paginate'.$inhabilitarPrimero.$inhabilitarUltimo.'" data="'.$k.'">'.$k.'</a></li>';
             }
           }
+          
           if ($page !== $totalPaginas) {
-            $paginas .= '<li><a class="paginate siguiente" data="'.($page+1).'">Siguiente</a></li>';
+            $paginas .= '<li><a name="buscar" class="paginate siguiente" data="'.($page+1).'">Siguiente</a></li>';
           } 
           $paginas .= '</ul>';
           $paginas .= '</div><br>';

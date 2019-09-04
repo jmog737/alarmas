@@ -26,16 +26,17 @@
                 echo('<span style="color:white;margin:0">'.$_SESSION['success']."</span>");
                 unset($_SESSION['success']);
               }
-//              echo  "<br>"
-//                . "<a href='#modalParametros' title='Cambiar los parámetros' class='naranja' id='param'>--- Cambiar Par&aacute;metros ---</a>";
+              echo  "<br>"
+                . "<a href='#modalParametros' title='Cambiar los parámetros' class='naranja' id='param'>--- Cambiar Par&aacute;metros ---</a>";
             ?>
             </font>
             <br>
             <span id='fechaActual'>
-            <?php echo $hoy; ?>
+            <?php echo $hoy." --- "; ?>
             </span>
-            <br>
+
             <font><a title="Salir del programa" href="salir.php">Salir</a></font>
+            <br>
           <?php        
           }
           else {

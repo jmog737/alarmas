@@ -814,7 +814,8 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
   border-radius: 0 30px 30px 0;
 }
 .pageActive {
-  background-color: #f36464;
+  /*background-color: #f36464;*/
+  background-color: #757582 !important;
 }
 
 .inhabilitar{

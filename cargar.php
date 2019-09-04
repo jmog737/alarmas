@@ -39,10 +39,10 @@ require_once ('data/pdo.php');
         $inicio = 0;
       } /// Fin else isset($_GET)
       
-      /// Chequeo variable para saber desde donde vengo; si desde subirArchivo, desde el menú o desde editarAlarma
+      /// Chequeo variable para saber desde donde vengo; si desde subirArchivo, desde el menú, desde editarAlarma o desde el propio cargar
       /// Si es desde el primero, hago las validaciones y cargo el archivo pasado
-      /// En ambos casos, muestro en pantalla los datos
-      if (!(isset($_GET['i']))||($inicio === 1)){    
+      /// En todos los casos, muestro en pantalla los datos
+      if (((!(isset($_GET['i']))||($inicio === 1))&&(!isset($_POST['offset'])))){    
         $nombreArchivo0 = $_FILES['uploadedFile']['name'];
         $temp = explode('.', $nombreArchivo0);
         $nombre = $temp[0];
@@ -187,23 +187,73 @@ require_once ('data/pdo.php');
           /// Serializo los parámetros para poder pasarlos en el post:
           $paramSerial = serialize($param);
           
-          $log1 = false;
-          $datos = json_decode(hacerSelect($consulta, $log1, $param), true);
-          $totalFilas = $datos['rows'];
-          $tituloReporte = "Alarmas del archivo ".$_SESSION['archivo']." [".$_SESSION['nodo']."] (Total: ".$totalFilas.")";
+          $log = false;
+          /// Rearmo la consulta SOLO para conocer el total de datos:
+          $temp0 = explode("from", $consulta);
+          $consultaTotal = "select count(*) from".$temp0[1];
+          $datosTotal = json_decode(hacerSelect($consultaTotal, $log, $param), true);
+          $totalDatos = $datosTotal['rows'];
           
+          $tamPagina = $_SESSION['tamPagina'];
+          $totalPaginas = (int)ceil($totalDatos/$tamPagina);
+          if (!isset($_POST['page'])){
+            $page = 1;
+          }
+          else {
+            $page = (int)$_POST['page'];
+          }
+          if ($page === $totalPaginas){
+            $ultimoRegistro = $totalDatos;
+          }
+          else {
+            $ultimoRegistro = $page*$tamPagina;
+          }
+          if (isset($_POST['offset'])){
+            $offset = $_POST['offset'];
+          }
+          else {
+            $offset = "-1";
+          }
+          
+          $primerRegistro = ($page-1)*$tamPagina + 1;
+          if ($tamPagina > $totalDatos){
+            $ultimoRegistro = $totalDatos;
+            $consultaNueva = $consulta;
+          }
+          else {
+            $consultaNueva = $consulta." limit ".$tamPagina;
+            if ($offset !== "-1"){
+              $consultaNueva .= " offset ".$offset;
+            }
+          }
+
+          /// Ejecuto la consulta regular para recuperar los datos, PERO la limito a mostrar la primer página:
+          $datos = json_decode(hacerSelect($consultaNueva, $log, $param), true);
+          $mensajeNuevo = '';
+          
+          $tituloReporte = "Alarmas del archivo ".$_SESSION['archivo']." [".$_SESSION['nodo']."]";
+          $mensajeNuevo = $tituloReporte." (Total: ".$totalDatos.")";
           echo "<br>";
           echo "<h2>".$tituloPagina."</h2>";
-          echo "<h3>".$tituloReporte."</h3>";
+          echo "<h3>".$mensajeNuevo."</h3>";
           echo "<br>";
           
           /// Si hay datos los muestro:
-          if ($totalFilas > 0){
-            echo "<form id='frmCargar' name='frmCargar' method='post' target='_blank' action='exportar.php'>";
+          if ($totalDatos > 0){
+            if ($totalPaginas > 1){
+              $rango = "<h5 id='rango' class='rango'>(P&aacute;gina ".$page."/".$totalPaginas.": registros del ".$primerRegistro." al ".$ultimoRegistro.")</h5>";   
+            }
+            else {
+              $rango = "<h5 id='rango' class='rango'>(P&aacute;gina ".$page."/".$totalPaginas.": registros del ".$primerRegistro." al ".$ultimoRegistro.")</h5>";
+            }
+            echo $rango;
+            echo "<br>";
+            
+            echo "<form id='frmCargar' name='frmCargar' method='post'>";
             /// Comienzo tabla para mostrar la consulta:
             echo "<table class='tabla2'>";
             echo "<caption>Tabla con las alarmas del nodo</caption>";
-            $i = 1;
+            $i = $primerRegistro;
             $totalCamposMostrar = 1;
             
             /// Muestro el encabezado:
@@ -326,9 +376,53 @@ require_once ('data/pdo.php');
             echo "<input type='hidden' name='param' value='".$paramSerial."'>";
             echo "<input type='hidden' name='mensaje' value='".$tituloReporte."'>";
             echo "<input type='hidden' name='nodo' value='".$_SESSION['nodo']."'>";
+            echo "<input type='hidden' name='offset' id='offset' value=''>";
+            echo "<input type='hidden' name='page' id='page' value=''>";
             echo "<input type='hidden' name='origen' value='cargar'>";
             
             echo "</form>";
+            
+            ///********************************************* Comienzo paginación *****************************************************************
+            if ($totalPaginas > 1) {
+              $paginas = '<div class="pagination" id="paginas">';
+              $paginas .= '<input style="display: none" type="text" id="totalPaginas" value="'.$totalPaginas.'">';
+              $paginas .= '<input style="display: none" type="text" id="totalRegistros" value="'.$totalDatos.'"><ul>';
+              if ($page !== 1) {
+                $paginas .= '<li><a name="cargar" class="paginate anterior" data="'.($page-1).'">Anterior</a></li>';
+              }
+
+              for ($k=1;$k<=$totalPaginas;$k++) {
+                if (($page === 1)&&($k === 1)){
+                  $inhabilitarPrimero = ' inhabilitar';
+                }
+                else {
+                  $inhabilitarPrimero = '';
+                }
+                if (($page === $totalPaginas)&&($k === $totalPaginas)){
+                  $inhabilitarUltimo = ' inhabilitar';
+                }
+                else {
+                  $inhabilitarUltimo = '';
+                }
+                if ($page === $k) {
+                  //si muestro el índice de la página actual, no coloco enlace
+                  $paginas .= '<li ><a name="cargar" class="paginate pageActive'.$inhabilitarPrimero.$inhabilitarUltimo.'" data="'.$k.'">'.$k.'</a></li>';
+                }  
+                else {
+                  //si el índice no corresponde con la página mostrada actualmente,
+                  //coloco el enlace para ir a esa página
+                  $paginas .= '<li><a name="cargar" class="paginate'.$inhabilitarPrimero.$inhabilitarUltimo.'" data="'.$k.'">'.$k.'</a></li>';
+                }
+              }
+
+              if ($page !== $totalPaginas) {
+                $paginas .= '<li><a name="cargar" class="paginate siguiente" data="'.($page+1).'">Siguiente</a></li>';
+              } 
+              $paginas .= '</ul>';
+              $paginas .= '</div><br>';
+              echo $paginas;
+            }
+            ///************************************************** FIN paginación *****************************************************************
           } /// Fin if totalFilas > 0
           else {
             echo "¡No hay registros a mostrar!<br>";

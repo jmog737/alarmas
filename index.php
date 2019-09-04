@@ -28,7 +28,7 @@ if ( isset($_POST["usuario"]) && isset($_POST["password"]) ) {
   if ($resultado !== false) {
     /* Comprobar el número de filas que coinciden con la sentencia SELECT */
     if ($sth->fetchColumn() > 0) {
-      $sth1 = $pdo->prepare('SELECT idusuario, appUser, appPwd, nombre, apellido, estado FROM usuarios WHERE appUser = :usuario');
+      $sth1 = $pdo->prepare('SELECT idusuario, appUser, appPwd, nombre, apellido, estado, tamPagina, limiteSelects FROM usuarios WHERE appUser = :usuario');
       $sth1->bindParam(':usuario', $userDB, PDO::PARAM_STR);
       $sth1->execute();
       $row = $sth1->fetch(PDO::FETCH_ASSOC);
@@ -43,8 +43,12 @@ if ( isset($_POST["usuario"]) && isset($_POST["password"]) ) {
           $_SESSION['user_id'] = $row['idusuario'];
           $_SESSION['username'] = $row['appUser'];
           $_SESSION['usuarioReal'] = $row['nombre']." ".$row['apellido'];
-          $_SESSION['tamPagina'] = 50;
-
+          if (($row['tamPagina'] !== null)&&($row['tamPagina'] !== '')){
+            $_SESSION['tamPagina'] = $row['tamPagina'];
+          }
+          if (($row['limiteSelects'] !== null)&&($row['limiteSelects']) !== ''){
+            $_SESSION['limiteSelects'] = $row['limiteSelects'];
+          }
           require_once('data/config.php');
           require_once('data/escribirLog.php');
           setcookie('tiempo', time(), time()+TIEMPOCOOKIE);

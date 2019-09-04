@@ -19,6 +19,28 @@ var limiteSelects = parseInt($("#limiteSelects").val(), 10);
 */
 
 /**
+  \brief Función que valida que el parámetro pasado sea un entero.
+  @param numero Dato a validar.                  
+*/
+function validarEntero(numero) {//alert(valor);
+  if (isNaN(numero)){
+    //alert ("Ups... " + numero + " no es un número.");
+    return false;
+  } 
+  else {
+    if (numero % 1 == 0) {
+      //alert ("Es un numero entero");
+      return true;
+    } 
+    else {
+      //alert ("Es un numero decimal");
+      return false;
+    }
+  }
+}
+/********** fin validarEntero(valor) **********/
+
+/**
  * 
  * @param {String} str String con la cadena de texto a buscar como parte del archivo.
  * @param {String} id String con el id del campo luego del cual se tienen que agregar los datos.
@@ -84,8 +106,8 @@ function showHint(str, id, seleccionado) {
       
       /// Agregado a pedido de Diego para que se abra el select automáticamente:
       var length = parseInt($('#hint> option').length, 10);
-      if (length > 10) {
-        length = 10;
+      if (length > limiteSelects) {
+        length = limiteSelects+1;
       }
       else {
         length++;
@@ -328,6 +350,14 @@ function validarEditarAlarma(){
 }
 /********** fin validarEditarAlarma() **********/
 
+/**
+  \brief Función que valida el rango de fechas pasado.
+  @param rango {String} Cadena que indica que tipo de período se quiere. Esto es por mes, entre 2 fechas o todos.
+  @param rango {Object} Objeto con la fecha de inicio del período en caso se quiera un rango entre fechas.
+  @param rango {Object} Objeto con la fecha de fin del período en caso se quiera un rango entre fechas.
+  @param rango {Object} Objeto con el mes de inicio del período en caso se quiera consultar por mes.
+  @param rango {Object} Objeto con el año de inicio del período en caso se quiera consultar por mes.
+*/
 function validarFecha(rango, inicioObject, finObject, mesObject, añoObject){
   var validado = true;
   var inicio = inicioObject.val();
@@ -483,6 +513,7 @@ function validarFecha(rango, inicioObject, finObject, mesObject, añoObject){
   datos['mensaje'] = mensajeFecha;
   return datos;
 }
+/********** fin validarFecha(rango, inicioObject, finObject, mesObject, añoObject) **********/
 
 /**
  * \brief Función que valida el form para cargar el archivo.
@@ -512,7 +543,7 @@ function validarBusqueda(){
     }
   }
   else {
-    if ((archivo === '')||(archivo === undefined)){
+    if ((archivo === '')||(archivo === undefined)||(archivo === 'NADA')){
       alert('Se debe seleccionar un archivo.\nPor favor verifique!.');
       $("#hint").focus();
       return false;
@@ -700,6 +731,101 @@ function actualizarUser() {
 }
 /********** fin actualizarUser() **********/
 
+/**
+ * \brief Función que primero valida la info ingresada, y de ser válida, hace la actualización de los parámetros del usuario.
+ */
+function actualizarParametros()  {
+    verificarSesion('', 's');
+    
+    ///Recupero parámetros pasados por el usuario:
+    var pageSize = $("#pageSize").val();
+    var limiteSelects = $("#tamSelects").val();
+    
+    var limiteMaximoPagina = 1000;
+    var limiteMaximoSelects = 50;
+    
+    ///Valido que sean válidos:
+    var validarPage = validarEntero(pageSize);
+    var seguir = true;
+    if ((pageSize <= 0) || (pageSize > limiteMaximoPagina) || (pageSize === "null") || (!validarPage)){
+      alert('El tamaño de la página DEBE ser un entero entre 1 y '+limiteMaximoPagina+'.\nPor favor verifique.');
+      seguir = false;
+      $("#pageSize").focus();
+    }
+    else {
+          var validarLimiteSelects = validarEntero(limiteSelects);
+          if ((limiteSelects <= 0) || (limiteSelects > limiteMaximoSelects) || (limiteSelects === "null") || (!validarLimiteSelects)){
+            alert('El tamaño máximo para los selects DEBE ser un entero entre 1 y '+limiteMaximoSelects+'.\nPor favor verifique.');
+            seguir = false;
+            $("#tamSelects").focus();
+          } 
+    }///***************** FIN validación **************
+
+    if (seguir) {
+      var url = "data/updateParametros.php";
+      var log = "NO";
+      
+      pageSize = parseInt(pageSize, 10);
+      limiteSelects = parseInt(limiteSelects, 10);
+      var paginaVieja = parseInt($("#tamPagina").val(), 10);
+      var limiteViejoSelects = parseInt($("#limiteSelects").val(), 10);
+      
+      var cambioPagina = true;
+      var cambioSelects = true;
+        
+      if (paginaVieja === pageSize){
+        cambioPagina = false;
+        pageSize = -1;
+      }
+      
+      if (limiteViejoSelects === limiteSelects){
+        cambioSelects = false;
+        limiteSelects = -1;
+      }
+            
+      //alert('Valores a cambiar:\nPagina: '+pageSize+'\nHistorial General: '+limiteHistorialGeneral+'\nHistorial Producto: '+limiteHistorialProducto);
+      
+      if (!cambioPagina && !cambioSelects){
+        alert('No se cambiaron los parámetros dado que todos eran iguales.');
+        $("#modalParametros").modal("hide");
+      }
+      else {
+        $.getJSON(url, {tamPagina: ""+pageSize+"", tamSelects: ""+limiteSelects+"", log: log}).done(function(request) {
+          //alert(request.resultadoDB);
+          if (request.resultadoDB === "OK"){
+            //alert('Los parametros se actualizaron correctamente en la base de datos!');
+            if (cambioPagina && cambioSelects){
+              alert('Todos los parámetros se cambiaron con éxito:\n\nNUEVOS PARÁMETROS:\n---------------------------\nTamaño de página: '+pageSize+'\nTamaño de Selects: '+limiteSelects+'\n---------------------------');
+            }
+            else {
+              if (!cambioPagina && !cambioSelects){
+                alert('No se cambiaron los parámetros.');
+              }
+              else {
+                var mostrar = '-------- NUEVOS PARÁMETROS: --------';
+                if (cambioPagina){
+                  mostrar += '\n# Tamaño de página: '+pageSize;
+                }
+                if (cambioSelects){
+                  mostrar += '\n# Tamaño de Selects: '+limiteSelects;
+                }
+                mostrar += '\n--------------------------------------------';
+                alert(mostrar);
+              }
+            }
+          }
+          else {
+            alert('Hubo un problema al actualizar los datos en la base de datos.\nPor favor inténtelo nuevamente.');
+          }
+          $("#modalParametros").modal("hide");
+          location.reload(true);
+        });
+      }///************ FIN ELSE TODOS IGUALES ****
+    }///************ FIN IF SEGUIR ***************
+  //}///************* FIN IF SESION ****************
+}
+/********** fin actualizarParametros() **********/
+
 /***********************************************************************************************************************
 /// *********************************************** FIN FUNCIONES USUARIOS *********************************************
 ************************************************************************************************************************
@@ -817,16 +943,24 @@ $(document).on("click", "#buscar", function(){
 ///Básicamente arma la consulta para mostrar la pagina solicitada y llama a la función para ejecutarla.
 $(document).on("click", ".paginate", function (){
   var page = parseInt($(this).attr('data'), 10);
-
+  var id = $(this).attr("name");
+  
   ///Vuelvo a definir una variable local tamPagina para actualizar el valor que ya tiene.
   ///Esto es para que tome el último valor en caso de que se haya modificado desde el modal (que no cambia hasta recargar la página).
   var tamPagina = parseInt($("#tamPagina").val(), 10);
   var offset = (page-1)*tamPagina;
   $("#offset").val(offset);
   $("#page").val(page);
-  $("#frmResultado").attr("action", "buscar.php");
-  $("#frmResultado").submit();
- 
+  if (id === 'cargar'){
+    $("#frmCargar").attr("action", "cargar.php");
+    $("#frmCargar").removeAttr("target");
+    $('#frmCargar').submit();
+  }
+  else {
+    $("#frmResultado").attr("action", "buscar.php");
+    $("#frmResultado").removeAttr("target");
+    $("#frmResultado").submit();
+  }
 });
 /********** fin on("click", ".paginate", function () **********/
 
@@ -938,6 +1072,59 @@ $(document).on("keypress", "#pw2", function(e) {
 */
 
 /*****************************************************************************************************************************
+/// **************************************************** INICIO MODAL PARÁMETROS *********************************************
+******************************************************************************************************************************
+*/
+
+///Disparar función al hacer click en el link que dice PARAMETROS debajo del usuario logueado
+///Esto hace que se abra el modal para cambiar los parámetros.
+$(document).on("click", "#param", function(){
+  verificarSesion('', 's');
+  $("#modalParametros").modal("show");
+});
+/********** fin on("click", "#param", function() **********/
+
+///Disparar función al abrirse el modal para cambiar los parámetros.
+///Lo único que hace es limpiar el form para poder ingresar los nuevos datos.
+$(document).on("shown.bs.modal", "#modalParametros", function() {
+  $("#pageSize").val($("#tamPagina").val());
+  $("#tamSelects").val($("#limiteSelects").val());
+  $("#pageSize").attr("autofocus", true);
+  $("#pageSize").focus();
+});
+/********** fin on("shown.bs.modal", "#modalParametros", function() **********/
+
+///Disparar función al hacer click en el botón de ACTUALIZAR que está en el MODAL.
+///Llama a la función que se encarga de actualizar los parámetros.
+$(document).on("click", "#btnParam", function(){
+  actualizarParametros();
+});
+/********** fin on("click", "#btnParam", function() **********/
+
+///Disparar función al hacer ENTER estando en el elemento pageSize del MODAL.
+///Esto hace que se pase el foco al siguiente input del MODAL (tamSelects) cosa de ahorrar tiempo.
+$(document).on("keypress", "#pageSize", function(e) {
+  if(e.which === 13) {
+    $("#tamSelects").focus();
+  }  
+});
+/********** fin on("keypress", "#pageSize", function(e) **********/
+
+///Disparar función al hacer ENTER estando en el elemento tamSelects del MODAL.
+///Esto hace que se llame a la función correspondiente (actualizarParametros()) cosa de ahorrar tiempo.
+$(document).on("keypress", "#tamSelects", function(e) {
+  if(e.which === 13) {
+    actualizarParametros();
+  }  
+});
+/********** fin on("keypress", "#tamSelects", function(e) **********/
+
+/*****************************************************************************************************************************
+/// **************************************************** FIN MODAL PARÁMETROS ************************************************
+******************************************************************************************************************************
+*/
+
+/*****************************************************************************************************************************
 /// ************************************************** INICIO SUBIR ARCHIVO **************************************************
 ******************************************************************************************************************************
 */
@@ -970,14 +1157,16 @@ $(document).on("click", "[name=btnExportar]", function() {
 //    }
 //  });
   var id = $(this).attr("id");
+  var elemento = '';
   if (id === 'btnExportarCargar'){
-    $('#frmCargar').submit();
+    elemento = $("#frmCargar");
   }
   else {
-    $("#frmResultado").attr("action", "exportar.php");
-    $("#frmResultado").attr("target", "_blank");
-    $('#frmResultado').submit();
+    elemento = $("#frmResultado");
   }
+  elemento.attr("action", "exportar.php");
+  elemento.attr("target", "_blank");
+  elemento.submit();
 });
 /********** fin on("click", "#btnExportar", function() *********/
 

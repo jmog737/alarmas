@@ -51,6 +51,6 @@ if (!isset($_SESSION["tamPagina"])){
   $_SESSION["tamPagina"] = 50;
 }
 if (!isset($_SESSION["limiteSelects"])){
-  $_SESSION["limiteSelects"] = 15;
+  $_SESSION["limiteSelects"] = 10;
 }
 ?>
