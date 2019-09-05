@@ -163,9 +163,9 @@ $colorFondoTituloLeyendaPie2 = '#7c90d4';
 
 ///************************************************************* COLORES EXCEL ***************************************************
 ///NOTA: SOLO ACEPTA EN FORMATO HEXA (Salvo en formato de números)
-$colorTabStock = '023184';
+//$colorTabAlarmas = '023184';
 $colorTabBoveda = '46A743';
-$colorTabMovimientos = 'E02309';
+$colorTabAlarmas = 'E02309';
 
 $colorBordeTitulo = '023184';
 $colorFondoTitulo = sprintf("%02x%02x%02x", colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
@@ -178,11 +178,13 @@ $colorTotal = 'ff0000';
 $colorFondoTotal = 'f3FF00';
 
 $colorStock = 'Blue';
-$colorFondoStockRegular = 'A9FF96';
-$colorFondoStockAlarma1 = 'FAFF98';
-$colorFondoStockAlarma2 = 'F94A3F';
-$colorStockBoveda = 'Black';
-$colorFondoStockBoveda = 'DADADA';
+$colorFondoDefault = 'A9FF96';
+$colorFondoMN = 'ffff7c';
+$colorFondoMJ = 'ffa929';
+$colorFondoCR = 'fd5151';
+$colorFondoWR = '75ecec';
+$colorFondoNodo = '28ce44';
+$colorTextoNodo = '071c40';
 
 $colorComRegular = 'd3d3d3';
 $colorComDiff = 'ffff00';

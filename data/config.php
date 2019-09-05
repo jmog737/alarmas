@@ -37,7 +37,7 @@ if (!file_exists($unidad)) {
 $dirCargados = $unidad."\\\ArchivosCargados";
 $dirReportes = $unidad."/Reportes/";
 
-$dirExcel = $dirReportes."/Excel/";
+$dirExcel = $dirReportes."Excel/";
 $dirLog = $dirReportes."Logs/";
 $dirGraficas = $dirReportes."/graficas/";
 $rutaFotos = "images/snapshots";

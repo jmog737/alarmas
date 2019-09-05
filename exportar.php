@@ -54,7 +54,8 @@ $vida_session = time() - $_SESSION['tiempo'];
 if($vida_session < DURACION ) {
   require_once('data/pdo.php');
   require_once('data/config.php');
-  //require_once('generarExcel.php');
+  require_once('data/camposAlarmas.php');
+  require_once('generarExcel.php');
   require_once('generarPdfs.php');
   $seguir = true;
   
@@ -79,8 +80,6 @@ if($vida_session < DURACION ) {
     }
     else {
       $param = null;
-      //$seguir = false;
-      //echo "Hubo un error. Por favor verifique!.";
     }
     if (isset($_POST['query'])){
       $consulta = $_POST['query'];
@@ -90,11 +89,15 @@ if($vida_session < DURACION ) {
       echo "Hubo un error. Por favor verifique!.";
     }
     
-    $arrayNodos = array();
+    if (isset($_POST['mensaje'])){
+      $tituloReporte = $_POST['mensaje'];
+    }
+    
     if (isset($_POST['nodo'])){
       $nombreNodo = $_POST['nodo'];
     }
-    
+
+    $arrayNodos = array();
     if ($nombreNodo === 'TODOS'){
       $log = false;
       /// Consulto por el listado del nodo para poder hacer el "cambio de nodo":                                                                                                                                                                           
@@ -104,6 +107,20 @@ if($vida_session < DURACION ) {
       foreach ($nombreNodos as $ind => $valor){
         $arrayNodos[$valor['idnodo']] = $valor['localidad']." [".$valor['nombre']."]";
       }
+    }
+    $archivo = false;
+    if ($nombreNodo === 'archivo'){
+      $archivo = true;
+      $temp2 = explode('archivo ', $tituloReporte);
+      $temp3 = explode('_', $temp2[1]);
+      $nombreCorto = $temp3[0];
+      /// Comento por ahora, pero es la consulta para recuperar el nombre del nodo según ubicación
+//      $para1 = array($nombreCorto);
+//      $log = false;
+//      $consultaNodo = "select localidad from nodos where nombre=?";
+//      $datoNodo = json_decode(hacerSelect($consultaNodo, $log, $para1), true);
+//      $nombreNodo = $datoNodo['resultado'][0]['localidad'];
+      $nombreNodo = $nombreCorto;
     }
 
     if ($seguir){
@@ -142,11 +159,9 @@ if($vida_session < DURACION ) {
         /// ******************************************************* FIN PARAMETROS GENERALES ***********************************************************
 
         $nombreReporte = 'alarmas';
-        $tituloReporte = $_POST['mensaje'];
         $tituloTabla = "Alarmas";
         
         //*********************************************** Adaptación nombre del nodo sin tildes ni caracteres especiales *******************************
-        $nodo = $_POST['nodo'];  
         /// Acomodo el nombre del nodo para NO tener problemas con el nombre del archivo:
         
         /////Se define el tamaño máximo aceptable para el nombre teniendo en cuenta que el excel admite un máximo de 31 caracteres, y que además, 
@@ -157,7 +172,7 @@ if($vida_session < DURACION ) {
         ///Esto se hace para mejorar la lectura (en caso de espacios en blanco), o por requisito para el nombre de la hoja de excel
         $aguja = array(0=>" ", 1=>".", 2=>"[", 3=>"]", 4=>"*", 5=>"/", 6=>"\\", 7=>"?", 8=>":", 9=>"_", 10=>"-", 11=>'&');
         
-        $nombreNodoMostrar0 = str_replace($aguja, "", ucwords($nodo));
+        $nombreNodoMostrar0 = str_replace($aguja, "", ucwords($nombreNodo));
         $nombreNodoMostrar1 = substr($nombreNodoMostrar0, 0, $tamMaximoNombreNodo);
         
         /// Elimino los posibles tildes para evitar errores:
@@ -180,6 +195,9 @@ if($vida_session < DURACION ) {
         //********************************* Generación de la carpeta y sub carpetas necesarias segun nombre del nodo y fecha: ***************************
         if ($guardarDisco){
           $sigo = true;
+          if ($archivo){
+            $nombreNodoMostrar = "Archivo";
+          }
           $rutaCarpetaNodo = $dirReportes.$nombreNodoMostrar;
           if (is_dir($rutaCarpetaNodo)){
             //echo "La carpeta del cliente ya existe: $rutaCarpetaNodo.<br>";
@@ -229,14 +247,18 @@ if($vida_session < DURACION ) {
             $salida = $subRuta."/".$nombreArchivo;
             $GLOBALS["dirExcel"] = $subRuta."/";
           }
+          escribirLog('Se genera y guarda el pdf: "'.$salida.'"');
           $pdfResumen->Output($salida, 'F');
         }        
         ///**************************** FIN Generación de la carpeta y sub carpetas necesarias segun nombre del nodo y fecha: **************************
         ///*********************************************************************************************************************************************
-        
+                
         ///Además lo muestro en pantalla:        
         $pdfResumen->Output('I');
         
+        $nombreReporte = $nombreNodoMostrar;
+        $archivo = generarExcelAlarmas($registros);
+        escribirLog('Se genera y guarda el excel: "'.$archivo.'"');
         ///**************************************** FIN Guardado del archivo en disco y muestra en pantalla: *******************************************
         ///*********************************************************************************************************************************************
       } /// Fin if (totalFilas >0)

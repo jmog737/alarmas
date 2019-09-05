@@ -131,8 +131,7 @@ class PDF extends PDF_MC_Table
   }
     
   function armarTabla(){
-    global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $arrayNodos, $nombreNodo;
-    require_once('data/camposAlarmas.php');
+    global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $arrayNodos, $nombreNodo, $camposAlarmas;
     
     $hTitulo = 16;
     $tamPagina = $this->GetPageWidth();
