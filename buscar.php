@@ -208,7 +208,11 @@ $mensajeNuevo = '';
             case 'MN': $clase = 'alMinor';
                        break;
             case 'WR': $clase = 'alWarning';
-                       break;     
+                       break;    
+            case 'NA': $clase = 'alNotAlarmed';
+                       break; 
+            case 'NR': $clase = 'alNotReported';
+                       break;          
             default: $clase = '';
                      break;
           } /// Fin switch tipoAlarma

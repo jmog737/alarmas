@@ -454,6 +454,12 @@ hr {
 .alWarning {
   background-color:#75ecec;
 }
+.alNotAlarmed {
+  background-color:#9FB685;
+}
+.alNotReported {
+  background-color:#999999;
+}
 .procesada {
   background-color: #85ca5e;
 }

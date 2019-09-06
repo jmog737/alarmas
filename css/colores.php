@@ -59,6 +59,8 @@ define("colorAlarmaMNFondo", array(255, 255, 124));
 define("colorAlarmaMJFondo", array(255, 169, 41));
 define("colorAlarmaCRFondo", array(253, 81, 81));
 define("colorAlarmaWRFondo", array(117, 236, 236));
+define("colorAlarmaNAFondo", array(159, 182, 133));
+define("colorAlarmaNRFondo", array(153, 153, 153));
 
 ///Colores para los comentarios:
 define("colorComPlastico", array(234, 140, 160));
@@ -183,6 +185,8 @@ $colorFondoMN = 'ffff7c';
 $colorFondoMJ = 'ffa929';
 $colorFondoCR = 'fd5151';
 $colorFondoWR = '75ecec';
+$colorFondoNA = '9FB685';
+$colorFondoNR = '999999';
 $colorFondoNodo = '28ce44';
 $colorTextoNodo = '071c40';
 

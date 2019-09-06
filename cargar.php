@@ -105,16 +105,7 @@ require_once ('data/pdo.php');
             $_SESSION['nodo'] = $localidad1;
             $_SESSION['idnodo'] = $idnodo;
             $_SESSION['archivo'] = $nombreArchivo;
-
-            ///Armo consulta para la carga del archivo CSV a la base de datos:
-//            $queryCargar = "load data infile '$destino' into table alarmas "
-//                    . "fields terminated by ';' "
-//                    . "optionally enclosed by '\"' "
-//                    . "lines terminated by '\\r\\n' "
-//                    . "ignore 3 lines "
-//                    . "(nombre, compound, tipoAID, tipoAlarma, tipoCondicion, descripcion, afectacionServicio, @fechaCompleta, ubicacion, direccion, valorMonitoreado, nivelUmbral, periodo, datos, filtroALM, filtroAID) "
-//                    . "set Dia=concat(year(now()), '-', substring(trim(@fechaCompleta), 1, 5)), Hora=concat(substring(trim(@fechaCompleta), 8, 2), ':', substring(trim(@fechaCompleta), 11, 2), ':', substring(trim(@fechaCompleta), 14, 2)), causa='', solucion='', usuario=".$_SESSION['user_id'].", nodo=".$_SESSION['idnodo'].", archivo='".$_SESSION['archivo']."', estado='Sin procesar';";
-//            
+        
             $queryCargar = "load data infile '$destino' into table alarmas "
                     . "fields terminated by ';' "
                     . "optionally enclosed by '\"' "
@@ -295,7 +286,11 @@ require_once ('data/pdo.php');
                 case 'MN': $clase = 'alMinor';
                            break;
                 case 'WR': $clase = 'alWarning';
-                           break;     
+                           break;    
+                case 'NA': $clase = 'alNotAlarmed';
+                           break; 
+                case 'NR': $clase = 'alNotReported';
+                           break;          
                 default: $clase = '';
                          break;
               } /// Fin switch tipoAlarma

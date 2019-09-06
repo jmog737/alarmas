@@ -3,8 +3,8 @@
 header('content-type:text/css');
  
 /******** STYLES *********/
-//$colorFondo = '#61122f';
-$colorFondo = '#263c25';
+$colorFondo = '#61122f';
+//$colorFondo = '#263c25';
 /****** FIN STYLES *******/
 
 /******* STYLES1: ********/ 
@@ -356,7 +356,7 @@ hr {
   border-collapse: separate;
   margin: 0 auto;
   border-radius: 25px;
-  max-width: 60%;
+  max-width: 60% !important;
 }
 .tabla2 caption {
   display: table-caption;
@@ -393,15 +393,10 @@ hr {
   text-align: center;
   padding: 0px;
 }
-.tabla2 textarea {
-  line-height: normal;
-  width: 100%;
-  border: #c0c0c0 1px solid;
-  border-collapse: separate;
+.tabla2 td input[type="checkbox"]{
   text-align: center;
-  padding: 0px;
-  background-color:#c1c1bf;
-  /*resize: none;*/
+  vertical-align: middle;
+  background-color:background;
 }
 .tabla2 td select {
   line-height: normal;
@@ -412,11 +407,22 @@ hr {
   text-align: center;
   padding: 0px;
 }
+.tabla2 textarea {
+  line-height: normal;
+  width: 100%;
+  border: #c0c0c0 1px solid;
+  border-collapse: separate;
+  text-align: center;
+  padding: 0px;
+  background-color:#c1c1bf;
+  /*resize: none;*/
+}
 .tabla2 .subTituloTabla1 {
   background-color:#57805e;
+  background-color: #28ce44;
   text-align: center;
   color: #071c40;
-  font-size: 10pt;
+  /*font-size: 10pt;*/
 }
 .tabla2 .subTituloTabla2 {
   background-color:#9fadea;
@@ -425,11 +431,7 @@ hr {
   color: #071c40;
   font-size: 10pt;
 }
-.tabla2 td input[type="checkbox"]{
-  text-align: center;
-  vertical-align: middle;
-  background-color:background;
-}
+
 .tabla2 label {
   margin: 0px;
   padding: 0px;
@@ -469,6 +471,12 @@ hr {
 }
 .alWarning {
   background-color:#75ecec;
+}
+.alNotAlarmed {
+  background-color:#9FB685;
+}
+.alNotReported {
+  background-color:#999999;
 }
 .procesada {
   background-color: #85ca5e;
@@ -830,7 +838,8 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
   border-radius: 0 30px 30px 0;
 }
 .pageActive {
-  background-color: #f36464;
+  /*background-color: #f36464;*/
+  background-color: #757582 !important;
 }
 
 .inhabilitar{

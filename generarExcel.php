@@ -52,7 +52,7 @@ function generarExcelAlarmas($reg) {
   $totalCampos = 0;
   $nombreCampos = array();
   foreach ($camposAlarmas as $ind => $fila ) {
-    if ($fila['mostrarReporte'] === 'si'){
+    if ($fila['mostrarExcel'] === 'si'){
       $nombreCampos[] = html_entity_decode($fila['nombreMostrar']);
       $totalCampos++;
       if ($fila['nombreDB'] === 'tipoAlarma'){
@@ -163,7 +163,7 @@ function generarExcelAlarmas($reg) {
     }
     
     foreach ($camposAlarmas as $indice => $datoCampo ) {
-      if ($datoCampo['mostrarReporte'] === 'si'){
+      if ($datoCampo['mostrarExcel'] === 'si'){
         switch ($datoCampo['nombreDB']){
           case 'dia': $temp = explode('-', $filita[$datoCampo['nombreDB']]);
                       $datito = $temp[2].'/'.$temp[1].'/'.$temp[0];
@@ -223,6 +223,20 @@ function generarExcelAlarmas($reg) {
           'fillType' => 'solid',
       ),
   );
+  
+  $styleNA = array(
+      'fill' => array(
+          'color' => array ('rgb' => $GLOBALS["colorFondoNA"]),
+          'fillType' => 'solid',
+      ),
+  );
+  
+  $styleNR = array(
+      'fill' => array(
+          'color' => array ('rgb' => $GLOBALS["colorFondoNR"]),
+          'fillType' => 'solid',
+      ),
+  );
 
   /// Aplico color de fondo de la columna tipo de alarma según el valor:
   for ($k = $filaEncabezado + 1; $k <= $filaFinal; $k++) {
@@ -237,6 +251,10 @@ function generarExcelAlarmas($reg) {
                   break;
       case 'WR':  $hoja->getStyle($celda)->applyFromArray($styleWR);
                   break;
+      case 'NA':  $hoja->getStyle($celda)->applyFromArray($styleNA);
+                  break;
+      case 'NR':  $hoja->getStyle($celda)->applyFromArray($styleNR);
+                  break;          
       default: break;  
     }
   }  

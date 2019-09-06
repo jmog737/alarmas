@@ -328,17 +328,17 @@ class PDF extends PDF_MC_Table
             $tipoAlarma = $fila['tipoAlarma'];
             switch ($tipoAlarma){
               case 'MN':  $this->setFillColor(colorAlarmaMNFondo[0], colorAlarmaMNFondo[1], colorAlarmaMNFondo[2]);
-
                           break;
               case 'CR':  $this->setFillColor(colorAlarmaCRFondo[0], colorAlarmaCRFondo[1], colorAlarmaCRFondo[2]);
-
                           break;
               case 'MJ':  $this->setFillColor(colorAlarmaMJFondo[0], colorAlarmaMJFondo[1], colorAlarmaMJFondo[2]);
-
                           break;
               case 'WR':  $this->setFillColor(colorAlarmaWRFondo[0], colorAlarmaWRFondo[1], colorAlarmaWRFondo[2]);
-
                           break;
+              case 'NA':  $this->setFillColor(colorAlarmaNAFondo[0], colorAlarmaNAFondo[1], colorAlarmaNAFondo[2]);
+                          break;
+              case 'NR':  $this->setFillColor(colorAlarmaNRFondo[0], colorAlarmaNRFondo[1], colorAlarmaNRFondo[2]);
+                          break;          
               default:  $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
                         break;
             }

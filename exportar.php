@@ -158,7 +158,6 @@ if($vida_session < DURACION ) {
         //
         /// ******************************************************* FIN PARAMETROS GENERALES ***********************************************************
 
-        $nombreReporte = 'alarmas';
         $tituloTabla = "Alarmas";
         
         //*********************************************** Adaptación nombre del nodo sin tildes ni caracteres especiales *******************************
@@ -196,7 +195,11 @@ if($vida_session < DURACION ) {
         if ($guardarDisco){
           $sigo = true;
           if ($archivo){
+            $nombreReporte = $nombreNodoMostrar;
             $nombreNodoMostrar = "Archivo";
+          }
+          else {
+            $nombreReporte = $nombreNodoMostrar;
           }
           $rutaCarpetaNodo = $dirReportes.$nombreNodoMostrar;
           if (is_dir($rutaCarpetaNodo)){
@@ -256,7 +259,7 @@ if($vida_session < DURACION ) {
         ///Además lo muestro en pantalla:        
         $pdfResumen->Output('I');
         
-        $nombreReporte = $nombreNodoMostrar;
+        //$nombreReporte = $nombreNodoMostrar;
         $archivo = generarExcelAlarmas($registros);
         escribirLog('Se genera y guarda el excel: "'.$archivo.'"');
         ///**************************************** FIN Guardado del archivo en disco y muestra en pantalla: *******************************************

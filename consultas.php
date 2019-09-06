@@ -144,6 +144,8 @@ $totalUsuarios = $datos['rows'];
                 <option value="WR" title="Alarma WARNING">WR</option>  
                 <option value="MJ" title="Alarma MAJOR">MJ</option>
                 <option value="MN" title="Alarma MINOR">MN</option>
+                <option value="NA" title="Alarma NOT ALARMED">NA</option>
+                <option value="NR" title="Alarma NOT REPORTED">NR</option>
               </select>
             </td> 
           </tr>
