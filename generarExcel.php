@@ -318,5 +318,5 @@ function generarExcelAlarmas($reg) {
   $writer->save($salida);
   /// *********************************************************** FIN GUARDADO ***************************************************************
   
-  return $salida;
+  return $nombreArchivo;
 }

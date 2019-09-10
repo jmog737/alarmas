@@ -57,16 +57,20 @@ if($vida_session < DURACION ) {
   require_once('data/camposAlarmas.php');
   require_once('generarExcel.php');
   require_once('generarPdfs.php');
+  require_once('enviarMails.php');
   $seguir = true;
   
+  //***************************************************** DESTINATARIOS CORREOS **************************************************************
+  $paraListados = array();
+  $copiaListados = array();
+  $ocultosListados = array();
+  //**************** PRUEBAS ************************************************************
+  $paraListados['Juan Martín Ortega'] = "jmog737@gmail.com";
+  $copiaListados['Juan Martín Ortega'] = "jmog737@gmail.com";
+  //**************** FIN PRUEBAS ********************************************************
+  //**************************************************** FIN DESTINATARIOS CORREOS ***********************************************************
+  
   if (isset($_POST)){
-//    if (isset($_POST['origen'])){
-//      $origen = $_POST['origen'];
-//    }
-//    else {
-//      $seguir = false;
-//      echo "Hubo un error. Por favor verifique!.";
-//    }
     $param = $_POST["param"];
     if (isset($_POST["param"])){
       $t = stripos($param, "&");
@@ -96,10 +100,15 @@ if($vida_session < DURACION ) {
     if (isset($_POST['nodo'])){
       $nombreNodo = $_POST['nodo'];
     }
-
+    
+    if (isset($_POST['nodoCorto'])){
+      $nombreCorto = $_POST['nodoCorto'];
+    }
+    
     $arrayNodos = array();
     if ($nombreNodo === 'TODOS'){
-      $log = false;
+      $nombreCorto = "TODOS";
+      $log = "NO";
       /// Consulto por el listado del nodo para poder hacer el "cambio de nodo":                                                                                                                                                                           
       $consultaNodos = "select distinct idnodo, localidad, nombre from nodos";
       $datosNodos = json_decode(hacerSelect($consultaNodos, $log), true);
@@ -124,7 +133,7 @@ if($vida_session < DURACION ) {
     }
 
     if ($seguir){
-      $log = false;
+      $log = "NO";
       $datos = json_decode(hacerSelect($consulta, $log, $param), true);
       $registros = $datos['resultado'];
       $totalFilas = $datos['rows'];
@@ -171,14 +180,15 @@ if($vida_session < DURACION ) {
         ///Esto se hace para mejorar la lectura (en caso de espacios en blanco), o por requisito para el nombre de la hoja de excel
         $aguja = array(0=>" ", 1=>".", 2=>"[", 3=>"]", 4=>"*", 5=>"/", 6=>"\\", 7=>"?", 8=>":", 9=>"_", 10=>"-", 11=>'&');
         
-        $nombreNodoMostrar0 = str_replace($aguja, "", ucwords($nombreNodo));
+        $nombreNodoMostrar0 = str_replace($aguja, "", ucwords($nombreCorto));
         $nombreNodoMostrar1 = substr($nombreNodoMostrar0, 0, $tamMaximoNombreNodo);
         
         /// Elimino los posibles tildes para evitar errores:
         $nombreNodoMostrar = eliminar_tildes($nombreNodoMostrar1);
         
         $timestamp = date('dmy_His');
-        $nombreArchivo = $nombreNodoMostrar."_".$timestamp.".pdf";
+        //$nombreArchivo = $nombreNodoMostrar."_".$timestamp.".pdf";
+        $nombreArchivo = $nombreCorto."_".$timestamp.".pdf";
         //********************************************** FIN Adaptación nombre del nodo sin tildes ni caracteres especiales *****************************
         
         //Instancio objeto de la clase:
@@ -187,11 +197,11 @@ if($vida_session < DURACION ) {
 
         $pdfResumen->armarTabla();
            
-        ///***************************************** Guardado del archivo en disco y muestra en pantalla: **********************************************
-        ///*********************************************************************************************************************************************
+        ///***************************************** GUARDADO DEL ARCHIVO EN DISCO y muestra en pantalla: ************************************
+        ///***********************************************************************************************************************************
         
-        ///**********************************************************************************************************************************************
-        //********************************* Generación de la carpeta y sub carpetas necesarias segun nombre del nodo y fecha: ***************************
+        ///***********************************************************************************************************************************
+        //********************************* Generación de la carpeta y sub carpetas necesarias segun nombre del nodo y fecha: ****************
         if ($guardarDisco){
           $sigo = true;
           if ($archivo){
@@ -252,18 +262,67 @@ if($vida_session < DURACION ) {
           }
           escribirLog('Se genera y guarda el pdf: "'.$salida.'"');
           $pdfResumen->Output($salida, 'F');
-        }        
-        ///**************************** FIN Generación de la carpeta y sub carpetas necesarias segun nombre del nodo y fecha: **************************
-        ///*********************************************************************************************************************************************
-                
-        ///Además lo muestro en pantalla:        
-        $pdfResumen->Output('I');
+               
+          ///**************************** FIN Generación de la carpeta y sub carpetas necesarias segun nombre del nodo y fecha: ****************
+          ///***********************************************************************************************************************************
+
+          ///Además lo muestro en pantalla:        
+          $pdfResumen->Output('I');
+
+          $archivo = generarExcelAlarmas($registros);
+          escribirLog('Se genera y guarda el excel: "'.$dirExcel.$archivo.'"');
+          ///**************************************** FIN GUARDADO DEL ARCHIVO EN DISCO y muestra en pantalla: *********************************
+
+          ///************************************************************ GENERACION ZIP FILE **************************************************
+          $zip = new ZipArchive;
+          $nombreZip = $nombreReporte."_".$timestamp.".zip";
+
+          /// Si por algún motivo la creación de alguna de las carpetas dio error, guardo en la carpeta ya configurada y creada que sé existe.
+          /// Si no hubo problemas en la creación, guardo en la carpeta creada:
+          if (!($sigo)){
+            $fileDir = $dirReportes.$nombreZip;
+          }
+          else {
+            $fileDir = $subRuta."/".$nombreZip;
+          }
+
+          $excel = $dirExcel.$archivo;
+
+          if ($zip->open($fileDir, ZIPARCHIVE::CREATE ) !== TRUE) 
+              {
+              exit("No se pudo abrir el archivo\n");
+              } 
+          //agrego el pdf correspondiente al reporte:
+          $zip->addFile($salida, $nombreArchivo);
+          $zip->addFile($excel, $archivo);
+
+  //        if ($zipSeguridad !== 'nada'){
+  //          $zip->setPassword($pwdZip);
+  //          $zip->setEncryptionName($archivo, ZipArchive::EM_AES_256);
+  //          $zip->setEncryptionName($nombreArchivo, ZipArchive::EM_AES_256);
+  //        }
+
+          $zip->close();
+          escribirLog('Se genera y guarda el zip: "'.$fileDir.'"');
+          ///********************************************************** FIN GENERACION ZIP FILE ************************************************
+        } 
         
-        //$nombreReporte = $nombreNodoMostrar;
-        $archivo = generarExcelAlarmas($registros);
-        escribirLog('Se genera y guarda el excel: "'.$archivo.'"');
-        ///**************************************** FIN Guardado del archivo en disco y muestra en pantalla: *******************************************
-        ///*********************************************************************************************************************************************
+        ///************************************************************** ENVÍO DE MAILS *****************************************************
+        if (isset($mails)){
+//          $destinatarios = explode(",", $mails);
+//          foreach ($destinatarios as $valor){
+//            $para["$valor"] = $valor;
+//          }
+          //$asunto = $asunto." (MAIL DE TEST!!!)";
+
+          $asunto = "Mail de prueba";
+          $cuerpo = utf8_decode("<html><body><h4>Se adjunta el reporte generado con las alarmas.</h4></body></html>");
+          echo "mando mail: $asunto<br>";
+          $respuesta = enviarMail($paraListados, $copiaListados, $ocultosListados, $asunto, $cuerpo, "REPORTE", $nombreZip, $fileDir);
+          escribirLog("Se mandó mail");
+          echo $respuesta;
+        }
+        ///************************************************************ FIN ENVÍO DE MAILS ***************************************************
       } /// Fin if (totalFilas >0)
     } /// Fin if (seguir)
   } /// Fin if (isset($_POST))

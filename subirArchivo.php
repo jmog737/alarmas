@@ -33,7 +33,7 @@ require_once ('head.php');
   //$query = "select idnodo, nombre, localidad from nodos where areaMetro=true";
   
   require_once ('data/pdo.php');
-  $log = false;
+  $log = "NO";
   $datos = json_decode(hacerSelect($query, $log),  true);
   $localidades = $datos['resultado'];
   $totalLocalidades = $datos['rows'];

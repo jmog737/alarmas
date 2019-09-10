@@ -20,6 +20,7 @@ if(!isset($_SESSION))
 require_once ('head.php');
 require_once ('data/config.php');
 require_once ('data/pdo.php');
+require_once ('data/cargarArchivo.php');
 ?>
   <body>
 <?php
@@ -31,6 +32,7 @@ require_once ('data/pdo.php');
       $seguir = true;
       $finValidacion = false;
       $mostrarError = false;
+      $mensaje = '';
       
       if (isset($_GET['i'])){
         $inicio = $_GET['i'];
@@ -79,14 +81,37 @@ require_once ('data/pdo.php');
         } /// Fin validacion: tamaño
 
         if ($seguir){
-          $nombreArchivo = $nombre."_".date("dmY").".".$extension;
+          /// Levanto el nombre del nodo y su id.
+          /// Como en el POST NO se pasan los atributos del option, se armó antes de enviar un value con todo.
+          /// Ahora lo vuelvo a separar:
+          $localidadTemp = $_POST['nodo'];
+          $temp0 = explode('---', $localidadTemp);
+          $localidad1 = $temp0[0];
+          $idnodo = $temp0[2];
+          
+          $temp1 = explode("#", $temp0[1]);
+          $temp2 = explode("-", $temp1[0]);
+          $nombreCorto = $temp2[0];
+          
+          /// Armo fecha para agregar al nombre del archivo
+          if (setlocale(LC_ALL, 'esp') === false){
+            echo "Hubo un error con la localía. Por favor verifique que se hayan creado bien las carpetas<br>";
+          }
+          
+          $dia = strftime("%d", time());
+          $mes = substr(ucwords(strftime("%b", time())), 0, 3);
+          $year = strftime("%Y", time());
+          $fecha = $dia.$mes.$year;    
+          
+          $nombreArchivo = $nombreCorto."_".$fecha.".".$extension;
           $destino = $dirCargados."\\\\".$nombreArchivo;
           $continuar = true;
           
-          if (file_exists($destino)) {
-            echo "<br><h3>¡El fichero <span class='negrita'>$nombreArchivo</span> YA se proces&oacute;!.<br>Por favor verifique.</h3>";
-            $continuar = false;
-          } /// Fin if file_exists 
+          /// Comento MOMENTÁNEAMENTE la validación de existencia de un archivo previo ya cargado:
+//          if (file_exists($destino)) {
+//            echo "<br><h3>¡El fichero <span class='negrita'>$nombreArchivo</span> YA se proces&oacute;!.<br>Por favor verifique.</h3>";
+//            $continuar = false;
+//          } /// Fin if file_exists 
 
           if ($continuar === TRUE){
             if (!(move_uploaded_file($_FILES['uploadedFile']['tmp_name'], $destino))) {
@@ -94,51 +119,34 @@ require_once ('data/pdo.php');
               return;
             } /// Fin if move_uploaded_file
             
-            /// Levanto el nombre del nodo y su id.
-            /// Como en el POST NO se pasan los atributos del option, se armó antes de enviar un value con todo.
-            /// Ahora lo vuelvo a separar:
-            $localidadTemp = $_POST['nodo'];
-            $temp = explode('---', $localidadTemp);
-            $localidad1 = $temp[0];
-            $nombreCorto = $temp[1];
-            $idnodo = $temp[2];
             $_SESSION['nodo'] = $localidad1;
+            $_SESSION['nodoCorto'] = $nombreCorto;
             $_SESSION['idnodo'] = $idnodo;
             $_SESSION['archivo'] = $nombreArchivo;
         
-            $queryCargar = "load data infile '$destino' into table alarmas "
-                    . "fields terminated by ';' "
-                    . "optionally enclosed by '\"' "
-                    . "lines terminated by '\\r\\n' "
-                    . "ignore 3 lines "
-                    . "(nombre, compound, tipoAID, tipoAlarma, tipoCondicion, descripcion, afectacionServicio, @fechaCompleta, ubicacion, direccion, valorMonitoreado, nivelUmbral, periodo, datos, filtroALM, filtroAID) "
-                    . "set Dia=concat(year(now()), '-', substring(trim(@fechaCompleta), 1, 5)), Hora=concat(substring(trim(@fechaCompleta), 8, 2), ':', substring(trim(@fechaCompleta), 11, 2), ':', substring(trim(@fechaCompleta), 14, 2)), causa='', solucion='', usuario= :user_id, nodo= :idnodo, fechaCarga= :fechaCarga, archivo= :archivo, estado='Sin procesar';";
-            
-            $sth = $pdo->prepare($queryCargar);
-            $sth->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_STR);
-            $sth->bindParam(':idnodo', $_SESSION['idnodo'], PDO::PARAM_STR);
-            $sth->bindParam(':archivo', $_SESSION['archivo'], PDO::PARAM_STR);
-            $sth->bindParam(':fechaCarga', $fechaCarga, PDO::PARAM_STR);
-            
-  
-            $dato = array();
-            try {
-              //$result = $pdo->query($queryCargar);
-              $result = $sth->execute();
-            } catch (PDOException $e) {
-                print "<br><strong>¡ERROR!:</strong> " . $e->getMessage() . "<br>Por favor, ¡verifique que el archivo a cargar tenga datos!.<br>";
-                $volver = "<br><a href='subirArchivo.php'>Volver a Inicio</a><br><br>";
-                echo $volver;
-                die();
-            } /// Fin catch consulta
-
-            if ($result !== FALSE) {
-              $dato["resultado"] = "Archivo correctamente subido a la base de datos.";
-            } /// Fin if result !== false: carga correcta.  
+            $carga = cargarArchivo($destino);
+            if ($carga !== false){
+              if ($carga["exito"] === false){
+                $mostrarError = true;
+                $mensajeError = "<strong>¡ERROR!:</strong> ".$mensaje."<br>";
+              } /// Fin if exito === false ---> Si dio false indica que hubo un error con alguno de los registros o uno inesperado en el fgets
+              else {
+                if (($carga["duplicados"] === 0)&&($carga["errores"] === 0)){
+                  $mensaje = "<h3>".$carga["mensaje"]."</h3>";
+                }
+                else {
+                  $mensaje = $carga["mensaje"];
+                  $mensaje .= "<br>Alarmas cargadas: ".$carga["cargados"]."<br>";
+                  $mensaje .= "Alarmas duplicadas: ".$carga["duplicados"]."<br>";
+                  $mensaje .= "Total de alarmas: ".$carga["lineas"]."<br>";
+                }   
+              } /// Fin del ese if exito === false      
+            } /// Fin if ($carga !== false) - si es false indica que dio error file_exists
             else {
-              $dato["resultado"] = "ERROR DURANTE LA CARGA DE ARCHIVO";
-              $mostrarError = true;
-            } /// Fin result === FALSE: error en la carga del archivo
+              $mensaje = "<br><strong>¡ERROR!:</strong> No existe el archivo $destino.";
+              echo "<h3>".$mensaje."</h3><br>";
+              $seguir = false;
+            }
           }/// Fin if $continuar
           else {
             $seguir = false;
@@ -150,14 +158,18 @@ require_once ('data/pdo.php');
       /// Si no hubo problemas con la validación o vengo desde editarAlarma sigo:
       if ($seguir){    
         if (!(isset($_SESSION['nodo']))){
-          $queryUltimo = "select nodos.idnodo, nodos.localidad, alarmas.archivo from alarmas inner join nodos on nodos.idnodo=alarmas.nodo order by idalarma desc limit 1";
-          $log = false;
+          $queryUltimo = "select nodos.idnodo, nodos.nombre, nodos.localidad, alarmas.archivo from alarmas inner join nodos on nodos.idnodo=alarmas.nodo order by idalarma desc limit 1";
+          $log = "NO";
           $datosUltimo = json_decode(hacerSelect($queryUltimo, $log), true);
           $registro = $datosUltimo['resultado'][0];
+          $temp11 = explode("#", $registro['nombre']);
+          $temp21 = explode("-", $temp11[0]);
+          $nombreCorto0 = $temp21[0];
           $_SESSION['nodo'] = $registro['localidad'];
+          $_SESSION['nodoCorto'] = $nombreCorto0;
           $_SESSION['idnodo'] = $registro['idnodo'];
           $_SESSION['archivo'] = $registro['archivo'];
-          echo "<h3>Aún no se ha cargado ningún archivo.<br>Se muestran las alarmas del último archivo cargado: ".$_SESSION['archivo']."</h3>";
+          $mensaje = "<h3>Aún no se ha cargado ningún archivo.<br>Se muestran las alarmas del último archivo cargado: ".$_SESSION['archivo']."</h3>";
           $tituloPagina = "Resultado de la &uacute;ltima carga";
         } /// Fin if isset $_SESSION
         else {
@@ -166,19 +178,20 @@ require_once ('data/pdo.php');
 
         /// Si hubo error muestro el mensaje de error. De lo contrario, muestro contenido del archivo:
         if ($mostrarError) {
-          echo $dato["resultado"]."<br>";
+          echo $mensajeError;
         } /// Fin if mostrarError
         else {
+          echo "<h2>".$tituloPagina."</h2>";
           /// Agrego el archivo que reordena los campos:
           require_once('data/camposAlarmas.php');
-          
+          echo $mensaje."<br>";
           /// Armo la consulta
           $consulta = "select * from alarmas where archivo= ? order by dia desc, hora desc";
           $param = array($_SESSION['archivo']);
           /// Serializo los parámetros para poder pasarlos en el post:
           $paramSerial = serialize($param);
           
-          $log = false;
+          $log = "NO";
           /// Rearmo la consulta SOLO para conocer el total de datos:
           $temp0 = explode("from", $consulta);
           $consultaTotal = "select count(*) from".$temp0[1];
@@ -222,10 +235,10 @@ require_once ('data/pdo.php');
           $datos = json_decode(hacerSelect($consultaNueva, $log, $param), true);
           $mensajeNuevo = '';
           
-          $tituloReporte = "Alarmas del archivo ".$_SESSION['archivo']." [".$_SESSION['nodo']."]";
+          //$tituloReporte = "Alarmas del archivo ".$_SESSION['archivo']." [".$_SESSION['nodo']."]";
+          $tituloReporte = "Alarmas en ".$_SESSION['nodo']." [@".$_SESSION['archivo']."]";
           $mensajeNuevo = $tituloReporte." (Total: ".$totalDatos.")";
-          echo "<br>";
-          echo "<h2>".$tituloPagina."</h2>";
+          
           echo "<h3>".$mensajeNuevo."</h3>";
           echo "<br>";
           
@@ -371,6 +384,7 @@ require_once ('data/pdo.php');
             echo "<input type='hidden' name='param' value='".$paramSerial."'>";
             echo "<input type='hidden' name='mensaje' value='".$tituloReporte."'>";
             echo "<input type='hidden' name='nodo' value='".$_SESSION['nodo']."'>";
+            echo "<input type='hidden' name='nodoCorto' value='".$_SESSION['nodoCorto']."'>";
             echo "<input type='hidden' name='offset' id='offset' value=''>";
             echo "<input type='hidden' name='page' id='page' value=''>";
             echo "<input type='hidden' name='origen' value='cargar'>";

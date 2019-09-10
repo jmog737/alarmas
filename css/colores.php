@@ -1,10 +1,10 @@
 <?php
-if(!isset($_SESSION)) 
-  {
+
+if (!isset($_SESSION)) {
   //Reanudamos la sesión:
-  session_start(); 
+  session_start();
 }
-/*!
+/* !
   @file colores.php
   @brief Archivo que contiene las constantes predefinidas con los colores usados para generar los pdfs. \n
   @version v.1.0.
@@ -15,7 +15,7 @@ if(!isset($_SESSION))
 //$colorHexa = sprintf("#%02x%02x%02x", $testColor[0], $testColor[1], $testColor[2]);echo "testColor: $testColor<br>colorHexa: $colorHexa<br>";
 ///**************************************************** COLORES PDFs *************************************************************
 ///Color para la marca de agua:
-define("colorMarcaAgua", array(255,180,203));
+define("colorMarcaAgua", array(255, 180, 203));
 
 ///Color para el título del Header:
 define("colorHeaderTituloTexto", array(0, 0, 0));
@@ -86,9 +86,6 @@ define("colorPromedio", array(249, 143, 8));
 
 define("colorTotal", array(0, 255, 255));
 ///********************************************************** FIN COLORES PDFs **************************************************
-
-
-
 ///****************************************************** COLORES para las GRAFICAS *********************************************
 $colorRetirosGrafica = array(17, 17, 204);
 $colorRenosGrafica = array(240, 138, 29);
@@ -151,7 +148,7 @@ $colorGradiente2 = '#023184:0.98';
 
 ///Colores para la gráfica tipo torta (cuando es por producto).
 ///El orden es: retiros, ingresos, renos, destrucciones, ajuste retiros y ajuste ingresos:
-$coloresTorta = array('blue','forestgreen','#ff9600', 'red', '#a25cf3', '#ffc168');
+$coloresTorta = array('blue', 'forestgreen', '#ff9600', 'red', '#a25cf3', '#ffc168');
 $colorPorcentajes = 'blue';
 $colorBackgroundTorta = 'ivory3';
 $colorShadowLeyendaPie = '#e2bd6e@1';
@@ -160,9 +157,6 @@ $colorFondoTituloLeyendaPie1 = '#b19dda';
 $colorFondoTituloLeyendaPie2 = '#7c90d4';
 
 ///***************************************************** FIN COLORES para las GRAFICAS *******************************************
-
-
-
 ///************************************************************* COLORES EXCEL ***************************************************
 ///NOTA: SOLO ACEPTA EN FORMATO HEXA (Salvo en formato de números)
 //$colorTabAlarmas = '023184';
@@ -170,8 +164,8 @@ $colorTabBoveda = '46A743';
 $colorTabAlarmas = 'E02309';
 
 $colorBordeTitulo = '023184';
-$colorFondoTitulo = sprintf("%02x%02x%02x", colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
-//$colorFondoTitulo = '4acba7';
+//$colorFondoTitulo = sprintf("%02x%02x%02x", colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
+$colorFondoTitulo = '4acba7';
 
 $colorFondoCampos = 'AEE2FA';
 $colorFondoTextoLegal = 'DFDFDF';
@@ -222,5 +216,4 @@ $colorFondoAjustesRetirosTotal = 'a25cf3';
 $colorFondoAjustesIngresosTotal = 'ffc168';
 
 ///************************************************************ FIN COLORES EXCEL *************************************************
-
 ?>

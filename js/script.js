@@ -55,13 +55,13 @@ function showHint(str, id, seleccionado) {
     return;
   } 
   else {
-    var url = "data/getJSON.php";
-    var log = false;
     var query = "select distinct archivo from alarmas where (alarmas.archivo like '%"+str+"%' or alarmas.fechaCarga like '%"+str+"%') order by alarmas.fechaCarga desc, alarmas.archivo asc";
 
     if (seleccionado !== ''){
       var archivosTemp = seleccionado.split(',');
     }
+    var url = "data/getJSON.php";
+    var log = "NO";
     $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
       var sugerencias = request.resultado;
       var totalSugerencias = parseInt(request.rows, 10);
@@ -194,15 +194,16 @@ function validarSubmitCargar(){
       var archivo2 = archivo1.split("\\");
       var tam = archivo2.length;
       var nombreArchivo = archivo2[tam-1];
-      
-      if (nombreSinOCS === nombreArchivo){
-        //alert('Los nombres coinciden:\nnodo: '+nombreSinOCS+'\narchivo: '+nombreArchivo);
-        $("#frmSubir").submit();
-      }
-      else {
-        alert('El archivo seleccionado NO coincide con el nodo elegido:\nNodo: '+nombreSinOCS+'\nArchivo: '+nombreArchivo+'\nPor favor verifique.');
-        return false;
-      }
+      $("#frmSubir").submit();
+      /// Comento por ahora la validación para que no se repita el archivo:
+//      if (nombreSinOCS === nombreArchivo){
+//        //alert('Los nombres coinciden:\nnodo: '+nombreSinOCS+'\narchivo: '+nombreArchivo);
+//        $("#frmSubir").submit();
+//      }
+//      else {
+//        alert('El archivo seleccionado NO coincide con el nodo elegido:\nNodo: '+nombreSinOCS+'\nArchivo: '+nombreArchivo+'\nPor favor verifique.');
+//        return false;
+//      }
     }
   }
 }
@@ -534,7 +535,7 @@ function validarBusqueda(){
   var tipoAlarma = $("#alarma").find('option:selected').val( );
   var usuario = $("#usuarios option:selected").val();
   var usuarioNombre = $("#usuarios option:selected").text();
-
+ 
   if (criterio === 'nodo'){
     if (nodo === 'nada'){
       alert('Se debe seleccionar un nodo.\nPor favor verifique!.');
@@ -700,7 +701,7 @@ function actualizarUser() {
           /******** COMENTO PARTE DEL USUARIO POR AHORA **********************/
           ///var user = $("#nombreUser").val();
           var iduser = $("#userID").val();
-          var url = "data/updateQuery.php";
+          var url = "data/updateJSON.php";
           var query = 'update usuarios set appPwd=sha1("'+pw1+'") ';
           /*
           if (user !== ''){
@@ -709,10 +710,9 @@ function actualizarUser() {
           */
           query += 'where idusuario='+iduser;
           var log = "NO";
-          var jsonQuery = JSON.stringify(query);
-          //alert(query);
-          $.getJSON(url, {query: ""+jsonQuery+"", log: log}).done(function(request) {
-            var resultado = request["resultado"];
+
+          $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
+            //var resultado = request["resultado"];
             if (resultado === "OK") {
               alert('Los datos se modificaron correctamente!.');
               $("#modalPwd").modal("hide");

@@ -35,7 +35,8 @@ function hacerSelect($query, $log, $paramSelect = false){
   while (($fila = $sth->fetch(PDO::FETCH_ASSOC)) != NULL) {  
     $datos['resultado'][] = $fila;
   }
-  if ($log){
+
+  if ($log === "SI"){
     if ($paramSelect){
       $paramAString = implode(' --- ', $paramSelect);
       $guardar = $query." --- ".$paramAString;
@@ -67,7 +68,7 @@ function hacerUpdate($queryInsert, $log, $paramUpdate = false){
   else {
     $dato = "ERROR";
   }
-  if ($log){
+  if ($log === "SI"){
     if ($paramUpdate){
       $paramAString = implode(' --- ', $paramUpdate);
       $guardar = $queryInsert." --- ".$paramAString;
@@ -77,5 +78,6 @@ function hacerUpdate($queryInsert, $log, $paramUpdate = false){
     }
     escribirLog($guardar);
   }
-  return $dato;
+  $json = json_encode($dato);
+  return $json;
 }

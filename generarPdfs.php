@@ -133,7 +133,7 @@ class PDF extends PDF_MC_Table
   function armarTabla(){
     global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $arrayNodos, $nombreNodo, $camposAlarmas;
     
-    $hTitulo = 16;
+    $hTitulo = 14;
     $tamPagina = $this->GetPageWidth();
     /// Defino un ancho máximo para el título cosa de no llegar a los extremos:
     $anchoTitulo = 0.80*$tamPagina;

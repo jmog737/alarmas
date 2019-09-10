@@ -43,7 +43,7 @@ require_once ('head.php');
 
   /// ***************************************** GENERACIÓN NAVEGACIÓN ************************************************************************
   /// Vuelvo a realizar la consulta para poder obtener el array con los índices y así poder generar la navegación:
-  $log1 = false;
+  $log1 = "NO";
   $datos = json_decode(hacerSelect($consulta, $log1, $param), true);
   
   $keys = array();
@@ -87,7 +87,7 @@ require_once ('head.php');
     $solucion = htmlentities($_POST['sln']);
     $query = "update alarmas set causa=?, solucion=?, estado='Procesada' where idalarma=?";
     $paramUpdate = array($causa, $solucion, $idalarma);
-    $log = true;
+    $log = "SI";
     $resultadoInsert = json_decode(hacerUpdate($query, $log, $paramUpdate), true);
     if ($resultadoInsert === 'ERROR'){
       $mensaje = "Hubo un problema al actualizar los datos.<br>Por favor verifique.";
@@ -102,7 +102,7 @@ require_once ('head.php');
   //$queryParam = "select nodos.localidad as localidad from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
   $queryParam = "select * from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
   $param1 = array($idalarma);
-  $log = false;
+  $log = "NO";
   $datosParam = json_decode(hacerSelect($queryParam, $log, $param1), true);
   $datosMostrar = $datosParam['resultado'][0];
   

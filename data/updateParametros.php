@@ -6,6 +6,7 @@ $query = "update usuarios";
 
 $newPageSize = $_GET["tamPagina"];
 $newSelectSize = $_GET["tamSelects"];
+$log = $_GET["log"];
 
 $cambioPagina = false;
 $cambioLimiteSelects = false;
@@ -49,7 +50,9 @@ if ($cambioPagina || $cambioLimiteSelects){
 else {
   $datos["resultadoDB"] = "ERROR";
 }
-
+if ($log === "SI"){
+  escribirLog($query);
+}
 //$datos["resultadoDB"] = $query;
 $json = json_encode($datos);
 echo $json;

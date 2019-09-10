@@ -42,24 +42,33 @@ $fin = $paramArray[2];
 $tipo = $paramArray[3];
 $user = $paramArray[4];
 
-$log = false;
+$log = "NO";
 /// Armo array con los parámetros según corresponda acorde a la consulta:
 $parametros = array();
 if ($source !== 'TODOS'){
   $parametros[] = $source;
   $temp = stripos($source, '.csv');
   if ($temp === FALSE){
-    $consultaNodo = "select localidad from nodos where idnodo=?";
+    $consultaNodo = "select localidad, nombre from nodos where idnodo=?";
     $paramNodo = array($source);
     $datosNodo = json_decode(hacerSelect($consultaNodo, $log, $paramNodo), true);
     $nombreNodo = $datosNodo['resultado'][0]['localidad'];
+    $nombreNodoTemp = $datosNodo['resultado'][0]['nombre'];
+    $temp11 = explode("#", $nombreNodoTemp);
+    $temp21 = explode("-", $temp11[0]);
+    $nombreCorto = $temp21[0];
+    $m0 = explode("[", $mensaje);
+    $m1 = explode("]", $m0[1]);
+    $mensaje = $m0[0]."[".$nombreCorto."]".$m1[1];
   }
   else {
     $nombreNodo = "archivo";
+    $nombreCorto = "archivo";
   }
 }
 else {
   $nombreNodo = 'TODOS';
+  $nombreCorto = 'TODOS';
   /// Consulto por el listado del nodo para poder hacer el "cambio de nodo":                                                                                                                                                                           
   $consultaNodos = "select distinct idnodo, localidad, nombre from nodos";
   $datosNodos = json_decode(hacerSelect($consultaNodos, $log), true);
@@ -296,6 +305,7 @@ $mensajeNuevo = '';
         echo "<input type='hidden' name='mensaje' id='mensaje' value='".$mensaje."'>";
         
         echo "<input type='hidden' name='nodo' value='".$nombreNodo."'>";
+        echo "<input type='hidden' name='nodoCorto' value='".$nombreCorto."'>";
         echo "<input type='hidden' name='origen' value='buscar'>";
         
         echo "</form>";
