@@ -352,6 +352,87 @@ function validarEditarAlarma(){
 /********** fin validarEditarAlarma() **********/
 
 /**
+ * \brief Función que valida el form para editar un usuario.
+ */
+function validarEditarUsuario(){
+  var seguir = false;
+  var nombre = $("#nombre").val();
+  var apellido = $("#apellido").val();
+  var appUser = $("#appUser").val();
+  var tamPagina = parseInt($("#tamPaginaUser").val(), 10);
+  var limiteSelects = parseInt($("#limiteSelectsUser").val(), 10);
+  var observaciones = $("#observaciones").val();
+  var nombreOriginal = $("#nombreOriginal").val();
+  
+  var apellidoOriginal = $("#apellidoOriginal").val();
+  var appUserOriginal = $("#appUserOriginal").val();
+  var tamPaginaOriginal = parseInt($("#tamPaginaOriginal").val(), 10);
+  var limiteSelectsOriginal = parseInt($("#limiteSelectsOriginal").val(), 10);
+  var observacionesOriginal = $("#observacionesOriginal").val();
+  alert('nombre: '+nombre+' --- Original: '+nombreOriginal+'\napellido: '+apellido+' --- Original: '+apellidoOriginal+'\nappUser: '+appUser+' --- Original: '+appUserOriginal+'\ntamPagina: '+tamPagina+' --- Original: '+tamPaginaOriginal+'\nselects: '+limiteSelects+' --- Original: '+limiteSelectsOriginal+'\nobservaciones: '+observaciones+' --- Original: '+observacionesOriginal);
+  if (nombre === ''){
+    alert('El nombre NO puede quedar vacío.\nPor favor verifique.');
+    $("#nombre").focus();
+  }
+  else {
+    if (apellido === ''){
+      alert('El apellido NO puede quedar vacío.\nPor favor verifique.');
+      $("#apellido").focus();
+    }
+    else {
+      if (appUser === ''){
+        alert('El nombre de usuario para la app NO puede quedar vacío.\nPor favor verifique.');
+        $("#appUser").focus();
+      }
+      else {
+        if ((nombre === nombreOriginal)&&(apellido === apellidoOriginal)&&(tamPagina === tamPaginaOriginal)&&(limiteSelects === limiteSelectsOriginal)&&(appUser === appUserOriginal)&&(observaciones === observacionesOriginal)){
+          alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+        }
+        else {
+          seguir = true;
+        }
+      }   
+    }
+  }
+  
+  return seguir;
+}
+/********** fin validarEditarUsuario() **********/
+
+/**
+ * \brief Función que valida el form para editar un nodo.
+ */
+function validarEditarNodo(){
+  var seguir = false;
+  var causa = $("#causa").val();
+  var solucion = $("#sln").val();
+  var solucionOriginal = $("#solucionOriginal").val();
+  var causaOriginal = $("#causaOriginal").val();
+  //alert('causa: '+causa+' --- causaOriginal: '+causaOriginal+'\nsolucion: '+solucion+' --- Solucion Original: '+solucionOriginal);
+  if (causa === ''){
+    alert('La causa NO puede quedar vacía.\nPor favor verifique.');
+    $("#causa").focus();
+  }
+  else {
+    if (solucion === ''){
+      alert('La solución NO puede quedar vacía.\nPor favor verifique.');
+      $("#sln").focus();
+    }
+    else {
+      if ((causa === causaOriginal)&&(solucion === solucionOriginal)){
+        alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+      }
+      else {
+        seguir = true;
+      }
+    }
+  }
+  
+  return seguir;
+}
+/********** fin validarEditarNodo() **********/
+
+/**
   \brief Función que valida el rango de fechas pasado.
   @param rango {String} Cadena que indica que tipo de período se quiere. Esto es por mes, entre 2 fechas o todos.
   @param rango {Object} Objeto con la fecha de inicio del período en caso se quiera un rango entre fechas.
@@ -951,16 +1032,26 @@ $(document).on("click", ".paginate", function (){
   var offset = (page-1)*tamPagina;
   $("#offset").val(offset);
   $("#page").val(page);
-  if (id === 'cargar'){
-    $("#frmCargar").attr("action", "cargar.php");
-    $("#frmCargar").removeAttr("target");
-    $('#frmCargar').submit();
+  var frame = '';
+  var action = '';
+  switch (id){
+    case 'cargar':  frame = "#frmCargar";
+                    action = "cargar.php";
+                    break;
+    case 'buscar':  frame = "#frmResultado";
+                    action = "buscar.php";
+                    break;
+    case 'nodos': frame = "#frmNodos";
+                  action = "nodos.php";
+                  break;  
+    case 'usuarios':  frame = "#frmUsuarios";
+                      action = "usuarios.php";
+                      break; 
+    default: break;                
   }
-  else {
-    $("#frmResultado").attr("action", "buscar.php");
-    $("#frmResultado").removeAttr("target");
-    $("#frmResultado").submit();
-  }
+  $(frame).attr("action", action);
+  $(frame).removeAttr("target");
+  $(frame).submit();
 });
 /********** fin on("click", ".paginate", function () **********/
 
@@ -1194,6 +1285,50 @@ $(document).on("submit", "#frmEditarAlarma", function() {
 
 /*****************************************************************************************************************************
 /// **************************************************** FIN EDITAR ALARMA ***************************************************
+******************************************************************************************************************************
+*/
+
+/*****************************************************************************************************************************
+/// ************************************************** INICIO EDITAR USUARIO *************************************************
+******************************************************************************************************************************
+*/
+
+///Disparar función al hacer SUBMIT del form para editar un usuario.
+$(document).on("submit", "#frmEditarUsuario", function() {
+  var continuar = validarEditarUsuario();
+  if (continuar){
+    return true;
+  }
+  else {
+    return false;
+  }
+});
+/********** fin on("click", "#btnEditarUsuario", function() *********/
+
+/*****************************************************************************************************************************
+/// **************************************************** FIN EDITAR USUARIO **************************************************
+******************************************************************************************************************************
+*/
+
+/*****************************************************************************************************************************
+/// *************************************************** INICIO EDITAR NODO ***************************************************
+******************************************************************************************************************************
+*/
+
+///Disparar función al hacer SUBMIT del form para editar un nodo.
+$(document).on("submit", "#frmEditarNodo", function() {
+  var continuar = validarEditarNodo();
+  if (continuar){
+    return true;
+  }
+  else {
+    return false;
+  }
+});
+/********** fin on("click", "#btnEditarNodo", function() *********/
+
+/*****************************************************************************************************************************
+/// ***************************************************** FIN EDITAR NODO ****************************************************
 ******************************************************************************************************************************
 */
 

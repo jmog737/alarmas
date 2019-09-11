@@ -104,7 +104,23 @@ require_once ('data/cargarArchivo.php');
           $fecha = $dia.$mes.$year;    
           
           $nombreArchivo = $nombreCorto."_".$fecha.".".$extension;
-          $destino = $dirCargados."\\\\".$nombreArchivo;
+          
+          $rutaCargadosFecha = $dirCargados."/".$fecha;
+          if (is_dir($rutaCargadosFecha)){
+            //echo "La carpeta del día ya existe: $rutaReporteFecha.<br>";
+          }
+          else {
+            $creoCarpeta0 = mkdir($rutaCargadosFecha);
+            if ($creoCarpeta0 === FALSE){
+              //echo "Error al crear la carpeta del día: $rutaReporteFecha.<br>";
+              $sigo = false;
+            }
+            else {
+              //echo "Carpeta del día creada con éxito: $rutaReporteFecha.<br>";
+            }
+          }
+          
+          $destino = $rutaCargadosFecha."\\\\".$nombreArchivo;
           $continuar = true;
           
           /// Comento MOMENTÁNEAMENTE la validación de existencia de un archivo previo ya cargado:
@@ -280,11 +296,11 @@ require_once ('data/cargarArchivo.php');
             echo "</tr>";
             /// Fin encabezados
             
-            $keys = array();
-            foreach ($datos['resultado'] as $key0 => $fila0 ) {
-              $idalarma0 = $fila0['idalarma'];
-              $keys[] = $idalarma0;
-            } /// Fin foreach datos para sacar los keys
+//            $keysAlarmas = array();
+//            foreach ($datos['resultado'] as $key0 => $fila0 ) {
+//              $idalarma0 = $fila0['idalarma'];
+//              $keysAlarmas[] = $idalarma0;
+//            } /// Fin foreach datos para sacar los keys
             
             /// Comienzo proceso de cada fila:
             foreach ($datos['resultado'] as $key1 => $fila ) {
@@ -359,9 +375,9 @@ require_once ('data/cargarArchivo.php');
                     case 'accion':  $j = $i - 1;
                                     $parAlCodif = "al=".base64_encode($idalarma);
                                     $parOrigen = "&o=".base64_encode('cargar');
-                                    $parConsulta = "&c=".base64_encode($consulta);
-                                    $paramCodif = "&p=".base64_encode($paramSerial);
-                                    $parKeysCodif = "&k=".base64_encode(serialize($keys));
+                                    $parConsulta = "&cAlarm=".base64_encode($consulta);
+                                    $paramCodif = "&pAlarm=".base64_encode($paramSerial);
+                                    //$parKeysCodif = "&kAlarm=".base64_encode(serialize($keysAlarmas));
                                                                         
                                     //$url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parKeysCodif;
                                     $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parConsulta.$paramCodif;

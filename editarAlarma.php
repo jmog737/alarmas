@@ -32,11 +32,11 @@ require_once ('head.php');
     $origen = base64_decode($_GET['o']);
     $origenCodif = base64_encode($origen);
   }
-  if (isset($_GET['c'])){
+  if (isset($_GET['cAlarm'])){
     $consulta = base64_decode($_GET['c']);
     $consultaCodif = $_GET['c'];
   }
-  if (isset($_GET['p'])){
+  if (isset($_GET['pAlarm'])){
     $param = unserialize(base64_decode($_GET['p']));
     $paramCodif = $_GET['p'];
   }
@@ -100,12 +100,12 @@ require_once ('head.php');
   /// Luego de la posible actualización, consulto los datos del registro en cuestión: 
   //$queryParam = "select nodos.localidad as localidad, usuarios.nombre, usuarios.apellido from alarmas inner join nodos on alarmas.nodo=nodos.idnodo inner join usuarios on alarmas.usuario=usuarios.idusuario where alarmas.idalarma=?";
   //$queryParam = "select nodos.localidad as localidad from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
-  $queryParam = "select * from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
+  $queryParam = "select alarmas.*, nodos.idnodo, nodos.nombre as nombreNodo, nodos.localidad from alarmas inner join nodos on alarmas.nodo=nodos.idnodo where alarmas.idalarma=?";
   $param1 = array($idalarma);
   $log = "NO";
   $datosParam = json_decode(hacerSelect($queryParam, $log, $param1), true);
   $datosMostrar = $datosParam['resultado'][0];
-  
+
   $usuarioMostrar = $_SESSION['usuarioReal'];
   $localidad = $datosMostrar['localidad'];
   
