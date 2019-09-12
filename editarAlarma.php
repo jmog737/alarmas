@@ -32,15 +32,15 @@ require_once ('head.php');
     $origen = base64_decode($_GET['o']);
     $origenCodif = base64_encode($origen);
   }
-  if (isset($_GET['cAlarm'])){
-    $consulta = base64_decode($_GET['c']);
-    $consultaCodif = $_GET['c'];
+  if (isset($_GET['cAlarm'])){echo "isset get";
+    $consulta = base64_decode($_GET['cAlarm']);
+    $consultaCodif = $_GET['cAlarm'];
   }
   if (isset($_GET['pAlarm'])){
-    $param = unserialize(base64_decode($_GET['p']));
-    $paramCodif = $_GET['p'];
+    $param = unserialize(base64_decode($_GET['pAlarm']));
+    $paramCodif = $_GET['pAlarm'];
   }
-
+echo $consulta;
   /// ***************************************** GENERACIÓN NAVEGACIÓN ************************************************************************
   /// Vuelvo a realizar la consulta para poder obtener el array con los índices y así poder generar la navegación:
   $log1 = "NO";
@@ -82,7 +82,7 @@ require_once ('head.php');
   /// ************************************* FIN GENERACIÓN NAVEGACIÓN ************************************************************************
 
   /// Chequeo si vengo del listado de alarmas para editarla, o de la propia página luego de la edición:
-  if (isset($_POST['btnEditarAlarma'])){
+  if (isset($_POST['btnEditarAlarma'])){echo "<br>post seteado<br>";
     $causa = htmlentities($_POST['causa']);
     $solucion = htmlentities($_POST['sln']);
     $query = "update alarmas set causa=?, solucion=?, estado='Procesada' where idalarma=?";
@@ -240,10 +240,10 @@ require_once ('head.php');
     <div id="navegacion" class="pagination">
     <?php
       echo "<ul>";
-      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la primer alarma' href='editarAlarma.php?al=".$primero."&o=".$origenCodif."&c=".$consultaCodif."&p=".$paramCodif."'>|<  </a></li>";
-      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la alarma anterior' href='editarAlarma.php?al=".$anterior."&o=".$origenCodif."&c=".$consultaCodif."&p=".$paramCodif."'>  <<  </a></li>";
-      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la siguiente alarma' href='editarAlarma.php?al=".$siguiente."&o=".$origenCodif."&c=".$consultaCodif."&p=".$paramCodif."'>  >>  </a></li>";
-      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la última alarma' href='editarAlarma.php?al=".$ultimo."&o=".$origenCodif."&c=".$consultaCodif."&p=".$paramCodif."'>  >|</a></li>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la primer alarma' href='editarAlarma.php?al=".$primero."&o=".$origenCodif."&cAlarm=".$consultaCodif."&pAlarm=".$paramCodif."'>|<  </a></li>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la alarma anterior' href='editarAlarma.php?al=".$anterior."&o=".$origenCodif."&cAlarm=".$consultaCodif."&pAlarm=".$paramCodif."'>  <<  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la siguiente alarma' href='editarAlarma.php?al=".$siguiente."&o=".$origenCodif."&cAlarm=".$consultaCodif."&pAlarm=".$paramCodif."'>  >>  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la última alarma' href='editarAlarma.php?al=".$ultimo."&o=".$origenCodif."&cAlarm=".$consultaCodif."&pAlarm=".$paramCodif."'>  >|</a></li>";
       echo "</ul>";
     ?>
     </div>

@@ -17,6 +17,8 @@
   <input id="duracionSesion" name="duracionSesion" type="text" value="<?php echo DURACION?>" style="color: black; display: none">
   <input id="tamPagina" name="tamPagina" type="text" value="<?php echo $_SESSION["tamPagina"] ?>" style="color: black; display: none">
   <input id="limiteSelects" name="limiteSelects" type="text" value="<?php echo $_SESSION["limiteSelects"] ?>" style="color: black; display: none">
+  <input id="maxTamPagina" name="maxTamPagina" type="text" value="<?php echo MAX_TAMPAGINA ?>" style="color: black; display: none">
+  <input id="maxLimiteSelects" name="maxLimiteSelects" type="text" value="<?php echo MAX_LIMITESELECTS ?>" style="color: black; display: none">
   <title>ALARMAS</title>
   <meta charset='UTF-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>

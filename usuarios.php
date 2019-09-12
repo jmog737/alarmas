@@ -134,7 +134,21 @@ require_once ('head.php');
                 switch ($indice){
                   case 'id':  echo "<td>".$i."</td>";
                               $i++;
-                              break;                
+                              break;
+                  case 'tamPagina': if ($fila[$indice] === null){
+                                      echo "<td>No ingresado</td>";
+                                    }   
+                                    else {
+                                      echo "<td>".$fila[$indice]."</td>";
+                                    }
+                                    break;         
+                  case 'limiteSelects': if ($fila[$indice] === null){
+                                          echo "<td>No ingresado</td>";
+                                        }
+                                        else {
+                                          echo "<td>".$fila[$indice]."</td>";
+                                        }
+                                        break;
                   case 'accion':  $j = $i - 1;
                                   $parUserCodif = "us=".base64_encode($idusuario);
                                   $parOrigen = "&o=".base64_encode('usuario');

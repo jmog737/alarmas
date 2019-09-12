@@ -24,6 +24,16 @@ define('TIEMPOCOOKIE', 3603);
 */
 define('TAM_ARCHIVO', 5120);
 
+/**
+  \param MAX_TAMPAGINA Constante que define el tamaño máximo para la visualización de las páginas.
+*/
+define('MAX_TAMPAGINA', 100);
+
+/**
+  \param MAX_LIMITESELECTS Constante que define el tamaño máximo para los selects.
+*/
+define('MAX_LIMITESELECTS', 15);
+
 ///Consulto nombre del HOST y en base al mismo, configuro la IP (porque el HSA tiene diferente rango de IPs):
 $hostname = getHostName();
 $ip = '';

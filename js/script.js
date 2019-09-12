@@ -4,6 +4,8 @@ var duracionSesion = parseInt($("#duracionSesion").val(), 10);
 var limiteSeleccion = parseInt($("#limiteSeleccion").val(), 10);
 var tamPagina = parseInt($("#tamPagina").val(), 10);
 var limiteSelects = parseInt($("#limiteSelects").val(), 10);
+var maxTamPagina = parseInt($("#maxTamPagina").val(), 10);
+var maxLimiteSelects = parseInt($("#maxLimiteSelects").val(), 10);
 
 /**
 ///  \file script.js
@@ -150,6 +152,7 @@ function vaciarFrmLogin(){
  * \brief Función que valida los datos de ingreso (por ahora, solo que se haya ingresado el usuario).
  */
 function validarIngreso () {
+  verificarSesion('', 's');
   var usuario = $("#nombreUsuario").val();
   if ((usuario === ' ')||(usuario === "null")||(usuario === '')){ 
     alert('¡Debe ingresar el nombre de usuario!');
@@ -322,6 +325,7 @@ function verificarSesion(mensaje, cookie) {
  * \brief Función que valida el form para editar una alarma.
  */
 function validarEditarAlarma(){
+  verificarSesion('', 's');
   var seguir = false;
   var causa = $("#causa").val();
   var solucion = $("#sln").val();
@@ -346,7 +350,6 @@ function validarEditarAlarma(){
       }
     }
   }
-  
   return seguir;
 }
 /********** fin validarEditarAlarma() **********/
@@ -355,46 +358,80 @@ function validarEditarAlarma(){
  * \brief Función que valida el form para editar un usuario.
  */
 function validarEditarUsuario(){
+  verificarSesion('', 's');
   var seguir = false;
   var nombre = $("#nombre").val();
   var apellido = $("#apellido").val();
   var appUser = $("#appUser").val();
-  var tamPagina = parseInt($("#tamPaginaUser").val(), 10);
-  var limiteSelects = parseInt($("#limiteSelectsUser").val(), 10);
+  var tamPaginaUser = parseInt($("#tamPaginaUser").val(), 10);
+  var limiteSelectsUser = parseInt($("#limiteSelectsUser").val(), 10);
   var observaciones = $("#observaciones").val();
-  var nombreOriginal = $("#nombreOriginal").val();
   
+  var nombreOriginal = $("#nombreOriginal").val();
   var apellidoOriginal = $("#apellidoOriginal").val();
   var appUserOriginal = $("#appUserOriginal").val();
   var tamPaginaOriginal = parseInt($("#tamPaginaOriginal").val(), 10);
   var limiteSelectsOriginal = parseInt($("#limiteSelectsOriginal").val(), 10);
   var observacionesOriginal = $("#observacionesOriginal").val();
-  alert('nombre: '+nombre+' --- Original: '+nombreOriginal+'\napellido: '+apellido+' --- Original: '+apellidoOriginal+'\nappUser: '+appUser+' --- Original: '+appUserOriginal+'\ntamPagina: '+tamPagina+' --- Original: '+tamPaginaOriginal+'\nselects: '+limiteSelects+' --- Original: '+limiteSelectsOriginal+'\nobservaciones: '+observaciones+' --- Original: '+observacionesOriginal);
+  //alert('nombre: '+nombre+' --- Original: '+nombreOriginal+'\napellido: '+apellido+' --- Original: '+apellidoOriginal+'\nappUser: '+appUser+' --- Original: '+appUserOriginal+'\ntamPagina: '+tamPaginaUser+' --- Original: '+tamPaginaOriginal+'\nselects: '+limiteSelectsUser+' --- Original: '+limiteSelectsOriginal+'\nobservaciones: '+observaciones+' --- Original: '+observacionesOriginal);
   if (nombre === ''){
     alert('El nombre NO puede quedar vacío.\nPor favor verifique.');
+    $("#nombre").val(nombreOriginal);
     $("#nombre").focus();
   }
   else {
     if (apellido === ''){
       alert('El apellido NO puede quedar vacío.\nPor favor verifique.');
+      $("#apellido").val(apellidoOriginal);
       $("#apellido").focus();
     }
     else {
       if (appUser === ''){
         alert('El nombre de usuario para la app NO puede quedar vacío.\nPor favor verifique.');
+        $("#appUser").val(appUserOriginal);
         $("#appUser").focus();
       }
       else {
-        if ((nombre === nombreOriginal)&&(apellido === apellidoOriginal)&&(tamPagina === tamPaginaOriginal)&&(limiteSelects === limiteSelectsOriginal)&&(appUser === appUserOriginal)&&(observaciones === observacionesOriginal)){
+        if ((nombre === nombreOriginal)&&(apellido === apellidoOriginal)&&(tamPaginaUser === tamPaginaOriginal)&&(limiteSelectsUser === limiteSelectsOriginal)&&(appUser === appUserOriginal)&&(observaciones === observacionesOriginal)){
           alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
         }
         else {
-          seguir = true;
+          var validarTamaño = validarEntero(tamPaginaUser);
+          if ((validarTamaño)&(tamPaginaUser > 0)&(tamPaginaUser <= maxTamPagina)||($("#tamPaginaUser").val() === 'No ingresado')){
+            var validarSelect = validarEntero(limiteSelectsUser);
+            if ((validarSelect)&&(limiteSelectsUser > 0)&(limiteSelectsUser <= maxLimiteSelects)||($("#limiteSelectsUser").val() === 'No ingresado')){
+              var url = "data/getJSON.php";
+              var query = 'select count(*) from usuarios where nombre="'+nombre+'" and apellido="'+apellido+'" and appUser="'+appUser+'"';
+              var log = "NO";
+              $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
+                var resultado = parseInt(request["rows"], 10);
+                if ((resultado > 0)&&(nombre !== nombreOriginal)&&(apellido !== apellidoOriginal)&&(appUser !== appUserOriginal)) {
+                  alert('Ya existe un usuario con esos datos. Por favor verifique.');
+                  $("#nombre").val(nombreOriginal);
+                  $("#apellido").val(apellidoOriginal);
+                  $("#appUser").val(appUserOriginal);
+                  $("#nombre").focus();
+                }
+                else {
+                  $("#frmEditarUsuario").submit();
+                }
+              });
+            }
+            else {
+              alert('El tamaño para los selects debe ser un entero positivo y menor a '+maxLimiteSelects);
+              $("#limiteSelectsUser").val(limiteSelectsOriginal);
+              $("#limiteSelectsUser").focus();
+            }
+          }
+          else {
+            alert('El tamaño de página debe ser un entero positivo y menor a '+maxTamPagina);
+            $("#tamPaginaUser").val(tamPaginaOriginal);
+            $("#tamPaginaUser").focus();
+          }
         }
       }   
     }
   }
-  
   return seguir;
 }
 /********** fin validarEditarUsuario() **********/
@@ -403,31 +440,68 @@ function validarEditarUsuario(){
  * \brief Función que valida el form para editar un nodo.
  */
 function validarEditarNodo(){
+  verificarSesion('', 's');
   var seguir = false;
-  var causa = $("#causa").val();
-  var solucion = $("#sln").val();
-  var solucionOriginal = $("#solucionOriginal").val();
-  var causaOriginal = $("#causaOriginal").val();
-  //alert('causa: '+causa+' --- causaOriginal: '+causaOriginal+'\nsolucion: '+solucion+' --- Solucion Original: '+solucionOriginal);
-  if (causa === ''){
-    alert('La causa NO puede quedar vacía.\nPor favor verifique.');
-    $("#causa").focus();
+  var nombre = $("#nombre").val();
+  var localidad = $("#localidad").val();
+  var ip = $("#ip").val();
+  var tipo = $("#tipoNodo").val();
+  var areaMetro = $("#areaMetro").val();
+  var observaciones = $("#observaciones").val();
+  
+  var nombreOriginal = $("#nombreOriginal").val();
+  var localidadOriginal = $("#localidadOriginal").val();
+  var ipOriginal = $("#ipOriginal").val();
+  var tipoOriginal = $("#tipoOriginal").val();
+  var areaMetroOriginal = $("#areaMetroOriginal").val();
+  var observacionesOriginal = $("#observacionesOriginal").val();
+  //alert('nombre: '+nombre+' --- Original: '+nombreOriginal+'\napellido: '+localidad+' --- Original: '+localidadOriginal+'\nip: '+ip+' --- Original: '+ipOriginal+'\ntipo: '+tipo+' --- Original: '+tipoOriginal+'\narea Metro: '+areaMetro+' --- Original: '+areaMetroOriginal+'\nobservaciones: '+observaciones+' --- Original: '+observacionesOriginal);
+  if (nombre === ''){
+    alert('El nombre NO puede quedar vacío.\nPor favor verifique.');
+    $("#nombre").val(nombreOriginal);
+    $("#nombre").focus();
   }
   else {
-    if (solucion === ''){
-      alert('La solución NO puede quedar vacía.\nPor favor verifique.');
-      $("#sln").focus();
+    if (localidad === ''){
+      alert('La localidad NO puede quedar vacía.\nPor favor verifique.');
+      $("#localidad").val(localidadOriginal);
+      $("#localidad").focus();
     }
     else {
-      if ((causa === causaOriginal)&&(solucion === solucionOriginal)){
-        alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+      if (tipo === ''){
+        alert('El tipo de dispositivo NO puede quedar vacío.\nPor favor verifique.');
+        $("#tipoNodo").val(tipoOriginal);
+        $("#tipoNodo").focus();
       }
       else {
-        seguir = true;
-      }
+        if (areaMetro === ''){
+        }
+        else {
+          if ((nombre === nombreOriginal)&&(localidad === localidadOriginal)&&(tipo === tipoOriginal)&&(ip === ipOriginal)&&(areaMetro === areaMetroOriginal)&&(observaciones === observacionesOriginal)){
+            alert('No hubo cambios en los datos del nodo.\nPor favor verifique.');
+          }
+          else {
+            var url = "data/getJSON.php";
+            var query = 'select count(*) from nodos where nombre="'+nombre+'" and localidad="'+localidad+'" and tipo="'+tipo+'"';
+            var log = "NO";
+            $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
+              var resultado = parseInt(request["rows"], 10);
+              if ((resultado > 0)&&(nombre !== nombreOriginal)&&(localidad !== localidadOriginal)&&(tipo !== tipoOriginal)) {
+                alert('Ya existe un usuario con esos datos. Por favor verifique.');
+                $("#nombre").val(nombreOriginal);
+                $("#localidad").val(localidadOriginal);
+                $("#tipo").val(tipoOriginal);
+                $("#nombre").focus();
+              }
+              else {
+                $("#frmEditarNodo").submit();
+              }
+            });
+          }
+        }
+      }   
     }
   }
-  
   return seguir;
 }
 /********** fin validarEditarNodo() **********/
@@ -1293,15 +1367,10 @@ $(document).on("submit", "#frmEditarAlarma", function() {
 ******************************************************************************************************************************
 */
 
-///Disparar función al hacer SUBMIT del form para editar un usuario.
-$(document).on("submit", "#frmEditarUsuario", function() {
-  var continuar = validarEditarUsuario();
-  if (continuar){
-    return true;
-  }
-  else {
-    return false;
-  }
+///Disparar función al hacer CLICK del form para editar un usuario.
+$(document).on("click", "#btnEditarUsuario", function(e) {
+  e.preventDefault();
+  validarEditarUsuario();
 });
 /********** fin on("click", "#btnEditarUsuario", function() *********/
 
@@ -1315,15 +1384,10 @@ $(document).on("submit", "#frmEditarUsuario", function() {
 ******************************************************************************************************************************
 */
 
-///Disparar función al hacer SUBMIT del form para editar un nodo.
-$(document).on("submit", "#frmEditarNodo", function() {
-  var continuar = validarEditarNodo();
-  if (continuar){
-    return true;
-  }
-  else {
-    return false;
-  }
+///Disparar función al hacer CLICK del form para editar un nodo.
+$(document).on("click", "#btnEditarNodo", function(e) {
+  e.preventDefault();
+  validarEditarNodo();
 });
 /********** fin on("click", "#btnEditarNodo", function() *********/
 

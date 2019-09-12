@@ -138,7 +138,7 @@ require_once ('head.php');
                   case 'accion':  $j = $i - 1;
                                   $parUserCodif = "n=".base64_encode($idnodo);
                                   $parOrigen = "&o=".base64_encode('nodo');
-                                  $parConsulta = "&cnodo=".base64_encode($consulta);
+                                  $parConsulta = "&cNodo=".base64_encode($consulta);
 
                                   $url = "editarNodo.php?".$parUserCodif.$parOrigen.$parConsulta;
                                   echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";

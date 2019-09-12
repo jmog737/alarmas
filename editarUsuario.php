@@ -25,30 +25,58 @@ require_once ('head.php');
   require_once('data/pdo.php');
   require_once('data/camposUsuarios.php');
   
-  if (isset($_GET['us'])){
-    $idusuario = base64_decode($_GET['us']);
+  if (isset($_GET['us'])||isset($_GET['o'])||isset($_GET['cUser'])){
+    if (isset($_GET['us'])){
+      $idusuario = base64_decode($_GET['us']);
+    }
+    if (isset($_GET['o'])){
+      $origen = base64_decode($_GET['o']);
+      $origenCodif = base64_encode($origen);
+    }
+    if (isset($_GET['cUser'])){
+      $consulta = base64_decode($_GET['cUser']);
+      $consultaCodif = $_GET['cUser'];
+    }
   }
-  if (isset($_GET['o'])){
-    $origen = base64_decode($_GET['o']);
-    $origenCodif = base64_encode($origen);
-  }
-  if (isset($_GET['cUser'])){
-    $consulta = base64_decode($_GET['cUser']);
-    $consultaCodif = $_GET['cUser'];
-  }
-  if (isset($_GET['pUser'])){
-    $param = unserialize(base64_decode($_GET['pUser']));
-    $paramCodif = $_GET['pUser'];
-  }
-  else {
-    $param = false;
-    $paramCodif = false;
-  }
-
+  if (isset($_POST['query'])) 
+    {
+    $consulta = html_entity_decode($_POST['query']);
+    $idusuario = $_POST['idusuario'];
+    
+    $nombre = htmlentities($_POST['nombre']);
+    $apellido = htmlentities($_POST['apellido']);
+    $appUser = htmlentities($_POST['appUser']);
+    $tamPaginaUser = htmlentities($_POST['tamPaginaUser']);
+    $limiteSelectsUser = htmlentities($_POST['limiteSelectsUser']);
+    $observaciones = htmlentities($_POST['observaciones']);
+    if ($tamPaginaUser === 'No ingresado'){
+      $tamPaginaUser = 50;
+    }
+    if ($limiteSelectsUser === 'No ingresado'){
+      $limiteSelectsUser = 15;
+    }
+    $query = "update usuarios set nombre=?, apellido=?, appUser=?, tamPagina=?, limiteSelects=?, observaciones=? where idusuario=?";
+    $paramUpdate = array($nombre, $apellido, $appUser, $tamPaginaUser, $limiteSelectsUser, $observaciones, $idusuario);
+    $log = "SI";
+    $resultadoInsert = json_decode(hacerUpdate($query, $log, $paramUpdate), true);
+    if ($resultadoInsert === 'ERROR'){
+      $mensaje = "Hubo un problema al actualizar los datos.<br>Por favor verifique.";
+    }
+    else {
+      $mensaje = "¡Datos editados correctamente!";
+      if (($tamPaginaUser !== $_SESSION['tamPagina'])&&($_SESSION['username'] === $appUser)){
+        $_SESSION['tamPagina'] = $tamPaginaUser;
+      }
+      if (($limiteSelectsUser !== $_SESSION['limiteSelects'])&&($_SESSION['username'] === $appUser)){
+        $_SESSION['limiteSelects'] = $limiteSelectsUser;
+      }
+    }
+  }  
+      
   /// ***************************************** GENERACIÓN NAVEGACIÓN ************************************************************************
   /// Vuelvo a realizar la consulta para poder obtener el array con los índices y así poder generar la navegación:
   $log1 = "NO";
-  $datos = json_decode(hacerSelect($consulta, $log1, $param), true);
+  $datos = json_decode(hacerSelect($consulta, $log1), true);
   
   $keys = array();
   foreach ($datos['resultado'] as $key0 => $fila0 ) {
@@ -85,24 +113,6 @@ require_once ('head.php');
   }
   /// ************************************* FIN GENERACIÓN NAVEGACIÓN ************************************************************************
 
-  /// Chequeo si vengo del listado de usuarios para editarla, o de la propia página luego de la edición:
-  if (isset($_POST['btnEditarUsuario'])){
-    $nombre = htmlentities($_POST['nombre']);
-    $apellido = htmlentities($_POST['apellido']);
-    $appUser = htmlentities($_POST['appUser']);
-    $observaciones = htmlentities($_POST['observaciones']);
-    $query = "update usuarios set nombre=?, apellido=?, appUser=?, observaciones=? where idusuario=?";
-    $paramUpdate = array($nombre, $apellido, $appUser, $observaciones, $idusuario);
-    $log = "SI";
-    $resultadoInsert = json_decode(hacerUpdate($query, $log, $paramUpdate), true);
-    if ($resultadoInsert === 'ERROR'){
-      $mensaje = "Hubo un problema al actualizar los datos.<br>Por favor verifique.";
-    }
-    else {
-      $mensaje = "¡Datos editados correctamente!";
-    }
-  } /// Fin isset($_POST)
-
   /// Luego de la posible actualización, consulto los datos del registro en cuestión: 
   $queryParam = "select idusuario, nombre, apellido, appUser, appPwd, tamPagina, limiteSelects, estado, observaciones from usuarios where idusuario=?";
   $param1 = array($idusuario);
@@ -123,14 +133,13 @@ require_once ('head.php');
   </script>
   
   <div id='main-content' class='container-fluid'>
+    <h2 id="tituloEditarUsuario">Datos del Usuario <?php echo $nombreOriginal." ".$apellidoOriginal; ?></h2>
     <?php
-    if (isset($_POST['btnEditarUsuario'])){
-      echo "<br><h3>".$mensaje."</h3>";
+    if (isset($_POST['query'])){
+      echo "<h3>".$mensaje."</h3>";
     }
     ?>
     <br>
-    <h2 id="tituloEditarAlarma">Datos del Usuario <?php echo $idMostrar?></h2>
-
     <form id='frmEditarUsuario' name='frmEditarUsuario' method='post'>
       <table name='tblEditarUsuario' id='tblEditarUsuario' class='tabla2'>
         <caption>Formulario para la edici&oacute;n del usuario</caption>
@@ -145,7 +154,7 @@ require_once ('head.php');
         foreach ($camposUsuarios as $key => $value) {   
           if ($camposUsuarios[$key]['mostrarEditar'] === 'si'){
             $indice = $camposUsuarios[$key]['nombreDB'];
-
+            
             switch ($indice){
               case 'id': break;
         
@@ -165,18 +174,30 @@ require_once ('head.php');
                                       </td>
                                     </tr>"; 
                                 break;  
-              case 'tamPagina': echo "<tr>
+              case 'tamPagina': if ($datosMostrar[$indice] === null){
+                                  $tamaPag = "No ingresado";
+                                }
+                                else {
+                                  $tamaPag = (int)$datosMostrar[$indice];
+                                }
+                                echo "<tr>
                                       <td class='enc'>Tama&nacute;o de P&aacute;gina</td>
                                       <td>
-                                        <input type='text' name='tamPaginaUser' id='tamPaginaUser' class='agrandar' rows='5' placeholder='Ingrese el tamaño para la p&aacute;gina.' value='".(int)$datosMostrar[$indice]."'>
+                                        <input type='text' name='tamPaginaUser' id='tamPaginaUser' class='agrandar' rows='5' placeholder='Ingrese el tamaño para la p&aacute;gina.' value='".$tamaPag."'>
                                         <input name='tamPaginaOriginal' id='tamPaginaOriginal' type='hidden' value='".$tamPaginaOriginal."'>
                                       </td>
                                     </tr>"; 
                                 break; 
-              case 'limiteSelects': echo "<tr>
-                                      <td class='enc'>Apellido</td>
+              case 'limiteSelects': if ($datosMostrar[$indice] === null){
+                                      $limite = "No ingresado";
+                                    }
+                                    else {
+                                      $limite = (int)$datosMostrar[$indice];
+                                    }
+                                    echo "<tr>
+                                      <td class='enc'>L&iacute;mite Selects</td>
                                       <td>
-                                        <input type='text' name='limiteSelectsUser' id='limiteSelectsUser' class='agrandar' rows='5' placeholder='Ingrese el tama&nacute;o para los selects.' value='".(int)$datosMostrar[$indice]."'>
+                                        <input type='text' name='limiteSelectsUser' id='limiteSelectsUser' class='agrandar' rows='5' placeholder='Ingrese el tama&nacute;o para los selects.' value='".$limite."'>
                                         <input name='limiteSelectsOriginal' id='limiteSelectsOriginal' type='hidden' value='".$limiteSelectsOriginal."'>
                                       </td>
                                     </tr>"; 
@@ -209,29 +230,28 @@ require_once ('head.php');
         
         <tr>
           <td colspan='2' class='pieTabla'>
-            <input type='submit' class='btn btn-danger' name='btnEditarUsuario' id='btnEditarUsuario' value='EDITAR'>
+            <input type='button' class='btn btn-danger' name='btnEditarUsuario' id='btnEditarUsuario' value='EDITAR'>
           </td>
         </tr>
       </table>
+    <?php
+      echo "<input type='hidden' name='idusuario' value=".$idusuario.">";
+      echo "<input type='hidden' name='query' value='".htmlentities($consulta, ENT_QUOTES)."'>";
+    ?>
     </form>
 
     <div id="navegacion" class="pagination">
     <?php
       echo "<ul>";
-      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la primer alarma' href='editarUsuario.php?us=".$primero."&o=".$origenCodif."&cUser=".$consultaCodif."&pUser=".$paramCodif."'>|<  </a></li>";
-      echo "<li><a class='".$inhabilitarPrimero."' title='Ir a la alarma anterior' href='editarUsuario.php?us=".$anterior."&o=".$origenCodif."&cUser=".$consultaCodif."&pUser=".$paramCodif."'>  <<  </a></li>";
-      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la siguiente alarma' href='editarUsuario.php?us=".$siguiente."&o=".$origenCodif."&cUser=".$consultaCodif."&pUser=".$paramCodif."'>  >>  </a></li>";
-      echo "<li><a class='".$inhabilitarUltimo."' title='Ir a la última alarma' href='editarUsuario.php?us=".$ultimo."&o=".$origenCodif."&cUser=".$consultaCodif."&pUser=".$paramCodif."'>  >|</a></li>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir al primer usuario' href='editarUsuario.php?us=".$primero."&o=".$origenCodif."&cUser=".$consultaCodif."'>|<  </a></li>";
+      echo "<li><a class='".$inhabilitarPrimero."' title='Ir al usuario anterior' href='editarUsuario.php?us=".$anterior."&o=".$origenCodif."&cUser=".$consultaCodif."'>  <<  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir al siguiente usuario' href='editarUsuario.php?us=".$siguiente."&o=".$origenCodif."&cUser=".$consultaCodif."'>  >>  </a></li>";
+      echo "<li><a class='".$inhabilitarUltimo."' title='Ir al último usuario' href='editarUsuario.php?us=".$ultimo."&o=".$origenCodif."&cUser=".$consultaCodif."'>  >|</a></li>";
       echo "</ul>";
     ?>
     </div>
     <?php
-      if ($origen === "cargar"){
-        $volver = "<br><a href='cargar.php?i=1'>Volver al listado de usuarios</a><br><br>";
-      }
-      else {
-        $volver = '<br><a href="javascript:close()">Cerrar y volver al listado</a><br><br>';
-      }
+      $volver = '<br><a href="javascript:close()">Cerrar y volver al listado</a><br><br>';
       echo $volver;
     ?>
     <br>
