@@ -32,7 +32,7 @@ require_once ('head.php');
     $origen = base64_decode($_GET['o']);
     $origenCodif = base64_encode($origen);
   }
-  if (isset($_GET['cAlarm'])){echo "isset get";
+  if (isset($_GET['cAlarm'])){
     $consulta = base64_decode($_GET['cAlarm']);
     $consultaCodif = $_GET['cAlarm'];
   }
@@ -40,7 +40,7 @@ require_once ('head.php');
     $param = unserialize(base64_decode($_GET['pAlarm']));
     $paramCodif = $_GET['pAlarm'];
   }
-echo $consulta;
+
   /// ***************************************** GENERACIÓN NAVEGACIÓN ************************************************************************
   /// Vuelvo a realizar la consulta para poder obtener el array con los índices y así poder generar la navegación:
   $log1 = "NO";

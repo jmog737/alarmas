@@ -47,6 +47,12 @@ require_once ('head.php');
     $localidad = htmlentities($_POST['localidad']);
     $ip = htmlentities($_POST['ip']);
     $areaMetro = htmlentities($_POST['areaMetro']);
+    if (($areaMetro === "SI")||($areaMetro === "si")||($areaMetro === "Si")||($areaMetro === "sI")||($areaMetro === "1")){
+      $areaMetro = 1;
+    }
+    else {
+      $areaMetro = 0;
+    }
     $tipoNodo = htmlentities($_POST['tipoNodo']);
     $observaciones = htmlentities($_POST['observaciones']);
     
@@ -113,6 +119,12 @@ require_once ('head.php');
   $localidadOriginal = $datosMostrar['localidad'];
   $ipOriginal = $datosMostrar['ip'];
   $areaMetroOriginal = $datosMostrar['areaMetro'];
+  if (($areaMetroOriginal === "SI")||($areaMetroOriginal === "si")||($areaMetroOriginal === "Si")||($areaMetroOriginal === "sI")||($areaMetroOriginal === "1")){
+      $areaMetroOriginal = "SI";
+    }
+    else {
+      $areaMetroOriginal = "NO";
+    }
   $tipoOriginal = $datosMostrar['tipo'];
   $observacionesOriginal = $datosMostrar['observaciones'];
 ?>
@@ -171,10 +183,16 @@ require_once ('head.php');
                                   </td>
                                 </tr>"; 
                           break; 
-              case 'areaMetro': echo "<tr>
+              case 'areaMetro': if ($datosMostrar[$indice] === "1"){
+                                  $areaMetroMostrar = "SI";
+                                }
+                                else {
+                                  $areaMetroMostrar = "NO";
+                                }
+                                echo "<tr>
                                         <td class='enc'>&Aacute;rea Metro</td>
                                         <td>
-                                          <input type='text' name='areaMetro' id='areaMetro' class='agrandar' rows='5' placeholder='Indique si el nodo pertenece a la zona metro.' value='".$datosMostrar[$indice]."'>
+                                          <input type='text' name='areaMetro' id='areaMetro' class='agrandar' rows='5' placeholder='Indique si el nodo pertenece a la zona metro.' value='".$areaMetroMostrar."'>
                                           <input name='areaMetroOriginal' id='areaMetroOriginal' type='hidden' value='".$areaMetroOriginal."'>
                                         </td>
                                       </tr>"; 

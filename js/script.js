@@ -474,7 +474,9 @@ function validarEditarNodo(){
         $("#tipoNodo").focus();
       }
       else {
-        if (areaMetro === ''){
+        if ((areaMetro !== 'SI')&&(areaMetro !== 'si')&&(areaMetro !== 'Si')&&(areaMetro !== 'sI')&&(areaMetro !== 'NO')&&(areaMetro !== 'no')&&(areaMetro !== 'No')&&(areaMetro !== 'nO')&&(areaMetro !== "1")&&(areaMetro !== "0")&&(areaMetro !== 1)&&(areaMetro !== 0)){
+          alert('Área metro debe ser sólo SI o NO. \Por favor verifique.');
+          $("#areaMetro").focus();
         }
         else {
           if ((nombre === nombreOriginal)&&(localidad === localidadOriginal)&&(tipo === tipoOriginal)&&(ip === ipOriginal)&&(areaMetro === areaMetroOriginal)&&(observaciones === observacionesOriginal)){
@@ -486,11 +488,12 @@ function validarEditarNodo(){
             var log = "NO";
             $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
               var resultado = parseInt(request["rows"], 10);
-              if ((resultado > 0)&&(nombre !== nombreOriginal)&&(localidad !== localidadOriginal)&&(tipo !== tipoOriginal)) {
-                alert('Ya existe un usuario con esos datos. Por favor verifique.');
+              //alert(resultado+'\n'+nombre+'--'+nombreOriginal+'\n'+localidad+'--'+localidadOriginal+'\n'+tipo+'--'+tipoOriginal);
+              if ((resultado > 0)) {
+                alert('Ya existe un nodo con esos datos. Por favor verifique.');
                 $("#nombre").val(nombreOriginal);
                 $("#localidad").val(localidadOriginal);
-                $("#tipo").val(tipoOriginal);
+                $("#tipoNodo").val(tipoOriginal);
                 $("#nombre").focus();
               }
               else {

@@ -27,12 +27,14 @@ if(isset($_SESSION['tiempo']) && isset($_COOKIE['tiempo'])) {
     
     $myObj->oldTime = substr($_SESSION['tiempo'], -3);
     $myObj->user = "TIMEOUT";
+    $_SESSION['motivo'] = "TIMEOUT";
     $myObj->time = time();
     //$myObj->time = time();////***************** a cambiar por 0. Es solo para pruebas ****************
     $myObj->user_id = 0;
     $myObj->sesion = 'expirada';
   } 
   else {
+    $_SESSION['motivo'] = "VOLUNTARIO";
     $myObj->oldUser = $_SESSION['username'];
     $myObj->oldTime = substr($_SESSION['tiempo'], -3);
     $myObj->user = $_SESSION['username'];
@@ -56,6 +58,7 @@ else {
   if (!isset($_COOKIE['tiempo'])){
     $myObj->user = 'COOKIE';
   }
+  $_SESSION['motivo'] = "COOKIE";
 }
 
 //if (isset($_COOKIE['tiempo'])){
