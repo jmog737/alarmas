@@ -169,14 +169,14 @@ require_once ('head.php');
             echo "</tr>";
           } /// Fin del procesamiento de las filas con datos
 
-          echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarUsuario' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
+          echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarUsuarios' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
           echo "</table>";
 
-          echo "<input type='hidden' name='query' value='".$consulta."'>";
+          echo "<input type='hidden' name='query' value='".htmlentities($consulta, ENT_QUOTES)."'>";
           echo "<input type='hidden' name='mensaje' value='".$tituloReporte."'>";
           echo "<input type='hidden' name='offset' id='offset' value=''>";
           echo "<input type='hidden' name='page' id='page' value=''>";
-          echo "<input type='hidden' name='origen' value='usuario'>";
+          echo "<input type='hidden' name='origen' value='usuarios'>";
 
           echo "</form>";
 

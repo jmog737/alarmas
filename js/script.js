@@ -476,6 +476,7 @@ function validarEditarNodo(){
       else {
         if ((areaMetro !== 'SI')&&(areaMetro !== 'si')&&(areaMetro !== 'Si')&&(areaMetro !== 'sI')&&(areaMetro !== 'NO')&&(areaMetro !== 'no')&&(areaMetro !== 'No')&&(areaMetro !== 'nO')&&(areaMetro !== "1")&&(areaMetro !== "0")&&(areaMetro !== 1)&&(areaMetro !== 0)){
           alert('Área metro debe ser sólo SI o NO. \Por favor verifique.');
+          $("#areaMetro").val(areaMetroOriginal);
           $("#areaMetro").focus();
         }
         else {
@@ -1326,11 +1327,16 @@ $(document).on("click", "[name=btnExportar]", function() {
 //  });
   var id = $(this).attr("id");
   var elemento = '';
-  if (id === 'btnExportarCargar'){
-    elemento = $("#frmCargar");
-  }
-  else {
-    elemento = $("#frmResultado");
+  switch (id){
+    case 'btnExportarCargar': elemento = $("#frmCargar");
+                              break;
+    case 'btnExportarBuscar': elemento = $("#frmResultado");
+                              break;
+    case 'btnExportarUsuarios': elemento = $("#frmUsuarios"); 
+                                break;
+    case 'btnExportarNodos':  elemento = $("#frmNodos");
+                              break;
+    default: break;
   }
   elemento.attr("action", "exportar.php");
   elemento.attr("target", "_blank");

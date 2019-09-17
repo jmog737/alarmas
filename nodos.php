@@ -144,8 +144,10 @@ require_once ('head.php');
                                   echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
                                   break;    
                   case 'nombre':
-                  case 'localidad':  echo "<td nowrap>".$fila[$indice]."</td>";
+                  case 'localidad': echo "<td nowrap>".$fila[$indice]."</td>";
                                     break;
+//                  case 'ip':  echo "<td><a href='$fila[$indice]' target='_blank'>$fila[$indice]</a></td>";      
+//                              break;
                   default:  echo "<td>".$fila[$indice]."</td>";
                             break;
                 } /// Fin switch indice      
@@ -155,14 +157,14 @@ require_once ('head.php');
             echo "</tr>";
           } /// Fin del procesamiento de las filas con datos
 
-          echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarNodo' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
+          echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarNodos' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
           echo "</table>";
 
           echo "<input type='hidden' name='query' value='".$consulta."'>";
           echo "<input type='hidden' name='mensaje' value='".$tituloReporte."'>";
           echo "<input type='hidden' name='offset' id='offset' value=''>";
           echo "<input type='hidden' name='page' id='page' value=''>";
-          echo "<input type='hidden' name='origen' value='nodo'>";
+          echo "<input type='hidden' name='origen' value='nodos'>";
 
           echo "</form>";
 

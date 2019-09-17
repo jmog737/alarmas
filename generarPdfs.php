@@ -130,7 +130,7 @@ class PDF extends PDF_MC_Table
     $this->Cell($anchoFooter, $altoFooter, $_SESSION['usuarioReal'], 0, 0, 'L', false);
   }
     
-  function armarTabla(){
+  function armarTablaAlarmas(){
     global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $arrayNodos, $nombreNodo, $camposAlarmas;
     
     $hTitulo = 14;
@@ -383,7 +383,449 @@ class PDF extends PDF_MC_Table
     ///***************************************************** FIN BORDE REDONDEADO DE CIERRE *************************************************
     ///********************************************************* FIN TABLA ******************************************************************
   }
+  
+  
+  function armarTablaNodos(){
+    global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $camposNodos;
+    
+    $hTitulo = 14;
+    $tamPagina = $this->GetPageWidth();
+    /// Defino un ancho máximo para el título cosa de no llegar a los extremos:
+    $anchoTitulo = 0.80*$tamPagina;
+    
+    /// Defino un ancho máximo para la tabla cosa de no llegar a los extremos:
+    $anchoTabla = 0.9*$tamPagina;
+       
+    //Defino color para los bordes:
+    $this->SetDrawColor(0, 0, 0);
+    //Defino grosor de los bordes:
+    $this->SetLineWidth(.3);
+    
+    ///***************************************************************** TITULO **************************************************************
+    /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
+    $this->SetFont('Courier', 'BU', $hTitulo);
 
+    $xTituloReporte = round((($tamPagina-$anchoTitulo)/2), 2);
+    $this->SetX($xTituloReporte);
+    
+    $nbTitulo = $this->NbLines($anchoTitulo, $tituloReporte);
+    $hTituloMulti=$hTitulo/$nbTitulo;
+
+    $this->SetTextColor(colorTituloReporte[0], colorTituloReporte[1], colorTituloReporte[2]);
+    
+    $tituloReporte .= " (Total: ".$totalFilas.")";
+
+    if ($nbTitulo > 1) {
+      $this->MultiCell($anchoTitulo, $hTituloMulti, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
+    }
+    else {
+      $this->MultiCell($anchoTitulo, $hTitulo, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
+    }
+    $y = $this->GetY();
+    ///*************************************************************** FIN TITULO ************************************************************
+    
+    ///********************************************************** INICIO TABLA ***************************************************************
+    $tamTablaCampos = 0;
+    foreach ($camposNodos as $ind => $fila ) {
+      if ($fila['mostrarReporte'] === 'si'){
+        $tamTablaCampos += $fila['tam'];
+      }
+    } /// Fin foreach cálculo del tamaño de la tabla    
+
+    $xTabla = round((($tamPagina-$anchoTabla)/2), 2);
+    $this->SetX($xTabla);
+    
+    //******************************************************** TÍTULO TABLA ******************************************************************
+    //Defino color de fondo para el título de la tabla:
+    $this->SetFillColor(colorTituloTablaFondo[0], colorTituloTablaFondo[1], colorTituloTablaFondo[2]);
+    $this->SetTextColor(colorTituloTablaTexto[0], colorTituloTablaTexto[1], colorTituloTablaTexto[2]);
+    $this->SetFont('Courier', 'B');
+    ///Agrego el rectángulo con el borde redondeado:
+    $this->RoundedRect($xTabla, $y, $anchoTabla, $h, 3.5, '12', 'DF');
+    //Escribo el título:
+    $this->Cell($anchoTabla, $h, utf8_decode(html_entity_decode($tituloTabla)), 0, 0, 'C', 0);
+    $this->Ln();
+    //******************************************************  FIN TÍTULO TABLA ***************************************************************
+    
+    ///******************************************************** CAMPOS TABLA *****************************************************************   
+    $this->SetFillColor(colorCamposFondo[0], colorCamposFondo[1], colorCamposFondo[2]);
+    $this->SetTextColor(colorCamposTexto[0], colorCamposTexto[1], colorCamposTexto[2]);
+    $this->SetFont('Courier', 'B', 10);
+    $this->SetX($xTabla);
+    foreach ($camposNodos as $key => $value) {
+      if ($value['mostrarReporte'] === 'si'){
+        $tamCampoReal = (($anchoTabla*$value['tam'])/$tamTablaCampos);      
+        $this->Cell($tamCampoReal, $h, utf8_decode(html_entity_decode($value['nombreMostrar'])), 'LRBT', 0, 'C', true);
+      }
+    }
+    ///****************************************************** FIN CAMPOS TABLA ***************************************************************
+    
+    ///********************************************************* COMIENZO DATOS **************************************************************
+    $this->SetTextColor(colorRegistrosTexto[0], colorRegistrosTexto[1], colorRegistrosTexto[2]);
+    $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+    $this->SetFont('Courier', '', 9);
+    $fill = 1;
+    $fillAnterior = $fill;
+    $a = 'C';
+    $this->Ln();
+    $this->SetX($xTabla);
+//    if ($nombreNodo === 'TODOS'){
+//      $nodoAnterior = '';
+//    }
+    $j = 1;
+    foreach ($registros as $indice => $fila) {
+      /// ************************************************** Detección cambio de nodo ********************************************************
+      /// Para el caso en que se consultan TODOS los nodos, detecto el cambio de nodo y agrego subtítulo indicando el  nuevo nodo:
+//      if (isset($nodoAnterior)&&($nodoAnterior === '')){
+//        $nodoAnterior = $fila['nodo'];
+//        $this->SetTextColor(colorSubtituloTablaTexto[0], colorSubtituloTablaTexto[1], colorSubtituloTablaTexto[2]);
+//        $this->setFillColor(colorSubtituloTablaFondo[0], colorSubtituloTablaFondo[1], colorSubtituloTablaFondo[2]);
+//        $this->SetFont('Courier', 'B', 12);
+//        $this->Cell($anchoTabla, $h, trim(utf8_decode(html_entity_decode($arrayNodos[$nodoAnterior]))), 1, 10, 'C', true);
+//      }
+//      $nodoActual = $fila['nodo'];
+//      if (isset($nodoAnterior)&&($nodoActual !== $nodoAnterior)){
+//        $nodoAnterior = $nodoActual;
+//        $this->SetFont('Courier', 'B', 12);
+//        $this->SetTextColor(colorSubtituloTablaTexto[0], colorSubtituloTablaTexto[1], colorSubtituloTablaTexto[2]);
+//        $this->setFillColor(colorSubtituloTablaFondo[0], colorSubtituloTablaFondo[1], colorSubtituloTablaFondo[2]);
+//        $this->Cell($anchoTabla, $h, trim(utf8_decode(html_entity_decode($arrayNodos[$nodoAnterior]))), 1, 10, 'C', true);
+//        //$j = 1;
+//      }
+//      $this->SetFont('Courier', '', 9); 
+      ///********************************************* Fin detección de cambio de nodo *******************************************************
+      
+      ///************ Calculo el alto de la fila según el dato más largo de los que vayan visibles: ******************************************
+      $nb=0;
+      $h0 = 0;
+      foreach ($camposNodos as $ind => $datoCampo){
+        if ($datoCampo['mostrarReporte'] === 'si'){
+          if ($datoCampo['nombreDB'] !== 'id'){
+            $dat = '';
+            $tamDat = 0;
+            $this->SetFont('Courier', '', 9);
+            $dat = trim(utf8_decode($fila[$datoCampo['nombreDB']]));
+            $tamDat = $this->GetStringWidth($dat);
+            $w1 = (($datoCampo['tam']*$anchoTabla)/$tamTablaCampos);
+            $nb=max($nb,$this->NbLines($w1,$dat)); 
+          }    
+        }
+      }
+      $h0=$h*$nb;
+      ///******************** FIN Cálculo del alto de la fila *******************************************************************************
+      
+      ///*************************************** ENCABEZADO DE PÁGINA (pageBreak) ***********************************************************
+      if($this->GetY()+$h0>$this->PageBreakTrigger){
+        $this->AddPage($this->CurOrientation);
+        $this->SetAutoPageBreak(true, $hFooter);
+        ///****************************************************** TITULO (pageBreak) ********************************************************
+        /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
+        $this->SetFont('Courier', 'BU', $hTitulo);
+        $this->SetX($xTituloReporte);
+        $this->SetTextColor(colorTituloReporte[0], colorTituloReporte[1], colorTituloReporte[2]);
+
+        if ($nbTitulo > 1) {
+          $this->MultiCell($anchoTitulo, $hTituloMulti, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
+        }
+        else {
+          $this->MultiCell($anchoTitulo, $hTitulo, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
+        }
+        $y = $this->GetY();
+        ///****************************************************** FIN TITULO (pageBreak) *****************************************************
+
+        ///*********************************************** CONTINÚO TABLA (pageBreak) ********************************************************
+        $this->SetX($xTabla);
+        ///*********************************************** CAMPOS TABLA (pageBreak) **********************************************************  
+        $this->SetFillColor(colorCamposFondo[0], colorCamposFondo[1], colorCamposFondo[2]);
+        $this->SetTextColor(colorCamposTexto[0], colorCamposTexto[1], colorCamposTexto[2]);
+        $this->SetFont('Courier', 'B', 10);
+        $this->SetX($xTabla);
+        foreach ($camposNodos as $key => $value) {
+          if ($value['mostrarReporte'] === 'si'){
+            $tamCampoReal = (($anchoTabla*$value['tam'])/$tamTablaCampos);      
+            $this->Cell($tamCampoReal, $h, utf8_decode(html_entity_decode($value['nombreMostrar'])), 'LRBT', 0, 'C', true);
+          }
+        }
+        $this->Ln();
+        $this->SetX($xTabla);
+        $this->SetTextColor(0); 
+        ///******************************************** FIN CAMPOS TABLA (pageBreak) *********************************************************
+      }
+      ///*************************************** FIN ENCABEZADO DE PÁGINA (pageBreak) ********************************************************
+      $this->SetTextColor(colorRegistrosTexto[0], colorRegistrosTexto[1], colorRegistrosTexto[2]);
+      $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+      
+      foreach ($camposNodos as $ind0 => $campo){
+        if ($campo['mostrarReporte'] === 'si'){
+          $this->SetFont('Courier', '', 9);
+          
+          switch ($campo['nombreDB']){
+            case 'id':  $datito = $j;
+                        break;
+            case 'areaMetro': if ($fila[$campo['nombreDB']] === "1"){
+                                $datito = "SI";
+                              }
+                              else {
+                                $datito = "NO";
+                              }
+                              break;
+            default:  $datito = trim(utf8_decode(html_entity_decode($fila[$campo['nombreDB']])));
+                      break;
+          }
+          
+          $anchoCampo = (($campo['tam']*$anchoTabla)/$tamTablaCampos);
+          $nb1 = $this->NbLines($anchoCampo, $datito);
+
+          //Save the current position
+          $x1=$this->GetX();
+          $y=$this->GetY();
+      
+          $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+          
+          $f = ($fill) ? 'F' : '';
+          //Draw the border
+          $this->Rect($x1,$y,$anchoCampo,$h0, $f);
+          $h1 = $h0/$nb1;
+          
+          //Print the text
+          if ($nb1 > 1) {
+            $this->MultiCell($anchoCampo, $h1, $datito,1, $a, $fill);
+          }
+          else {
+            $this->MultiCell($anchoCampo, $h0, $datito,1, $a, $fill);
+          } 
+          
+          //Put the position to the right of the cell
+          $this->SetXY($x1+$anchoCampo,$y);
+        }
+      }
+      
+      //Go to the next line
+      $this->Ln($h0);
+      $this->SetX($xTabla);
+      $fill = ($fill === 1) ? 0 : 1;
+      $j++;
+    }
+    
+    ///******************************************************* BORDE REDONDEADO DE CIERRE ***************************************************
+    $y = $this->GetY();
+    $this->SetFillColor(colorTituloTablaFondo[0], colorTituloTablaFondo[1], colorTituloTablaFondo[2]);
+    ///Agrego el rectángulo con el borde redondeado:
+    $this->RoundedRect($xTabla, $y, $anchoTabla, $h, 3.5, '34', 'DF');
+    ///***************************************************** FIN BORDE REDONDEADO DE CIERRE *************************************************
+    ///********************************************************* FIN TABLA ******************************************************************
+  }
+
+  
+  function armarTablaUsuarios(){
+    global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $camposUsuarios;
+    
+    $hTitulo = 14;
+    $tamPagina = $this->GetPageWidth();
+    /// Defino un ancho máximo para el título cosa de no llegar a los extremos:
+    $anchoTitulo = 0.80*$tamPagina;
+    
+    /// Defino un ancho máximo para la tabla cosa de no llegar a los extremos:
+    $anchoTabla = 0.9*$tamPagina;
+       
+    //Defino color para los bordes:
+    $this->SetDrawColor(0, 0, 0);
+    //Defino grosor de los bordes:
+    $this->SetLineWidth(.3);
+    
+    ///***************************************************************** TITULO **************************************************************
+    /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
+    $this->SetFont('Courier', 'BU', $hTitulo);
+
+    $xTituloReporte = round((($tamPagina-$anchoTitulo)/2), 2);
+    $this->SetX($xTituloReporte);
+    
+    $nbTitulo = $this->NbLines($anchoTitulo, $tituloReporte);
+    $hTituloMulti=$hTitulo/$nbTitulo;
+
+    $this->SetTextColor(colorTituloReporte[0], colorTituloReporte[1], colorTituloReporte[2]);
+    
+    $tituloReporte .= " (Total: ".$totalFilas.")";
+
+    if ($nbTitulo > 1) {
+      $this->MultiCell($anchoTitulo, $hTituloMulti, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
+    }
+    else {
+      $this->MultiCell($anchoTitulo, $hTitulo, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
+    }
+    $y = $this->GetY();
+    ///*************************************************************** FIN TITULO ************************************************************
+    
+    ///********************************************************** INICIO TABLA ***************************************************************
+    $tamTablaCampos = 0;
+    foreach ($camposUsuarios as $ind => $fila ) {
+      if ($fila['mostrarReporte'] === 'si'){
+        $tamTablaCampos += $fila['tam'];
+      }
+    } /// Fin foreach cálculo del tamaño de la tabla    
+
+    $xTabla = round((($tamPagina-$anchoTabla)/2), 2);
+    $this->SetX($xTabla);
+    
+    //******************************************************** TÍTULO TABLA ******************************************************************
+    //Defino color de fondo para el título de la tabla:
+    $this->SetFillColor(colorTituloTablaFondo[0], colorTituloTablaFondo[1], colorTituloTablaFondo[2]);
+    $this->SetTextColor(colorTituloTablaTexto[0], colorTituloTablaTexto[1], colorTituloTablaTexto[2]);
+    $this->SetFont('Courier', 'B');
+    ///Agrego el rectángulo con el borde redondeado:
+    $this->RoundedRect($xTabla, $y, $anchoTabla, $h, 3.5, '12', 'DF');
+    //Escribo el título:
+    $this->Cell($anchoTabla, $h, utf8_decode(html_entity_decode($tituloTabla)), 0, 0, 'C', 0);
+    $this->Ln();
+    //******************************************************  FIN TÍTULO TABLA ***************************************************************
+    
+    ///******************************************************** CAMPOS TABLA *****************************************************************   
+    $this->SetFillColor(colorCamposFondo[0], colorCamposFondo[1], colorCamposFondo[2]);
+    $this->SetTextColor(colorCamposTexto[0], colorCamposTexto[1], colorCamposTexto[2]);
+    $this->SetFont('Courier', 'B', 10);
+    $this->SetX($xTabla);
+    foreach ($camposUsuarios as $key => $value) {
+      if ($value['mostrarReporte'] === 'si'){
+        $tamCampoReal = (($anchoTabla*$value['tam'])/$tamTablaCampos);      
+        $this->Cell($tamCampoReal, $h, utf8_decode(html_entity_decode($value['nombreMostrar'])), 'LRBT', 0, 'C', true);
+      }
+    }
+    ///****************************************************** FIN CAMPOS TABLA ***************************************************************
+    
+    ///********************************************************* COMIENZO DATOS **************************************************************
+    $this->SetTextColor(colorRegistrosTexto[0], colorRegistrosTexto[1], colorRegistrosTexto[2]);
+    $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+    $this->SetFont('Courier', '', 9);
+    $fill = 1;
+    $fillAnterior = $fill;
+    $a = 'C';
+    $this->Ln();
+    $this->SetX($xTabla);
+
+    $j = 1;
+    foreach ($registros as $indice => $fila) {      
+      ///************ Calculo el alto de la fila según el dato más largo de los que vayan visibles: ******************************************
+      $nb=0;
+      $h0 = 0;
+      foreach ($camposUsuarios as $ind => $datoCampo){
+        if ($datoCampo['mostrarReporte'] === 'si'){
+          if ($datoCampo['nombreDB'] !== 'id'){
+            $dat = '';
+            $tamDat = 0;
+            $this->SetFont('Courier', '', 9);
+            $dat = trim(utf8_decode($fila[$datoCampo['nombreDB']]));
+            $tamDat = $this->GetStringWidth($dat);
+            $w1 = (($datoCampo['tam']*$anchoTabla)/$tamTablaCampos);
+            $nb=max($nb,$this->NbLines($w1,$dat)); 
+          }    
+        }
+      }
+      $h0=$h*$nb;
+      ///******************** FIN Cálculo del alto de la fila *******************************************************************************
+      
+      ///*************************************** ENCABEZADO DE PÁGINA (pageBreak) ***********************************************************
+      if($this->GetY()+$h0>$this->PageBreakTrigger){
+        $this->AddPage($this->CurOrientation);
+        $this->SetAutoPageBreak(true, $hFooter);
+        ///****************************************************** TITULO (pageBreak) ********************************************************
+        /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
+        $this->SetFont('Courier', 'BU', $hTitulo);
+        $this->SetX($xTituloReporte);
+        $this->SetTextColor(colorTituloReporte[0], colorTituloReporte[1], colorTituloReporte[2]);
+
+        if ($nbTitulo > 1) {
+          $this->MultiCell($anchoTitulo, $hTituloMulti, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
+        }
+        else {
+          $this->MultiCell($anchoTitulo, $hTitulo, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
+        }
+        $y = $this->GetY();
+        ///****************************************************** FIN TITULO (pageBreak) *****************************************************
+
+        ///*********************************************** CONTINÚO TABLA (pageBreak) ********************************************************
+        $this->SetX($xTabla);
+        ///*********************************************** CAMPOS TABLA (pageBreak) **********************************************************  
+        $this->SetFillColor(colorCamposFondo[0], colorCamposFondo[1], colorCamposFondo[2]);
+        $this->SetTextColor(colorCamposTexto[0], colorCamposTexto[1], colorCamposTexto[2]);
+        $this->SetFont('Courier', 'B', 10);
+        $this->SetX($xTabla);
+        foreach ($camposUsuarios as $key => $value) {
+          if ($value['mostrarReporte'] === 'si'){
+            $tamCampoReal = (($anchoTabla*$value['tam'])/$tamTablaCampos);      
+            $this->Cell($tamCampoReal, $h, utf8_decode(html_entity_decode($value['nombreMostrar'])), 'LRBT', 0, 'C', true);
+          }
+        }
+        $this->Ln();
+        $this->SetX($xTabla);
+        $this->SetTextColor(0); 
+        ///******************************************** FIN CAMPOS TABLA (pageBreak) *********************************************************
+      }
+      ///*************************************** FIN ENCABEZADO DE PÁGINA (pageBreak) ********************************************************
+      $this->SetTextColor(colorRegistrosTexto[0], colorRegistrosTexto[1], colorRegistrosTexto[2]);
+      $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+      
+      foreach ($camposUsuarios as $ind0 => $campo){
+        if ($campo['mostrarReporte'] === 'si'){
+          $this->SetFont('Courier', '', 9);
+          
+          switch ($campo['nombreDB']){
+            case 'id':  $datito = $j;
+                        break;
+            case 'tamPagina':
+            case 'limiteSelects': if ($fila[$campo['nombreDB']] === NULL){
+                                    $datito = 'No ingresado';
+                                  }
+                                  else {
+                                    $datito = $fila[$campo['nombreDB']];
+                                  }
+                                  break;
+            default:  $datito = trim(utf8_decode(html_entity_decode($fila[$campo['nombreDB']])));
+                      break;
+          }
+          
+          $anchoCampo = (($campo['tam']*$anchoTabla)/$tamTablaCampos);
+          $nb1 = $this->NbLines($anchoCampo, $datito);
+
+          //Save the current position
+          $x1=$this->GetX();
+          $y=$this->GetY();
+      
+          $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+          
+          $f = ($fill) ? 'F' : '';
+          //Draw the border
+          $this->Rect($x1,$y,$anchoCampo,$h0, $f);
+          $h1 = $h0/$nb1;
+          
+          //Print the text
+          if ($nb1 > 1) {
+            $this->MultiCell($anchoCampo, $h1, $datito,1, $a, $fill);
+          }
+          else {
+            $this->MultiCell($anchoCampo, $h0, $datito,1, $a, $fill);
+          } 
+          
+          //Put the position to the right of the cell
+          $this->SetXY($x1+$anchoCampo,$y);
+        }
+      }
+      
+      //Go to the next line
+      $this->Ln($h0);
+      $this->SetX($xTabla);
+      $fill = ($fill === 1) ? 0 : 1;
+      $j++;
+    }
+    
+    ///******************************************************* BORDE REDONDEADO DE CIERRE ***************************************************
+    $y = $this->GetY();
+    $this->SetFillColor(colorTituloTablaFondo[0], colorTituloTablaFondo[1], colorTituloTablaFondo[2]);
+    ///Agrego el rectángulo con el borde redondeado:
+    $this->RoundedRect($xTabla, $y, $anchoTabla, $h, 3.5, '34', 'DF');
+    ///***************************************************** FIN BORDE REDONDEADO DE CIERRE *************************************************
+    ///********************************************************* FIN TABLA ******************************************************************
+  }
+  
   ///Función auxiliar para redondear los bordes de las tablas.
   ///Está sacada del script: Rounded Rectangle
   function RoundedRect($x, $y, $w, $h, $r, $corners = '1234', $style = '')

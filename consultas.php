@@ -76,7 +76,7 @@ $totalUsuarios = $datos['rows'];
             <td colspan="3"><input type="text" tabindex="2" placeholder="Elegir archivo" title="Elegir el archivo a consultar." name="fileSearch" id="fileSearch" class="agrandar" size="9" onkeyup="showHint(this.value, '#fileSearch', '')"></td>
           </tr>
           <tr>
-            <th colspan="5" class="subTituloTabla1">FECHA</th>
+            <th colspan="5" class="subTituloTabla1">FECHA DE LA ALARMA</th>
           </tr>
           <tr>
             <td class="fondoNaranja">

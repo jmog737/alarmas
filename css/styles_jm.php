@@ -357,6 +357,7 @@ hr {
   margin: 0 auto;
   border-radius: 25px;
   max-width: 60% !important;
+  padding: 0px;
 }
 .tabla2 caption {
   display: table-caption;
@@ -373,6 +374,7 @@ hr {
   line-height:none;
   max-width: 100%;
   text-align: center !important;
+  padding: 5px !important;
 }
 .tabla2 tr {
   border: #c0c0c0 1px solid;

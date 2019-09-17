@@ -280,7 +280,7 @@ $mensajeNuevo = '';
                                 $parOrigen = "&o=".base64_encode('buscar');
                                 //$parKeysCodif = "&k=".base64_encode(serialize($keys));
                                 $parConsulta = "&c=".base64_encode($consulta);
-                                $parParam = "&p=".base64_encode(serialize($parametros));
+                                $parParam = "&p=".base64_encode($paramSerial);
 
                                 $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parConsulta.$parParam;
                                 echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";

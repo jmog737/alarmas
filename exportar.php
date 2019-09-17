@@ -54,7 +54,6 @@ $vida_session = time() - $_SESSION['tiempo'];
 if($vida_session < DURACION ) {
   require_once('data/pdo.php');
   require_once('data/config.php');
-  require_once('data/camposAlarmas.php');
   require_once('generarExcel.php');
   require_once('generarPdfs.php');
   require_once('enviarMails.php');
@@ -71,8 +70,8 @@ if($vida_session < DURACION ) {
   //**************************************************** FIN DESTINATARIOS CORREOS ***********************************************************
   
   if (isset($_POST)){
-    $param = $_POST["param"];
     if (isset($_POST["param"])){
+      $param = $_POST["param"];
       $t = stripos($param, "&");
       if ($t === FALSE){
         $param = unserialize($param);
@@ -86,50 +85,67 @@ if($vida_session < DURACION ) {
       $param = null;
     }
     if (isset($_POST['query'])){
-      $consulta = $_POST['query'];
+      $consulta = html_entity_decode($_POST['query']);
+      
     }
     else {
       $seguir = false;
       echo "Hubo un error. Por favor verifique!.";
     }
     
+    if (isset($_POST['origen'])){
+      $origen = $_POST['origen'];
+    }
+    else {
+      echo "Hubo un error. Por favor verifique!.";
+      $seguir = false;
+    }
+    
     if (isset($_POST['mensaje'])){
       $tituloReporte = $_POST['mensaje'];
     }
-    
+    $archivo = false;
     if (isset($_POST['nodo'])){
       $nombreNodo = $_POST['nodo'];
+      $arrayNodos = array();
+      if ($nombreNodo === 'TODOS'){
+        $nombreCorto = "TODOS";
+        $log = "NO";
+        /// Consulto por el listado del nodo para poder hacer el "cambio de nodo":                                                                                                                                                                           
+        $consultaNodos = "select distinct idnodo, localidad, nombre from nodos";
+        $datosNodos = json_decode(hacerSelect($consultaNodos, $log), true);
+        $nombreNodos = $datosNodos['resultado'];
+        foreach ($nombreNodos as $ind => $valor){
+          $arrayNodos[$valor['idnodo']] = $valor['localidad']." [".$valor['nombre']."]";
+        }
+      }
+      
+      if ($nombreNodo === 'archivo'){
+        $archivo = true;
+        $temp2 = explode('archivo ', $tituloReporte);
+        $temp3 = explode('_', $temp2[1]);
+        $nombreCorto = $temp3[0];
+        /// Comento por ahora, pero es la consulta para recuperar el nombre del nodo según ubicación
+  //      $para1 = array($nombreCorto);
+  //      $log = false;
+  //      $consultaNodo = "select localidad from nodos where nombre=?";
+  //      $datoNodo = json_decode(hacerSelect($consultaNodo, $log, $para1), true);
+  //      $nombreNodo = $datoNodo['resultado'][0]['localidad'];
+        $nombreNodo = $nombreCorto;
+      }
     }
     
     if (isset($_POST['nodoCorto'])){
       $nombreCorto = $_POST['nodoCorto'];
     }
-    
-    $arrayNodos = array();
-    if ($nombreNodo === 'TODOS'){
-      $nombreCorto = "TODOS";
-      $log = "NO";
-      /// Consulto por el listado del nodo para poder hacer el "cambio de nodo":                                                                                                                                                                           
-      $consultaNodos = "select distinct idnodo, localidad, nombre from nodos";
-      $datosNodos = json_decode(hacerSelect($consultaNodos, $log), true);
-      $nombreNodos = $datosNodos['resultado'];
-      foreach ($nombreNodos as $ind => $valor){
-        $arrayNodos[$valor['idnodo']] = $valor['localidad']." [".$valor['nombre']."]";
+    else {
+      /// Si no se seteó es porque se viene ó desde usuarios ó desde nodos:
+      if ($_POST["origen"] === 'usuarios'){
+        $nombreCorto = 'Usuarios';
       }
-    }
-    $archivo = false;
-    if ($nombreNodo === 'archivo'){
-      $archivo = true;
-      $temp2 = explode('archivo ', $tituloReporte);
-      $temp3 = explode('_', $temp2[1]);
-      $nombreCorto = $temp3[0];
-      /// Comento por ahora, pero es la consulta para recuperar el nombre del nodo según ubicación
-//      $para1 = array($nombreCorto);
-//      $log = false;
-//      $consultaNodo = "select localidad from nodos where nombre=?";
-//      $datoNodo = json_decode(hacerSelect($consultaNodo, $log, $para1), true);
-//      $nombreNodo = $datoNodo['resultado'][0]['localidad'];
-      $nombreNodo = $nombreCorto;
+      else {
+        $nombreCorto = 'Nodos';
+      }
     }
 
     if ($seguir){
@@ -156,7 +172,6 @@ if($vida_session < DURACION ) {
         $x = 10;
         $marcaAgua = true;
         $textoMarcaAgua = 'CONFIDENCIAL';
-        $tituloHeader = "REPORTE DE ALARMAS";
         $guardarDisco = true;
         //******************************************************** FIN tamaños de celdas ***************************************************************
 
@@ -167,8 +182,6 @@ if($vida_session < DURACION ) {
         //
         /// ******************************************************* FIN PARAMETROS GENERALES ***********************************************************
 
-        $tituloTabla = "Alarmas";
-        
         //*********************************************** Adaptación nombre del nodo sin tildes ni caracteres especiales *******************************
         /// Acomodo el nombre del nodo para NO tener problemas con el nombre del archivo:
         
@@ -188,14 +201,36 @@ if($vida_session < DURACION ) {
         
         $timestamp = date('dmy_His');
         //$nombreArchivo = $nombreNodoMostrar."_".$timestamp.".pdf";
-        $nombreArchivo = $nombreCorto."_".$timestamp.".pdf";
+        $nombreArchivo = ucwords($nombreCorto)."_".$timestamp.".pdf";
         //********************************************** FIN Adaptación nombre del nodo sin tildes ni caracteres especiales *****************************
         
         //Instancio objeto de la clase:
         $pdfResumen = new PDF($orientacion,'mm','A4');
-        $pdfResumen->AddPage();
+        
 
-        $pdfResumen->armarTabla();
+        switch ($origen){
+          case 'usuarios':  $tituloHeader = "REPORTE DE USUARIOS";
+                            $pdfResumen->AddPage();
+                            $tituloTabla = "USUARIOS";
+                            require_once('data/camposUsuarios.php');
+                            $pdfResumen->armarTablaUsuarios();
+                            break;
+          case 'nodos': $tituloHeader = "REPORTE DE NODOS";
+                        $pdfResumen->AddPage();
+                        $tituloTabla = "NODOS";
+                        require_once('data/camposNodos.php');
+                        $pdfResumen->armarTablaNodos();
+                        break;
+          case 'buscar':
+          case 'cargar':  $tituloHeader = "REPORTE DE ALARMAS";
+                          $pdfResumen->AddPage();
+                          $tituloTabla = "ALARMAS";
+                          require_once('data/camposAlarmas.php');
+                          $pdfResumen->armarTablaAlarmas();
+                          break;
+          default: break;
+        }
+        //$pdfResumen->armarTablaAlarmas();
            
         ///***************************************** GUARDADO DEL ARCHIVO EN DISCO y muestra en pantalla: ************************************
         ///***********************************************************************************************************************************
@@ -205,13 +240,26 @@ if($vida_session < DURACION ) {
         if ($guardarDisco){
           $sigo = true;
           if ($archivo){
-            $nombreReporte = $nombreNodoMostrar;
             $nombreNodoMostrar = "Archivo";
+            $nombreReporte = $nombreNodoMostrar;
           }
           else {
             $nombreReporte = $nombreNodoMostrar;
           }
-          $rutaCarpetaNodo = $dirReportes.$nombreNodoMostrar;
+          $userMayuscula = strtoupper($_SESSION['username']);
+          $dirUsuario = $dirReportes.$userMayuscula."/";
+          if (is_dir($dirUsuario)){
+            //echo "La carpeta del usuario ya existe: $dirUsuario.<br>";
+          }
+          else {
+            $creoCarpetaUsuario = mkdir($dirUsuario);
+            if ($creoCarpetaUsuario === FALSE){
+              //echo "Error al crear la carpeta: $rutaCarpetaNodo.<br>";
+              $sigo = false;
+            }
+          }
+          
+          $rutaCarpetaNodo = $dirUsuario.$nombreNodoMostrar;
           if (is_dir($rutaCarpetaNodo)){
             //echo "La carpeta del cliente ya existe: $rutaCarpetaNodo.<br>";
           }
@@ -316,7 +364,7 @@ if($vida_session < DURACION ) {
           //$asunto = $asunto." (MAIL DE TEST!!!)";
 
           $asunto = "Mail de prueba";
-          $cuerpo = utf8_decode("<html><body><h4>Se adjunta el reporte generado con las alarmas.</h4></body></html>");
+          $cuerpo = utf8_decode("<html><body><h4>Se adjunta el reporte generado.</h4></body></html>");
           echo "mando mail: $asunto<br>";
           $respuesta = enviarMail($paraListados, $copiaListados, $ocultosListados, $asunto, $cuerpo, "REPORTE", $nombreZip, $fileDir);
           escribirLog("Se mandó mail");

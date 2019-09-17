@@ -36,15 +36,13 @@ define('MAX_LIMITESELECTS', 15);
 
 ///Consulto nombre del HOST y en base al mismo, configuro la IP (porque el HSA tiene diferente rango de IPs):
 $hostname = getHostName();
-$ip = '';
-
-//echo "host: ".$hostname."<br>ip: ".$ip;
+$ip = 'http://192.168.200.146';
 
 $unidad = "D:";
 if (!file_exists($unidad)) {
   $unidad = "C:";
 }
-$dirCargados = $unidad."\\\ArchivosCargados";
+$dirCargados = $unidad."/ArchivosCargados";
 $dirReportes = $unidad."/Reportes/";
 
 $dirExcel = $dirReportes."Excel/";
