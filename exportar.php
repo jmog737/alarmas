@@ -141,10 +141,10 @@ if($vida_session < DURACION ) {
     else {
       /// Si no se seteó es porque se viene ó desde usuarios ó desde nodos:
       if ($_POST["origen"] === 'usuarios'){
-        $nombreCorto = 'Usuarios';
+        $nombreCorto = 'USUARIOS';
       }
       else {
-        $nombreCorto = 'Nodos';
+        $nombreCorto = 'NODOS';
       }
     }
 
@@ -206,7 +206,6 @@ if($vida_session < DURACION ) {
         
         //Instancio objeto de la clase:
         $pdfResumen = new PDF($orientacion,'mm','A4');
-        
 
         switch ($origen){
           case 'usuarios':  $tituloHeader = "REPORTE DE USUARIOS";
@@ -229,9 +228,7 @@ if($vida_session < DURACION ) {
                           $pdfResumen->armarTablaAlarmas();
                           break;
           default: break;
-        }
-        //$pdfResumen->armarTablaAlarmas();
-           
+        }           
         ///***************************************** GUARDADO DEL ARCHIVO EN DISCO y muestra en pantalla: ************************************
         ///***********************************************************************************************************************************
         
@@ -310,15 +307,26 @@ if($vida_session < DURACION ) {
           }
           escribirLog('Se genera y guarda el pdf: "'.$salida.'"');
           $pdfResumen->Output($salida, 'F');
-               
-          ///**************************** FIN Generación de la carpeta y sub carpetas necesarias segun nombre del nodo y fecha: ****************
-          ///***********************************************************************************************************************************
-
           ///Además lo muestro en pantalla:        
           $pdfResumen->Output('I');
-
-          $archivo = generarExcelAlarmas($registros);
-          escribirLog('Se genera y guarda el excel: "'.$dirExcel.$archivo.'"');
+          
+          switch ($origen){
+            case 'usuarios':  $archivo = generarExcelUsuarios($registros);
+                              escribirLog('Se genera y guarda el excel: "'.$dirExcel.$archivo.'"'); 
+                              break;
+            case 'nodos': $archivo = generarExcelNodos($registros);
+                          escribirLog('Se genera y guarda el excel: "'.$dirExcel.$archivo.'"'); 
+                          break;
+            case 'buscar':
+            case 'cargar':  $archivo = generarExcelAlarmas($registros);
+                            escribirLog('Se genera y guarda el excel: "'.$dirExcel.$archivo.'"'); 
+                            break;
+            default: break;
+          }  
+        
+          ///**************************** FIN Generación de la carpeta y sub carpetas necesarias segun nombre del nodo y fecha: ****************
+          ///***********************************************************************************************************************************
+     
           ///**************************************** FIN GUARDADO DEL ARCHIVO EN DISCO y muestra en pantalla: *********************************
 
           ///************************************************************ GENERACION ZIP FILE **************************************************
@@ -334,16 +342,25 @@ if($vida_session < DURACION ) {
             $fileDir = $subRuta."/".$nombreZip;
           }
 
-          $excel = $dirExcel.$archivo;
-
           if ($zip->open($fileDir, ZIPARCHIVE::CREATE ) !== TRUE) 
-              {
-              exit("No se pudo abrir el archivo\n");
-              } 
+            {
+            exit("No se pudo abrir el archivo\n");
+          }
+          
           //agrego el pdf correspondiente al reporte:
-          $zip->addFile($salida, $nombreArchivo);
-          $zip->addFile($excel, $archivo);
-
+          if (file_exists($salida))
+            {
+            $zip->addFile($salida, $nombreArchivo);
+          }
+          
+          $excel = $dirExcel.$archivo;
+          
+          //agrego el excel correspondiente al reporte:
+          if (file_exists($excel))
+            {
+            $zip->addFile($excel, $archivo);
+          }
+          
   //        if ($zipSeguridad !== 'nada'){
   //          $zip->setPassword($pwdZip);
   //          $zip->setEncryptionName($archivo, ZipArchive::EM_AES_256);

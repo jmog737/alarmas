@@ -474,27 +474,6 @@ class PDF extends PDF_MC_Table
 //    }
     $j = 1;
     foreach ($registros as $indice => $fila) {
-      /// ************************************************** Detección cambio de nodo ********************************************************
-      /// Para el caso en que se consultan TODOS los nodos, detecto el cambio de nodo y agrego subtítulo indicando el  nuevo nodo:
-//      if (isset($nodoAnterior)&&($nodoAnterior === '')){
-//        $nodoAnterior = $fila['nodo'];
-//        $this->SetTextColor(colorSubtituloTablaTexto[0], colorSubtituloTablaTexto[1], colorSubtituloTablaTexto[2]);
-//        $this->setFillColor(colorSubtituloTablaFondo[0], colorSubtituloTablaFondo[1], colorSubtituloTablaFondo[2]);
-//        $this->SetFont('Courier', 'B', 12);
-//        $this->Cell($anchoTabla, $h, trim(utf8_decode(html_entity_decode($arrayNodos[$nodoAnterior]))), 1, 10, 'C', true);
-//      }
-//      $nodoActual = $fila['nodo'];
-//      if (isset($nodoAnterior)&&($nodoActual !== $nodoAnterior)){
-//        $nodoAnterior = $nodoActual;
-//        $this->SetFont('Courier', 'B', 12);
-//        $this->SetTextColor(colorSubtituloTablaTexto[0], colorSubtituloTablaTexto[1], colorSubtituloTablaTexto[2]);
-//        $this->setFillColor(colorSubtituloTablaFondo[0], colorSubtituloTablaFondo[1], colorSubtituloTablaFondo[2]);
-//        $this->Cell($anchoTabla, $h, trim(utf8_decode(html_entity_decode($arrayNodos[$nodoAnterior]))), 1, 10, 'C', true);
-//        //$j = 1;
-//      }
-//      $this->SetFont('Courier', '', 9); 
-      ///********************************************* Fin detección de cambio de nodo *******************************************************
-      
       ///************ Calculo el alto de la fila según el dato más largo de los que vayan visibles: ******************************************
       $nb=0;
       $h0 = 0;
@@ -568,7 +547,7 @@ class PDF extends PDF_MC_Table
                               else {
                                 $datito = "NO";
                               }
-                              break;
+                              break;                 
             default:  $datito = trim(utf8_decode(html_entity_decode($fila[$campo['nombreDB']])));
                       break;
           }
@@ -587,14 +566,24 @@ class PDF extends PDF_MC_Table
           $this->Rect($x1,$y,$anchoCampo,$h0, $f);
           $h1 = $h0/$nb1;
           
-          //Print the text
-          if ($nb1 > 1) {
-            $this->MultiCell($anchoCampo, $h1, $datito,1, $a, $fill);
+          /// Se detecta cuando sea el campo de la ip para poder insertar el hipervínculo que NO se puede hacer con multicell:
+          if ($campo['nombreDB'] === 'ip'){
+            $this->SetTextColor(0, 0, 255);
+            $this->SetFont('Courier', 'BU', 9);
+            $this->Cell($anchoCampo, $h0, $datito, 1, 0, $a, $fill, "$datito");
+            $this->SetTextColor(colorRegistrosTexto[0], colorRegistrosTexto[1], colorRegistrosTexto[2]);
+            $this->SetFont('Courier', '', 9);
           }
           else {
-            $this->MultiCell($anchoCampo, $h0, $datito,1, $a, $fill);
-          } 
-          
+            //Print the text
+            if ($nb1 > 1) {
+              $this->MultiCell($anchoCampo, $h1, $datito,1, $a, $fill);
+            }
+            else {
+              $this->MultiCell($anchoCampo, $h0, $datito,1, $a, $fill);
+            } 
+          }
+                  
           //Put the position to the right of the cell
           $this->SetXY($x1+$anchoCampo,$y);
         }

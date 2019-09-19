@@ -320,3 +320,388 @@ function generarExcelAlarmas($reg) {
   
   return $nombreArchivo;
 }
+
+function generarExcelNodos($reg) {
+  global $nombreReporte, $tituloReporte, $camposNodos;
+  
+  /// ****************************************************** INICIO GENERAL HOJA DE DATOS ****************************************************
+  $spreadsheet = new Spreadsheet();
+
+  $locale = 'es_UY'; 
+  $validLocale = \PhpOffice\PhpSpreadsheet\Settings::setLocale($locale); 
+  if (!$validLocale) { echo 'Unable to set locale to '.$locale." - reverting to en_us<br />\n"; }
+
+  // Set document properties
+  $spreadsheet->getProperties()->setCreator("Juan Martín Ortega")
+                               ->setLastModifiedBy("Juan Martín Ortega")
+                               ->setTitle("Nodos")
+                               ->setSubject("Datos exportados")
+                               ->setDescription("Archivo excel con el resultado de la consulta realizada.")
+                               ->setKeywords("nodos excel php")
+                               ->setCategory("Resultado");
+
+  /// Declaro hoja activa:
+  $hoja = $spreadsheet->getSheet(0);
+  /// ******************************************************** FIN GENERAL HOJA DE DATOS *****************************************************
+  
+  ///Trabajo con el nombre para la hoja activa debido a la limitante del largo (31 caracteres):
+  ///Además, ya se tienen 8 de la fecha a la cual se consultó el stock
+  $timestamp = date('dmy_His');
+  $timestampCorto = date('dmy');
+  
+  $nombreReporte1 = $nombreReporte."_".$timestampCorto;
+  $hoja->setTitle($nombreReporte1);
+  $hoja->getTabColor()->setRGB($GLOBALS["colorTabAlarmas"]);
+  
+  $colId = 'A';
+  $filaEncabezado = '3';
+  
+  $totalCampos = 0;
+  $nombreCampos = array();
+  foreach ($camposNodos as $ind => $fila ) {
+    if ($fila['mostrarExcel'] === 'si'){
+      $nombreCampos[] = html_entity_decode($fila['nombreMostrar']);
+      $totalCampos++;
+    }
+  } /// Fin foreach campos visibles
+  $colFinal = chr(ord($colId)+$totalCampos-1);
+  
+  ///******************************************************** INICIO formato TIPO CONSULTA ***************************************************
+  $hoja->mergeCells($colId.'1:'.$colFinal.'1');
+  $hoja->setCellValue($colId."1", $tituloReporte);
+  
+  /// Formato del mensaje con el tipo de consulta:
+  $mensajeTipo = $colId.'1:'.$colFinal.'1';
+
+  $styleMensajeTipo = array(
+      'font' => array(
+          'bold' => true,
+          'underline' => true,
+        ),
+      'borders' => array(
+              'allBorders' => array(
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+                'color' => array('rgb' => $GLOBALS["colorBordeTitulo"]),
+                ),
+              ), 
+      'alignment' => array(
+         'wrap' => true,
+         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+      ),
+      'fill' => array(
+          'color' => array('rgb' => $GLOBALS["colorFondoTitulo"]),
+          'fillType' => 'solid',
+        ),
+      );
+  $hoja->getStyle($mensajeTipo)->applyFromArray($styleMensajeTipo);
+  ///*********************************************************** FIN formato TIPO CONSULTA ***************************************************
+  
+  ///***************************************************************** INICIO CAMPOS *********************************************************
+  // Agrego los títulos:
+  $celda0 = $colId.$filaEncabezado;
+  $hoja->fromArray($nombreCampos, '""', $celda0);
+  
+  /// Formato de los títulos:
+  $header = $colId.$filaEncabezado.':'.$colFinal.$filaEncabezado;
+  $styleHeader = array(
+    'fill' => array(
+        'color' => array('rgb' => $GLOBALS["colorFondoCampos"]),
+        'fillType' => 'solid',
+      ),
+    'font' => array(
+        'bold' => true,
+      ),
+    'alignment' => array(
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+      ),
+  );
+  $hoja->getStyle($header)->applyFromArray($styleHeader);
+  ///******************************************************************* FIN CAMPOS **********************************************************
+
+  ///***************************************************************** INICIO DATOS **********************************************************  
+  $j = $filaEncabezado + 1;
+
+  /// Datos de los campos:
+  foreach ($reg as $i => $filita) {
+    $fila = array();
+        
+    foreach ($camposNodos as $indice => $datoCampo ) {
+      if ($datoCampo['mostrarExcel'] === 'si'){
+        switch ($datoCampo['nombreDB']){
+          case 'id':  $datito = $i+1;
+                      break;  
+          case 'areaMetro': if ($filita[$datoCampo['nombreDB']] === "1"){
+                              $datito = "SI";
+                            }
+                            else {
+                              $datito = "NO";
+                            }
+                            break;          
+          default:  $datito = trim($filita[$datoCampo['nombreDB']]);
+                    break;
+        }
+        $fila[] = $datito;
+      } /// Fin if datoCampo['mostrar'] === si
+    } /// Fin foreach datoCampo
+    
+    $celda = $colId.$j;
+    $hoja->fromArray($fila, '""', $celda);
+    $j++;
+  }
+  $filaFinal = $j - 1;
+  ///******************************************************************* FIN DATOS ***********************************************************
+
+  /// ******************************************************** INICIO formato GENERAL ********************************************************
+  /// Defino el rango de celdas con datos para poder darle formato a todas juntas:
+  $rango = $colId.$filaEncabezado.":".$colFinal.$filaFinal;
+  /// Defino el formato para las celdas:
+  $styleGeneral = array(
+      'borders' => array(
+          'allBorders' => array(
+              'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+              'color' => array('rgb' => $GLOBALS["colorBordeRegular"]),
+          ),
+      ),
+      'alignment' => array(
+         'wrap' => true,
+         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+      )
+  );
+  $hoja->getStyle($rango)->applyFromArray($styleGeneral);
+  /// ********************************************************** FIN formato GENERAL *********************************************************
+  
+  /// ****************************************************** INICIO AUTOAJUSTE COLUMNAS ******************************************************
+  /// Ajusto el auto size para que las celdas no se vean cortadas:
+  for ($col = ord(''.$colId.''); $col <= ord(''.$colFinal.''); $col++)
+    {
+    $hoja->getColumnDimension(chr($col))->setAutoSize(true);   
+  }
+  /// ***************************************************** FIN AUTOAJUSTE COLUMNAS **********************************************************
+  
+  /// ********************************************************** INICIO SEGURIDAD ************************************************************
+//  switch ($planilla){
+//    case "nada": break;
+//    case "misma": if ($zipSeguridad !== 'nada') {
+//                    $pwdPlanilla = $pwdZip;
+//                  }
+//                  break;
+//    case "fecha": $pwdPlanilla = $timestamp; 
+//                  break;
+//    case "random": $pwdPlanilla = $pwdPlanillaManual;
+//                   break;
+//    case "manual": $pwdPlanilla = $pwdPlanillaManual;
+//                   break;
+//    default: break;
+//  } 
+//  if ((($planilla !== "nada")&&($planilla !== 'misma'))||(($planilla === "misma")&&($zipSeguridad !== "nada"))){
+//    ///Agrego protección para la hoja activa:
+//    $hoja->getProtection()->setPassword($pwdPlanilla);
+//    $hoja->getProtection()->setSheet(true);
+//  }
+  /// ************************************************************ FIN SEGURIDAD *************************************************************
+  
+  /// ********************************************************* INICIO GUARDADO **************************************************************
+  // Se guarda como Excel 2007:
+  $writer = new Xlsx($spreadsheet);
+  
+  $nombreArchivo = $nombreReporte."_".$timestamp.".Xlsx";
+  $salida = $GLOBALS["dirExcel"].$nombreArchivo;
+  $writer->save($salida);
+  /// *********************************************************** FIN GUARDADO ***************************************************************
+  
+  return $nombreArchivo;
+}
+
+function generarExcelUsuarios($reg) {
+  global $nombreReporte, $tituloReporte, $camposUsuarios;
+  
+  /// ****************************************************** INICIO GENERAL HOJA DE DATOS ****************************************************
+  $spreadsheet = new Spreadsheet();
+
+  $locale = 'es_UY'; 
+  $validLocale = \PhpOffice\PhpSpreadsheet\Settings::setLocale($locale); 
+  if (!$validLocale) { echo 'Unable to set locale to '.$locale." - reverting to en_us<br />\n"; }
+
+  // Set document properties
+  $spreadsheet->getProperties()->setCreator("Juan Martín Ortega")
+                               ->setLastModifiedBy("Juan Martín Ortega")
+                               ->setTitle("Usuarios")
+                               ->setSubject("Datos exportados")
+                               ->setDescription("Archivo excel con el resultado de la consulta realizada.")
+                               ->setKeywords("usuarios excel php")
+                               ->setCategory("Resultado");
+
+  /// Declaro hoja activa:
+  $hoja = $spreadsheet->getSheet(0);
+  /// ******************************************************** FIN GENERAL HOJA DE DATOS *****************************************************
+  
+  ///Trabajo con el nombre para la hoja activa debido a la limitante del largo (31 caracteres):
+  ///Además, ya se tienen 8 de la fecha a la cual se consultó el stock
+  $timestamp = date('dmy_His');
+  $timestampCorto = date('dmy');
+  
+  $nombreReporte1 = $nombreReporte."_".$timestampCorto;
+  $hoja->setTitle($nombreReporte1);
+  $hoja->getTabColor()->setRGB($GLOBALS["colorTabAlarmas"]);
+  
+  $colId = 'A';
+  $filaEncabezado = '3';
+  
+  $totalCampos = 0;
+  $nombreCampos = array();
+  foreach ($camposUsuarios as $ind => $fila ) {
+    if ($fila['mostrarExcel'] === 'si'){
+      $nombreCampos[] = html_entity_decode($fila['nombreMostrar']);
+      $totalCampos++;
+    }
+  } /// Fin foreach campos visibles
+  $colFinal = chr(ord($colId)+$totalCampos-1);
+  
+  ///******************************************************** INICIO formato TIPO CONSULTA ***************************************************
+  $hoja->mergeCells($colId.'1:'.$colFinal.'1');
+  $hoja->setCellValue($colId."1", $tituloReporte);
+  
+  /// Formato del mensaje con el tipo de consulta:
+  $mensajeTipo = $colId.'1:'.$colFinal.'1';
+
+  $styleMensajeTipo = array(
+      'font' => array(
+          'bold' => true,
+          'underline' => true,
+        ),
+      'borders' => array(
+              'allBorders' => array(
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+                'color' => array('rgb' => $GLOBALS["colorBordeTitulo"]),
+                ),
+              ), 
+      'alignment' => array(
+         'wrap' => true,
+         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+      ),
+      'fill' => array(
+          'color' => array('rgb' => $GLOBALS["colorFondoTitulo"]),
+          'fillType' => 'solid',
+        ),
+      );
+  $hoja->getStyle($mensajeTipo)->applyFromArray($styleMensajeTipo);
+  ///*********************************************************** FIN formato TIPO CONSULTA ***************************************************
+  
+  ///***************************************************************** INICIO CAMPOS *********************************************************
+  // Agrego los títulos:
+  $celda0 = $colId.$filaEncabezado;
+  $hoja->fromArray($nombreCampos, '""', $celda0);
+  
+  /// Formato de los títulos:
+  $header = $colId.$filaEncabezado.':'.$colFinal.$filaEncabezado;
+  $styleHeader = array(
+    'fill' => array(
+        'color' => array('rgb' => $GLOBALS["colorFondoCampos"]),
+        'fillType' => 'solid',
+      ),
+    'font' => array(
+        'bold' => true,
+      ),
+    'alignment' => array(
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+      ),
+  );
+  $hoja->getStyle($header)->applyFromArray($styleHeader);
+  ///******************************************************************* FIN CAMPOS **********************************************************
+
+  ///***************************************************************** INICIO DATOS ********************************************************** 
+  $j = $filaEncabezado + 1;
+
+  /// Datos de los campos:
+  foreach ($reg as $i => $filita) {
+    $fila = array();
+        
+    foreach ($camposUsuarios as $indice => $datoCampo ) {
+      if ($datoCampo['mostrarExcel'] === 'si'){
+        switch ($datoCampo['nombreDB']){
+          case 'id':  $datito = $i+1;
+                      break;
+          case 'limiteSelects':          
+          case 'tamPagina': if ($filita[$datoCampo['nombreDB']] === null){
+                              $datito = "No ingresado";
+                            }
+                            else {
+                              $datito = $filita[$datoCampo['nombreDB']];
+                            }
+                            break;           
+          default:  $datito = trim($filita[$datoCampo['nombreDB']]);
+                    break;
+        }
+        $fila[] = $datito;
+      } /// Fin if datoCampo['mostrar'] === si
+    } /// Fin foreach datoCampo
+   
+    $celda = $colId.$j;
+    $hoja->fromArray($fila, '""', $celda);
+    $j++;
+  }
+  $filaFinal = $j - 1;
+  ///******************************************************************* FIN DATOS ***********************************************************
+
+  /// ******************************************************** INICIO formato GENERAL ********************************************************
+  /// Defino el rango de celdas con datos para poder darle formato a todas juntas:
+  $rango = $colId.$filaEncabezado.":".$colFinal.$filaFinal;
+  /// Defino el formato para las celdas:
+  $styleGeneral = array(
+      'borders' => array(
+          'allBorders' => array(
+              'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+              'color' => array('rgb' => $GLOBALS["colorBordeRegular"]),
+          ),
+      ),
+      'alignment' => array(
+         'wrap' => true,
+         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+      )
+  );
+  $hoja->getStyle($rango)->applyFromArray($styleGeneral);
+  /// ********************************************************** FIN formato GENERAL *********************************************************
+  
+  /// ****************************************************** INICIO AUTOAJUSTE COLUMNAS ******************************************************
+  /// Ajusto el auto size para que las celdas no se vean cortadas:
+  for ($col = ord(''.$colId.''); $col <= ord(''.$colFinal.''); $col++)
+    {
+    $hoja->getColumnDimension(chr($col))->setAutoSize(true);   
+  }
+  /// ***************************************************** FIN AUTOAJUSTE COLUMNAS **********************************************************
+  
+  /// ********************************************************** INICIO SEGURIDAD ************************************************************
+//  switch ($planilla){
+//    case "nada": break;
+//    case "misma": if ($zipSeguridad !== 'nada') {
+//                    $pwdPlanilla = $pwdZip;
+//                  }
+//                  break;
+//    case "fecha": $pwdPlanilla = $timestamp; 
+//                  break;
+//    case "random": $pwdPlanilla = $pwdPlanillaManual;
+//                   break;
+//    case "manual": $pwdPlanilla = $pwdPlanillaManual;
+//                   break;
+//    default: break;
+//  } 
+//  if ((($planilla !== "nada")&&($planilla !== 'misma'))||(($planilla === "misma")&&($zipSeguridad !== "nada"))){
+//    ///Agrego protección para la hoja activa:
+//    $hoja->getProtection()->setPassword($pwdPlanilla);
+//    $hoja->getProtection()->setSheet(true);
+//  }
+  /// ************************************************************ FIN SEGURIDAD *************************************************************
+  
+  /// ********************************************************* INICIO GUARDADO **************************************************************
+  // Se guarda como Excel 2007:
+  $writer = new Xlsx($spreadsheet);
+  
+  $nombreArchivo = $nombreReporte."_".$timestamp.".Xlsx";
+  $salida = $GLOBALS["dirExcel"].$nombreArchivo;
+  $writer->save($salida);
+  /// *********************************************************** FIN GUARDADO ***************************************************************
+  
+  return $nombreArchivo;
+}
