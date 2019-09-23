@@ -356,16 +356,20 @@ function generarExcelNodos($reg) {
   $colId = 'A';
   $filaEncabezado = '3';
   
+  $colIp = '';
   $totalCampos = 0;
   $nombreCampos = array();
   foreach ($camposNodos as $ind => $fila ) {
     if ($fila['mostrarExcel'] === 'si'){
       $nombreCampos[] = html_entity_decode($fila['nombreMostrar']);
+      if ($fila['nombreMostrar'] === 'IP'){
+        $colIp = chr(ord($colId) + $totalCampos);
+      }
       $totalCampos++;
     }
   } /// Fin foreach campos visibles
   $colFinal = chr(ord($colId)+$totalCampos-1);
-  
+
   ///******************************************************** INICIO formato TIPO CONSULTA ***************************************************
   $hoja->mergeCells($colId.'1:'.$colFinal.'1');
   $hoja->setCellValue($colId."1", $tituloReporte);
@@ -451,7 +455,16 @@ function generarExcelNodos($reg) {
   }
   $filaFinal = $j - 1;
   ///******************************************************************* FIN DATOS ***********************************************************
-
+  
+  ///************************************************************* INICIO HIPERVÍNCULO *******************************************************
+  $k = $filaEncabezado + 1;
+  while ($k <= $filaFinal){
+    $valor = $hoja->getCell($colIp.$k)->getValue();
+    $hoja->getCell($colIp.$k)->getHyperlink()->setUrl($valor);
+    $k++;
+  }
+  ///*************************************************************** FIN HIPERVÍNCULO ********************************************************
+  
   /// ******************************************************** INICIO formato GENERAL ********************************************************
   /// Defino el rango de celdas con datos para poder darle formato a todas juntas:
   $rango = $colId.$filaEncabezado.":".$colFinal.$filaFinal;
