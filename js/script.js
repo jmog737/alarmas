@@ -726,7 +726,7 @@ function validarBusqueda(){
   
   if (validado){
     var query = "select * from alarmas ";
-    var ordenar = ' order by dia desc, hora desc';
+    var ordenar = ' order by dia desc, hora desc, idalarma';
     var param = '';
     if ((criterio === 'nodo')&&(nodo !== 'todos')){
       query += "where nodo=?";
@@ -736,7 +736,7 @@ function validarBusqueda(){
     if (criterio === 'file') {
       query += "where archivo=?";
       param += archivo;
-      mensaje += " del archivo "+archivo;
+      mensaje += " cargadas en el archivo "+archivo;
     }
     if (param === ''){
       param = "TODOS";
@@ -984,6 +984,15 @@ function actualizarParametros()  {
   //}///************* FIN IF SESION ****************
 }
 /********** fin actualizarParametros() **********/
+
+/**
+ * \brief Función que ejecuta la actualización del registro pasada.
+ */
+function actualizarRegistro()  {
+  verificarSesion('', 's');
+      
+}
+/********** fin actualizarRegistro() **********/
 
 /***********************************************************************************************************************
 /// *********************************************** FIN FUNCIONES USUARIOS *********************************************
@@ -1343,6 +1352,108 @@ $(document).on("click", "[name=btnExportar]", function() {
   elemento.submit();
 });
 /********** fin on("click", "#btnExportar", function() *********/
+
+///Disparar función al hacer SUBMIT del form para actualizar los datos.
+$(document).on("click", "[name=btnActualizar]", function() {
+  /// Por el momento comento la validación para casos que se quiera estén todas las alarmas procesadas:
+//  $('td[name=estado]').each(function(){
+//    if ($(this).text() === 'Sin procesar'){
+//      var id = $(this).parent().find("td:first").html(); 
+//      alert('Aún hay alarmas sin procesar:\nId: '+id);
+//      return false;
+//    }
+//  });
+  var id = $(this).attr("id");
+  var elemento = '';
+  var query = "update alarmas set ";
+  switch (id){
+    case 'btnActualizarCargar': if (id === 'btnActualizarCargar') {
+                                  elemento = $("#frmCargar");
+                                }
+                                else {
+                                  elemento = $("#frmResultado");
+                                }
+                                
+    case 'btnActualizarBuscar': var param = []; 
+                                var registro;
+                                $("input[type=checkbox]:checked").each(function(){
+                                  var idal = $(this).val();
+                                  var causa = $("input[type=text][idalarma="+idal+"][name='causa']").val();
+                                  var solucion = $("input[type=text][idalarma="+idal+"][name='solucion']").val();
+                                  registro = {idalarma: idal, causa: causa, solucion: solucion};
+                                  param.push(registro);
+                                });
+                                var modificadas = param.length;
+                                if (modificadas > 0){
+                                  var causaTemp = param[0]['causa'];
+                                  var solucionTemp = param[0]['solucion'];
+                                  var sigo = true;
+                                  param.forEach(function callback(item){
+                                    if (sigo === true){
+                                      if (item.causa !== 'N/A'){
+                                        if ((causaTemp !== item.causa)&&(causaTemp !== 'N/A')){
+                                          alert('Si se selecciona más de 1 alarma DEBEN tener la misma causa');
+                                          sigo = false;
+                                          return;
+                                        }
+                                        else {
+                                          causaTemp = item.causa;
+                                        }         
+                                      }
+                                      if (item.solucion !== 'N/A'){
+                                        if ((solucionTemp !== item.solucion)&&(solucionTemp !== 'N/A')){
+                                          alert('Si se selecciona más de 1 alarma DEBEN tener la misma solución');
+                                          sigo = false;
+                                          return;
+                                        }
+                                        else {
+                                          solucionTemp = item.solucion;
+                                        }         
+                                      }
+                                    }  
+                                  });
+                                  if ((causaTemp === 'N/A')&&(solucionTemp === 'N/A')){
+                                    alert('Causa y solución no fueron ingresadas.');
+                                    sigo = false;
+                                  }
+                                  var query = '';
+                                  if (sigo === true){
+                                    query = "update alarmas set causa='"+causaTemp+"', solucion='"+solucionTemp+"', estado='Procesada' where (idalarma="+param[0].idalarma;
+                                    param.forEach(function agregarAlarma(id){
+                                      if (id.idalarma !== param[0].idalarma){
+                                        query += ' or idalarma='+id.idalarma;
+                                      }
+                                    })
+                                    query += ")";
+                                    var url = "data/updateJSON.php";
+                                    var log = "NO";
+                                    $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
+                                      if (resultado === "OK") {
+                                        alert('Los datos se modificaron correctamente!.');
+                                        location.reload();
+                                      }
+                                      else {
+                                        alert('Hubo un problema en la actualización. Por favor verifique.');
+                                      }
+                                    });
+                                  }  
+                                }
+                                else {
+                                  alert('No se han seleccionado alarmas.\nPor favor verifique.');
+                                }
+                                break;
+    case 'btnActualizarUsuarios': elemento = $("#frmUsuarios"); 
+                                  break;
+    case 'btnActualizarNodos':  elemento = $("#frmNodos");
+                                break;
+    default: break;
+  }
+  //alert(elemento.attr('name'));
+//  elemento.attr("action", "exportar.php");
+//  elemento.attr("target", "_blank");
+//  elemento.submit();
+});
+/********** fin on("click", "#btnActualizar", function() *********/
 
 /*****************************************************************************************************************************
 /// ************************************************** FIN MUESTRA ALARMAS ***************************************************

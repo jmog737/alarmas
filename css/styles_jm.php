@@ -937,7 +937,7 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 @media (min-width: 1200px) {
   /* Header */
   .navbar-brand h1 { /* Page section name */
-  font-size: 3.0em;
+  font-size: 2.8em;
   margin-top: 7px;
   }
   /* End Header */
@@ -952,7 +952,8 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 @media (min-width: 992px) and (max-width: 1199.98px) {
   /* Header */
   .navbar-brand h1 { /* Page section name */
-  font-size: 4.15vw; /* 1vw = 1% of viewport width */
+  font-size: 4.14vw; /* 1vw = 1% of viewport width */
+  margin: auto;
   margin-top: 9px;
   }
   /* End Header */
@@ -968,21 +969,28 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 /********** Small devices only (768px - 991px ) **********/
 @media (min-width: 768px) and (max-width: 991.98px) {
   /* Header */
+  header {
+    height: 82px;
+  }
+  .navbar-header {
+    width: 100%;
+  }
   .navbar-brand {
     padding-top: 5px;
     padding-right: 0px;
-    height: 100px;
-    margin-top: 10px
+    height: 62px;
+    margin: auto;
   }
   .navbar-brand h1 { /* Page section name */
-  font-size: 3.75vw; /* 1vw = 1% of viewport width */
+  font-size: 4.19vw; /* 1vw = 1% of viewport width */
   padding-top: 20px;
   padding-right: 10px;
+  margin: auto;
   }
   #logo-img {
-    background: url('../images/logo.png') no-repeat;
-    width: 225px;
-    height: 100px;
+    background: url('../images/logoChico.png') no-repeat;
+    width: 160px;
+    height: 62px;
     margin: 10px 10px 10px 0;
   }
   /* End Header */
@@ -1008,21 +1016,27 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 /********** Extra small devices only (577px - 767px) **********/
 @media (min-width: 576px) and (max-width: 767.98px) {
   /* Header */
+  header {
+    height: 72px;
+  }
+  .navbar-header {
+    width: 100%;
+  }
   .navbar-brand {
-    padding-top: 10px;
-    height: 100px;
-    margin-top: 10px
+    padding-top: 15px;
+    height: 62px;
+    margin-top: 5px
   }
   .navbar-brand h1 { /* Restaurant name */
-    padding-top: 20px;
-    font-size: 3.79vw; /* 1vw = 1% of viewport width */
+    padding-top: 0px;
+    font-size: 3.08vw; /* 1vw = 1% of viewport width */
   }
 
   #logo-img {
-  background: url('../images/logo.png') no-repeat;
-  width: 150px;
-  height: 100px;
-  margin: 20px 10px 10px 0;
+    background: url('../images/logoChico.png') no-repeat;
+    width: 160px;
+    height: 62px;
+    margin: 0px 10px 0px 0;
   }
 
   .divider {
@@ -1031,6 +1045,7 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
         overflow: hidden;
         background-color: #e5e5e5;
     }
+  
   .navbar-header button.navbar-toggle {
     margin-top: -85px;
   }
@@ -1073,6 +1088,7 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 /********** Super extra small devices Only :-) (e.g., iPhone 4) **********/
 @media (max-width: 575.98px) {
   /* Header */
+  
   .navbar-brand {
     padding-top: 10px;
     height: 100px;
@@ -1092,7 +1108,7 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
     padding-left: 0px;
   }
   #nav-list  {
-    font-size: 2.9vw;
+    font-size: 2.67vw;
     margin: 0px;
   }
   /* End Header */

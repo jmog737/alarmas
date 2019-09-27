@@ -236,7 +236,7 @@ $mensajeNuevo = '';
               //$nodoActual = $fila['nodo'];
               
               switch ($indice){
-                case 'id':  echo "<td>".$i."</td>";
+                case 'id':  echo "<td nowrap>".$i." - <input type='checkbox' name='update' value='".$fila['idalarma']."'></td>";
                             $i++;
                             break;
                 case 'dia': $dia = $fila[$indice];
@@ -254,18 +254,20 @@ $mensajeNuevo = '';
                                     echo "<td>".$diaMostrar1."</td>";         
                                     break;            
                 case 'causa': if ($fila['causa'] === ''){
-                                echo "<td>No Ingresada</td>";
+                                $val = 'N/A';  
                               }
                               else {
-                                echo "<td>".$fila['causa']."</td>";
+                                $val = $fila['causa'];
                               }
+                              echo "<td style='min-width:100px;'><input name='causa' type='text' placeholder='N/A' title='Causa posible' idalarma=".$fila['idalarma']." value='".$val."'></td>";
                               break;
                 case 'solucion': if ($fila['solucion'] === ''){
-                                    echo "<td>No ingresada</td>";
+                                    $val = 'N/A';  
                                   }
                                   else {
-                                    echo "<td>".$fila['solucion']."</td>";
+                                    $val = $fila['solucion'];
                                   }
+                                  echo "<td><input name='solucion' type='text' placeholder='N/A' title='Solución posible' idalarma=".$fila['idalarma']." value='".$val."'></td>";
                                   break;
                 case 'estado':  if ($fila['estado'] === 'Sin procesar'){
                                   $claseEstado = "sinProcesar";
@@ -279,8 +281,8 @@ $mensajeNuevo = '';
                                 $parAlCodif = "al=".base64_encode($idalarma);
                                 $parOrigen = "&o=".base64_encode('buscar');
                                 //$parKeysCodif = "&k=".base64_encode(serialize($keys));
-                                $parConsulta = "&c=".base64_encode($consulta);
-                                $parParam = "&p=".base64_encode($paramSerial);
+                                $parConsulta = "&cAlarm=".base64_encode($consulta);
+                                $parParam = "&pAlarm=".base64_encode($paramSerial);
 
                                 $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parConsulta.$parParam;
                                 echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
@@ -294,7 +296,12 @@ $mensajeNuevo = '';
           echo "</tr>";
         } /// Fin del procesamiento de las filas con datos
 
-        echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarBuscar' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
+        echo "<tr>"
+        . "     <td class='pieTabla' colspan='$totalCamposMostrar'>"
+        . "       <input type='button' id='btnActualizarBuscar' name='btnActualizar' class='btn btn-danger' value='Actualizar'>"
+        . "       <input type='button' id='btnExportarBuscar' name='btnExportar' class='btn btn-success' value='Exportar'>"
+        . "     </td>"
+        . "   </tr>";
         echo "</table>";
 
         echo "<input type='hidden' name='query' id='query' value='".$consulta."'>";

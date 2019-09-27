@@ -42,13 +42,14 @@ function cargarArchivo($archivo){
           $year = strftime("%Y", time());
           $fecha = $year."-".$fecha1[0]."-".$fecha1[1];
 
-//          $existeRegistro = "select count(*) from alarmas where nombre=? and dia=? and hora=?";
-//          $paramExiste = array($nombre, $fecha, $hora);
-//          $datosExiste = json_decode(hacerSelect($existeRegistro, $log, $paramExiste), true);
-//          $cuenta = (int)$datosExiste['rows'];
+          $existeRegistro = "select count(*) from alarmas where nombre=? and dia=? and hora=?";
+          $paramExiste = array($nombre, $fecha, $hora);
+          $datosExiste = json_decode(hacerSelect($existeRegistro, $log, $paramExiste), true);
+          $cuenta = (int)$datosExiste['rows'];
           /// Seteo cuenta a 0 para OBLIGAR a que se haga el insert en TODOS los casos, sin importar si existe o no la alarma:
-          $cuenta = 0;
-          if ($cuenta > 0){
+          //$cuenta = 0;
+          //echo $i." - ".$paramExiste[0]." - ".$paramExiste[1]." - ".$paramExiste[2]." - ".$cuenta."<br>";
+          if ($cuenta !== 0){
             $duplicados++;
             if ($resultado["mensaje"] === ''){
               $resultado["mensaje"] = "L&iacute;neas duplicadas: ";
@@ -60,14 +61,14 @@ function cargarArchivo($archivo){
             . "                 afectacionServicio='".$temp[6]."', ubicacion='".$temp[8]."', direccion='".$temp[9]."', valorMonitoreado='".$temp[10]."', nivelUmbral='".$temp[11]."', periodo='".$temp[12]."', "
             . "                 datos='".$temp[13]."', filtroALM='".$temp[14]."', filtroAID='".$temp[15]."'";
             $paramAgregar = array($_SESSION['user_id'], $_SESSION['idnodo'], $_SESSION['archivo'], $fechaCarga, $fecha, $hora);
-
+            //echo "cuenta no >0 - id: $i<br>";
             $resultadoInsert = json_decode(hacerUpdate($agregarRegistro, $log, $paramAgregar), true);
             if ($resultadoInsert === 'ERROR'){
               $resultado["mensaje"] .= "Hubo un problema con al carga de la línea: $linea.<br>";
               $errores++;
             }
             else {
-              $cargados++;
+              $cargados++;//echo "debe subir: $cargados<br>";
             }
           } /// Fin else $cuenta > 0 
         } /// Fin del if linea ni vacía ni cabecera
