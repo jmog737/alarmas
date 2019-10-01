@@ -136,7 +136,7 @@ $totalUsuarios = $datos['rows'];
             <th colspan="5" class="subTituloTabla1">FILTROS</th>
           </tr>
           <tr>
-            <th colspan="2">Alarma:</th>  
+            <th colspan="2" class="text-left">Alarma:</th>  
             <td colspan="3">
               <select name="alarma" id="alarma" tabindex="7" title="Elegir el tipo de alarma.">
                 <option value="todas">--- TODAS ---</option>
@@ -148,6 +148,18 @@ $totalUsuarios = $datos['rows'];
                 <option value="NR" title="Alarma NOT REPORTED">NR</option>
               </select>
             </td> 
+          </tr>
+          <tr>
+            <th colspan="2" class="text-left">Nombre Alarma:</th>
+            <td colspan="3"><input type="text" tabindex="8" placeholder="Escribir parte del nombre de la alarma" title="Escribir parte del nombre a buscar." name="nameSearch" id="nameSearch" class="agrandar" size="9"></td>
+          </tr>
+          <tr>
+            <th colspan="2" class="text-left">Condici&oacute;n Alarma:</th>
+            <td colspan="3"><input type="text" tabindex="9" placeholder="Escribir parte de la condición de la alarma" title="Escribir parte de la condición a buscar." name="conditionSearch" id="conditionSearch" class="agrandar" size="9"></td>
+          </tr>
+          <tr>
+            <th colspan="2" class="text-left">AID:</th>
+            <td colspan="3"><input type="text" tabindex="10" placeholder="Escribir parte del AID de la alarma" title="Escribir parte del AID a buscar." name="aidSearch" id="aidSearch" class="agrandar" size="9"></td>
           </tr>
 <!--          <tr>
             <th colspan="2">Condici&oacute;n:</th>  
@@ -166,9 +178,9 @@ $totalUsuarios = $datos['rows'];
             </td> 
           </tr>-->
           <tr>
-            <th colspan="2">Usuario:</th>  
+            <th colspan="2" class="text-left">Usuario:</th>  
             <td colspan="3">
-              <select name="usuarios" id="usuarios" tabindex="8" title="Elegir el usuario.">
+              <select name="usuarios" id="usuarios" tabindex="11" title="Elegir el usuario.">
                 <option value="todos">--- TODOS ---</option>
                 <?php
                 foreach ($usuarios as $i => $valor1){
@@ -194,7 +206,7 @@ $totalUsuarios = $datos['rows'];
           </tr>-->
           <tr>
             <td colspan="5" class="pieTabla">
-              <input type="button" class="btn btn-success" tabindex="10" name="buscar" id="buscar" title="Ejecutar la consulta" tabindex="16" value="Consultar" align="center">
+              <input type="button" class="btn btn-success" tabindex="12" name="buscar" id="buscar" title="Ejecutar la consulta" value="Consultar" align="center">
             </td>
           </tr>
         </table>

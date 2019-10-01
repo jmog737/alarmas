@@ -41,6 +41,9 @@ $inicio = $paramArray[1];
 $fin = $paramArray[2];
 $tipo = $paramArray[3];
 $user = $paramArray[4];
+$nombreAlarma = $paramArray[5];
+$conditionAlarma = $paramArray[6];
+$aidAlarma = $paramArray[7];
 
 $log = "NO";
 /// Armo array con los parámetros según corresponda acorde a la consulta:
@@ -95,6 +98,18 @@ if ($tipo !== 'TIPO'){
 
 if ($user !== 'USUARIO'){
   $parametros[] = $user;
+}
+
+if ($nombreAlarma !== 'NOMBRE'){
+  $parametros[] = $nombreAlarma;
+}
+
+if ($conditionAlarma !== 'CONDITION'){
+  $parametros[] = $conditionAlarma;
+}
+
+if ($aidAlarma !== 'AID'){
+  $parametros[] = $aidAlarma;
 }
 
 $paramSerial = serialize($parametros);

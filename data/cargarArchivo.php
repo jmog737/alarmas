@@ -52,7 +52,7 @@ function cargarArchivo($archivo){
           if ($cuenta !== 0){
             $duplicados++;
             if ($resultado["mensaje"] === ''){
-              $resultado["mensaje"] = "L&iacute;neas duplicadas: ";
+              $resultado["mensaje"] = "Alarmas duplicadas: ";
             }
             $resultado["mensaje"] .= $i." ";
           }

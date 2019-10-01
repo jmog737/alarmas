@@ -355,7 +355,7 @@ hr {
   margin: 0px;
   line-height:none;
   max-width: 100%;
-  text-align: center !important;
+  text-align: center;
   padding: 5px !important;
 }
 .tabla2 tr {

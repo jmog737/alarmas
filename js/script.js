@@ -694,7 +694,10 @@ function validarBusqueda(){
   var tipoAlarma = $("#alarma").find('option:selected').val( );
   var usuario = $("#usuarios option:selected").val();
   var usuarioNombre = $("#usuarios option:selected").text();
- 
+  var nombreAlarma = $("#nameSearch").val();
+  var conditionAlarma = $("#conditionSearch").val();
+  var aidAlarma = $("#aidSearch").val();
+  
   if (criterio === 'nodo'){
     if (nodo === 'nada'){
       alert('Se debe seleccionar un nodo.\nPor favor verifique!.');
@@ -805,6 +808,52 @@ function validarBusqueda(){
       //mensaje += " de todos los usuarios";
       param += "&USUARIO";
     }
+    
+    if (nombreAlarma !== ''){
+      if ((criterio === 'nodo')&&(nodo === 'todos')&&(rangoFecha === null)&&(tipoAlarma === 'todas')&&(usuario === 'todos')){
+        query += "where ";
+      }
+      else {
+        query += " and ";
+      }
+      query += "nombre like ?";
+      param += "&%"+nombreAlarma+"%";
+      mensaje += ' con el nombre "'+nombreAlarma.toUpperCase()+'"';
+    }
+    else {
+      param += "&NOMBRE";
+    }
+    
+    if (conditionAlarma !== ''){
+      if ((criterio === 'nodo')&&(nodo === 'todos')&&(rangoFecha === null)&&(tipoAlarma === 'todas')&&(usuario === 'todos')&&(nombreAlarma === '')){
+        query += "where ";
+      }
+      else {
+        query += " and ";
+      }
+      query += "tipoCondicion like ?";
+      param += "&%"+conditionAlarma+"%";
+      mensaje += ' con la condición "'+conditionAlarma.toUpperCase()+'"';
+    }
+    else {
+      param += "&CONDITION";
+    }
+    
+    if (aidAlarma !== ''){
+      if ((criterio === 'nodo')&&(nodo === 'todos')&&(rangoFecha === null)&&(tipoAlarma === 'todas')&&(usuario === 'todos')&&(nombreAlarma === '')&&(conditionAlarma === '')){
+        query += "where ";
+      }
+      else {
+        query += " and ";
+      }
+      query += "tipoAID like ?";
+      param += "&%"+aidAlarma+"%";
+      mensaje += ' con el AID "'+aidAlarma.toUpperCase()+'"';
+    }
+    else {
+      param += "&AID";
+    }
+    
     if (mensaje === 'Alarmas'){
       mensaje = "Todas las alarmas";
     }
@@ -813,7 +862,7 @@ function validarBusqueda(){
       ordenar = ' order by nodo, dia desc, hora desc';
     }
     query += ordenar;
-    
+
     $("#query").val(query);
     $("#param").val(param);
     $("#mensaje").val(mensaje);
@@ -1378,7 +1427,7 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                 var registro;
                                 $("input[type=checkbox]:checked").each(function(){
                                   var idal = $(this).val();
-                                  var causa = $("input[type=text][idalarma="+idal+"][name='causa']").val();
+                                  var causa = $("input[idalarma="+idal+"][name='causa']").val();
                                   var solucion = $("input[type=text][idalarma="+idal+"][name='solucion']").val();
                                   registro = {idalarma: idal, causa: causa, solucion: solucion};
                                   param.push(registro);
