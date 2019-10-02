@@ -120,7 +120,7 @@ require_once ('data/cargarArchivo.php');
             }
           }
           
-          $destino = $rutaCargadosFecha."\\\\".$nombreArchivo;
+          $destino = $rutaCargadosFecha."/".$nombreArchivo;
           $continuar = true;
           
           /// Comento MOMENTÁNEAMENTE la validación de existencia de un archivo previo ya cargado:
@@ -152,9 +152,9 @@ require_once ('data/cargarArchivo.php');
                 }
                 else {
                   $mensaje = $carga["mensaje"];
-                  $mensaje .= "<br>Alarmas cargadas: ".$carga["cargados"]."<br>";
+                  $mensaje .= "<br>Alarmas nuevas: ".$carga["cargados"]."<br>";
                   $mensaje .= "Alarmas duplicadas: ".$carga["duplicados"]."<br>";
-                  $mensaje .= "Total de alarmas: ".$carga["lineas"]."<br>";
+                  $mensaje .= "<br>Total de alarmas: ".$carga["lineas"]."<br>";
                 }   
               } /// Fin del ese if exito === false      
             } /// Fin if ($carga !== false) - si es false indica que dio error file_exists
@@ -200,7 +200,7 @@ require_once ('data/cargarArchivo.php');
           echo "<h2>".$tituloPagina."</h2>";
           /// Agrego el archivo que reordena los campos:
           require_once('data/camposAlarmas.php');
-          echo $mensaje."<br>";
+          
           /// Armo la consulta
           $consulta = "select * from alarmas where archivo= ? order by dia desc, hora desc, idalarma";
           $param = array($_SESSION['archivo']);
@@ -257,6 +257,7 @@ require_once ('data/cargarArchivo.php');
           
           echo "<h3>".$mensajeNuevo."</h3>";
           echo "<br>";
+          echo "<h4>".$mensaje."</h4><br>";
           
           /// Si hay datos los muestro:
           if ($totalDatos > 0){

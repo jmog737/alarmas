@@ -52,7 +52,7 @@ function cargarArchivo($archivo){
           if ($cuenta !== 0){
             $duplicados++;
             if ($resultado["mensaje"] === ''){
-              $resultado["mensaje"] = "Alarmas duplicadas: ";
+              $resultado["mensaje"] = "L&iacute;neas con las duplicadas: ";
             }
             $resultado["mensaje"] .= $i." ";
           }
@@ -64,7 +64,7 @@ function cargarArchivo($archivo){
             //echo "cuenta no >0 - id: $i<br>";
             $resultadoInsert = json_decode(hacerUpdate($agregarRegistro, $log, $paramAgregar), true);
             if ($resultadoInsert === 'ERROR'){
-              $resultado["mensaje"] .= "Hubo un problema con al carga de la línea: $linea.<br>";
+              $resultado["mensaje"] .= "Hubo un problema con la carga de la línea: $linea.<br>";
               $errores++;
             }
             else {
@@ -73,13 +73,42 @@ function cargarArchivo($archivo){
           } /// Fin else $cuenta > 0 
         } /// Fin del if linea ni vacía ni cabecera
       } /// Fin del while que recorre las líneas
+      
       $resultado["cargados"] = $cargados;
       $resultado["duplicados"] = $duplicados;
       $resultado["errores"] = $errores;
       $resultado["lineas"] = $i;
+      
+      $temp = explode("/", $archivo);
+      $tot = count($temp);
+      $dest = $temp[$tot - 1];
       if (($duplicados === 0)&&($errores === 0)){
-        $resultado["mensaje"] = "¡Archivo correctamente subido a la base de datos!.<br>";
+        $msg = "Archivo '".$dest."' correctamente subido a la base de datos.";
+        $resultado["mensaje"] = $msg."<br>";
+        $msgCargados = "Se cargaron ".$cargados."/".$i." alarmas nuevas del archivo '".$dest."'.";
+        escribirLog($msg); 
+        escribirLog($msgCargados);  
       }
+      else {
+        if ($cargados !== 0){
+          $msg = "Archivo '".$dest."' correctamente subido a la base de datos.";
+          escribirLog($msg); 
+          $msgCargados = "Se cargaron ".$cargados."/".$i." alarmas nuevas del archivo '".$dest."'.";
+        }
+        else {
+          $msgCargados = "NO hay alarmas nuevas en el archivo '".$dest."'. No se carga registro alguno.";
+        }
+        escribirLog($msgCargados);
+        if ($duplicados !== 0){
+          $msgDuplicados = "Hay ".$duplicados."/".$i." alarmas duplicadas en el archivo '".$dest."'.";
+          escribirLog($msgDuplicados);
+        }
+        if ($errores !== 0){
+          $msgErrores = "Hubo ".$errores."/".$i." alarmas con errores en el archivo '".$dest."'.";
+          escribirLog($msgErrores);
+        }
+      }
+      
       if (!feof($gestor)) {
         $resultado["mensaje"] = "Fallo inesperado de fgets().";
         $resultado["exito"] = false;  

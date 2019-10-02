@@ -726,7 +726,6 @@ function validarBusqueda(){
     var mensajeFecha = resultado['mensaje'];
   }
   
-  
   if (validado){
     var query = "select * from alarmas ";
     var ordenar = ' order by dia desc, hora desc, idalarma';
