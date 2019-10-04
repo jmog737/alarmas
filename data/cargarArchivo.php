@@ -68,7 +68,7 @@ function cargarArchivo($archivo){
               $errores++;
             }
             else {
-              $cargados++;//echo "debe subir: $cargados<br>";
+              $cargados++;
             }
           } /// Fin else $cuenta > 0 
         } /// Fin del if linea ni vacía ni cabecera

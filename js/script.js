@@ -213,6 +213,54 @@ function validarSubmitCargar(){
 /********** fin validarSubmitCargar() **********/
 
 /**
+ * \brief Función que valida el form para cargar el archivo de un PSS32.
+ */
+function validarSubmitCargarPSS32(){
+  verificarSesion('', 's');
+  var archivoASubir = $("#uploadedFilePSS32").val();
+  
+  if ((archivoASubir === undefined)||(archivoASubir === '')){
+    alert('No se seleccionó archivo alguno.\nPor favor verifique!.');
+    return false;
+  }
+  else {
+    if ($("#nodo").val() === 'nada'){
+      alert('Hay que seleccionar un nodo.\nPor favor verifique!.');
+      $("#nodo").focus();
+      return false;
+    }
+    else {
+      var nombreNodoCorto = $("option:selected", "#nodo").attr("nombreCorto");
+      var temp = nombreNodoCorto.split("#");
+      var nombreSinOCS = temp[0];
+      
+      /// Extraigo la info de los atributos del option pues NO se pasan en el POST
+      /// En base a las mismas modifico el valor del option para poder pasarlos por el POST
+      var idnodo = $("option:selected", "#nodo").attr("idnodo");
+      var nodo = $("option:selected", "#nodo").val();
+      $("option:selected", "#nodo").val(nodo+'---'+nombreNodoCorto+'---'+idnodo);
+      
+      var temp1 = archivoASubir.split(".");
+      var archivo1 = temp1[0];
+      var archivo2 = archivo1.split("\\");
+      var tam = archivo2.length;
+      var nombreArchivo = archivo2[tam-1];
+      $("#frmSubirPSS32").submit();
+      /// Comento por ahora la validación para que no se repita el archivo:
+//      if (nombreSinOCS === nombreArchivo){
+//        //alert('Los nombres coinciden:\nnodo: '+nombreSinOCS+'\narchivo: '+nombreArchivo);
+//        $("#frmSubir").submit();
+//      }
+//      else {
+//        alert('El archivo seleccionado NO coincide con el nodo elegido:\nNodo: '+nombreSinOCS+'\nArchivo: '+nombreArchivo+'\nPor favor verifique.');
+//        return false;
+//      }
+    }
+  }
+}
+/********** fin validarSubmitCargarPSS32() **********/
+
+/**
  * \brief Función que chequea las variables de sesión para saber si la misma aún está activa o si ya expiró el tiempo.
  * @param mensaje {String} String con un mensaje opcional usado para debug.
  * @param cookie {String} String que indica si se debe o no actualizar la expiración de la cookie.
@@ -1361,6 +1409,13 @@ $(document).on("click", "#btnCargar", function() {
   validarSubmitCargar();
 });
 /********** fin on("click", "#btnCargar", function() **********/
+
+///Disparar función al hacer SUBMIT del form para cargar el archivo.
+///La idea es validar que al menos se haya elegido un archivo.
+//$(document).on("click", "#btnCargarPSS32", function() {
+//  validarSubmitCargarPSS32();
+//});
+/********** fin on("click", "#btnCargarPSS32", function() **********/
 
 /*****************************************************************************************************************************
 /// **************************************************** FIN SUBIR ARCHIVO ***************************************************

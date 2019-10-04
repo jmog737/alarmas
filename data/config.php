@@ -22,7 +22,7 @@ define('TIEMPOCOOKIE', 3603);
 /**
   \param TAM_ARCHIVO Constante que define el tamaño máximo permitido del archivo a cargar en la base de datos (en bytes).
 */
-define('TAM_ARCHIVO', 5120);
+define('TAM_ARCHIVO', 512000);
 
 /**
   \param MAX_TAMPAGINA Constante que define el tamaño máximo para la visualización de las páginas.
