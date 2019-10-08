@@ -22,7 +22,9 @@ require_once ('data/config.php');
 require_once ('data/pdo.php');
 
 /// Consulta sólo OCSs del área metro:
-$query = "select idnodo, nombre, localidad from nodos where tipo!='PSS 32' and areaMetro=true";
+//$query = "select idnodo, nombre, localidad from nodos where tipo!='PSS 32' and areaMetro=true";
+/// Consulta OCSs y PSS32s del área metro:
+$query = "select idnodo, nombre, localidad from nodos where areaMetro=true";
 $log = "NO";
 $datos = json_decode(hacerSelect($query, $log), true);
 $localidades = $datos['resultado'];

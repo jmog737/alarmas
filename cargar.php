@@ -62,7 +62,7 @@ require_once ('data/cargarArchivo.php');
         if (!($finValidacion)){
           /// Chequeo que la extensión esté dentro de las permitidas:
           /// Array con las extensiones de arhivo permitidas (por ahora solo csv):
-          $agujas = array("csv");
+          $agujas = array("csv", "xls");
           $extMinuscula = mb_strtolower($extension);
           if (!(in_array($extMinuscula, $agujas))){
             echo "¡La extensión <strong>".mb_strtoupper($extension)."</strong> NO es válida!.<br>Por favor verifique!.<br>";
@@ -89,9 +89,16 @@ require_once ('data/cargarArchivo.php');
           $localidad1 = $temp0[0];
           $idnodo = $temp0[2];
           
+          $buscar = strpos($temp0[1], "#OCS");
+          if ($buscar !== FALSE){
+            $sufijo = "OCS";
+          }
+          else {
+            $sufijo = "PSS32";
+          }
           $temp1 = explode("#", $temp0[1]);
-          $temp2 = explode("-", $temp1[0]);
-          $nombreCorto = $temp2[0];
+          $temp2 = str_replace("-", "", $temp1[0]);
+          $nombreCorto = $temp2."_".$sufijo;
           
           /// Armo fecha para agregar al nombre del archivo
           if (setlocale(LC_ALL, 'esp') === false){
@@ -179,10 +186,18 @@ require_once ('data/cargarArchivo.php');
           $datosUltimo = json_decode(hacerSelect($queryUltimo, $log), true);
           $registro = $datosUltimo['resultado'][0];
           $temp11 = explode("#", $registro['nombre']);
-          $temp21 = explode("-", $temp11[0]);
-          $nombreCorto0 = $temp21[0];
+          $temp21 = str_replace("-", "", $temp11[0]);
+          $buscar = strpos($registro['nombre'], "#OCS");
+          if ($buscar !== FALSE){
+            $sufijo = "OCS";
+          }
+          else {
+            $sufijo = "PSS32";
+          }
+          $nombreCorto = $temp21."_".$sufijo;
+
           $_SESSION['nodo'] = $registro['localidad'];
-          $_SESSION['nodoCorto'] = $nombreCorto0;
+          $_SESSION['nodoCorto'] = $nombreCorto;
           $_SESSION['idnodo'] = $registro['idnodo'];
           $_SESSION['archivo'] = $registro['archivo'];
           $mensaje = "<h3>Aún no se ha cargado ningún archivo.<br>Se muestran las alarmas del último archivo cargado: ".$_SESSION['archivo']."</h3>";

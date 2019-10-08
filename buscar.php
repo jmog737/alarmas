@@ -51,15 +51,23 @@ $parametros = array();
 if ($source !== 'TODOS'){
   $parametros[] = $source;
   $temp = stripos($source, '.csv');
-  if ($temp === FALSE){
+  $temp2 = stripos($source, '.xls');
+  if (($temp === FALSE)&&($temp2 === FALSE)){
     $consultaNodo = "select localidad, nombre from nodos where idnodo=?";
     $paramNodo = array($source);
     $datosNodo = json_decode(hacerSelect($consultaNodo, $log, $paramNodo), true);
     $nombreNodo = $datosNodo['resultado'][0]['localidad'];
     $nombreNodoTemp = $datosNodo['resultado'][0]['nombre'];
     $temp11 = explode("#", $nombreNodoTemp);
-    $temp21 = explode("-", $temp11[0]);
-    $nombreCorto = $temp21[0];
+    $buscar = strpos($nombreNodoTemp, "#OCS");
+    if ($buscar !== FALSE){
+      $sufijo = "OCS";
+    }
+    else {
+      $sufijo = "PSS32";
+    }
+    $temp2 = str_replace("-", "", $temp11[0]);
+    $nombreCorto = $temp2."_".$sufijo;
     $m0 = explode("[", $mensaje);
     $m1 = explode("]", $m0[1]);
     $mensaje = $m0[0]."[".$nombreCorto."]".$m1[1];
