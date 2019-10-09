@@ -86,8 +86,11 @@ function cargarArchivo($archivo){
           $primero = 0;
         }
 
-        $nombre = trim($cols[$primero + 2]->nodeValue," \t\n\r\0\x0B\xC2\xA0").' '.trim($cols[$primero + 1]->nodeValue," \t\n\r\0\x0B\xC2\xA0");;
-        
+        $sourceTemp = trim($cols[$primero + 1]->nodeValue," \t\n\r\0\x0B\xC2\xA0");
+        $card = trim($cols[$primero + 2]->nodeValue," \t\n\r\0\x0B\xC2\xA0");
+        $source = str_replace("/", "-", $sourceTemp);
+        $nombre = $card.' '.$source;
+
         /// Manejo de la fecha para separar el día de la hora y reacomodar:
         $fechaTemp = trim($cols[$primero]->nodeValue," \t\n\r\0\x0B\xC2\xA0");
         $fechaTemp1 = explode(" ", $fechaTemp);
@@ -138,7 +141,13 @@ function cargarArchivo($archivo){
         }
         $tipoCondicion = trim($cols[$primero + 6]->nodeValue," \t\n\r\0\x0B\xC2\xA0");
         $descripcion = trim($cols[$primero + 5]->nodeValue," \t\n\r\0\x0B\xC2\xA0");
-        $afectacionServicio = trim($cols[$primero + 7]->nodeValue," \t\n\r\0\x0B\xC2\xA0");
+        $afectacionServicioTemp = trim($cols[$primero + 7]->nodeValue," \t\n\r\0\x0B\xC2\xA0");
+        if ($afectacionServicioTemp === 'No'){
+          $afectacionServicio = "NSA";
+        }
+        else {
+          $afectacionServicio = "SA";
+        }
         $ubicacion = '';
         $direccion = '';
         $valorMonitoreado = '';
@@ -177,8 +186,8 @@ function cargarArchivo($archivo){
       
       $i++;
 
-      $existeRegistro = "select count(*) from alarmas where nombre=? and dia=? and hora=? and descripcion=? and tipoCondicion=?";
-      $paramExiste = array($nombre, $fecha, $hora, $descripcion, $tipoCondicion);
+      $existeRegistro = "select count(*) from alarmas where dia=? and hora=? and descripcion=? and tipoCondicion=?";
+      $paramExiste = array($fecha, $hora, $descripcion, $tipoCondicion);
       $datosExiste = json_decode(hacerSelect($existeRegistro, $log, $paramExiste), true);
       $cuenta = (int)$datosExiste['rows'];
       /// Seteo cuenta a 0 para OBLIGAR a que se haga el insert en TODOS los casos, sin importar si existe o no la alarma:

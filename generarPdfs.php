@@ -133,7 +133,7 @@ class PDF extends PDF_MC_Table
   function armarTablaAlarmas(){
     global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $arrayNodos, $nombreNodo, $camposAlarmas;
     
-    $hTitulo = 14;
+    $hTitulo = 10;
     $tamPagina = $this->GetPageWidth();
     /// Defino un ancho máximo para el título cosa de no llegar a los extremos:
     $anchoTitulo = 0.80*$tamPagina;
@@ -148,17 +148,14 @@ class PDF extends PDF_MC_Table
     
     ///***************************************************************** TITULO **************************************************************
     /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
-    $this->SetFont('Courier', 'BU', $hTitulo);
-
+    $this->SetFont('Courier', 'BU', 14);
+    $this->SetTextColor(colorTituloReporte[0], colorTituloReporte[1], colorTituloReporte[2]);
+    
     $xTituloReporte = round((($tamPagina-$anchoTitulo)/2), 2);
     $this->SetX($xTituloReporte);
     
     $nbTitulo = $this->NbLines($anchoTitulo, $tituloReporte);
     $hTituloMulti=$hTitulo/$nbTitulo;
-
-    $this->SetTextColor(colorTituloReporte[0], colorTituloReporte[1], colorTituloReporte[2]);
-    
-    $tituloReporte .= " (Total: ".$totalFilas.")";
 
     if ($nbTitulo > 1) {
       $this->MultiCell($anchoTitulo, $hTituloMulti, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
@@ -166,6 +163,14 @@ class PDF extends PDF_MC_Table
     else {
       $this->MultiCell($anchoTitulo, $hTitulo, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
     }
+    
+    $this->Ln(0.1);
+    $this->SetX($xTituloReporte);
+    
+    $tituloTotal = "(Total: ".$totalFilas.")";
+    $this->Cell($anchoTitulo, $hTitulo/3, utf8_decode($tituloTotal), 0, 1,'C', false);
+    
+    $this->Ln(5);
     $y = $this->GetY();
     ///*************************************************************** FIN TITULO ************************************************************
     

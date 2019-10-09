@@ -158,9 +158,10 @@ require_once ('data/cargarArchivo.php');
                   $mensaje = "<h3>".$carga["mensaje"]."</h3>";
                 }
                 else {
-                  $mensaje = $carga["mensaje"];
-                  $mensaje .= "<br>Alarmas nuevas: ".$carga["cargados"]."<br>";
+                  
+                  $mensaje = "<mark>Alarmas NUEVAS: ".$carga["cargados"]."</mark><br>";
                   $mensaje .= "Alarmas duplicadas: ".$carga["duplicados"]."<br>";
+                  $mensaje .= $carga["mensaje"]."<br>";
                   $mensaje .= "<br>Total de alarmas: ".$carga["lineas"]."<br>";
                 }   
               } /// Fin del ese if exito === false      
@@ -200,7 +201,7 @@ require_once ('data/cargarArchivo.php');
           $_SESSION['nodoCorto'] = $nombreCorto;
           $_SESSION['idnodo'] = $registro['idnodo'];
           $_SESSION['archivo'] = $registro['archivo'];
-          $mensaje = "<h3>Aún no se ha cargado ningún archivo.<br>Se muestran las alarmas del último archivo cargado: ".$_SESSION['archivo']."</h3>";
+          $mensaje = "<h3>Aún no se han cargado archivos.<br>Se muestran las alarmas del último archivo cargado: ".$_SESSION['archivo']."</h3>";
           $tituloPagina = "Resultado de la &uacute;ltima carga";
         } /// Fin if isset $_SESSION
         else {
@@ -267,12 +268,13 @@ require_once ('data/cargarArchivo.php');
           $mensajeNuevo = '';
           
           //$tituloReporte = "Alarmas del archivo ".$_SESSION['archivo']." [".$_SESSION['nodo']."]";
-          $tituloReporte = "Alarmas cargadas en ".$_SESSION['nodo']." [@".$_SESSION['archivo']."]";
-          $mensajeNuevo = $tituloReporte." (Total: ".$totalDatos.")";
+          $tituloReporte = "Alarmas cargadas en ".$_SESSION['nodo']." [desde: ".$_SESSION['archivo']."]";
+          $mensajeNuevo = $tituloReporte."<br>(Total: ".$totalDatos.")";
           
+          echo "<h4>".$mensaje."</h4><br>";
           echo "<h3>".$mensajeNuevo."</h3>";
           echo "<br>";
-          echo "<h4>".$mensaje."</h4><br>";
+          
           
           /// Si hay datos los muestro:
           if ($totalDatos > 0){

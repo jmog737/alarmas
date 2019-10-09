@@ -74,7 +74,7 @@ $totalUsuarios = $datos['rows'];
           </tr>
           <tr>
             <td class="fondoVerde"><input type="radio" name="criterio" title="Elegir el origen a consultar. Seleccionar si se quiere buscar por ARCHIVO." value="file"></td>
-            <th>Archivo</th>
+            <th>Archivo:</th>
             <td colspan="3"><input type="text" tabindex="2" placeholder="Elegir archivo" title="Elegir el archivo a consultar." name="fileSearch" id="fileSearch" class="agrandar" size="9" onkeyup="showHint(this.value, '#fileSearch', '')"></td>
           </tr>
           <tr>
