@@ -124,18 +124,18 @@ if($vida_session < DURACION ) {
         $archivo = true;
         $temp2 = explode('archivo ', $tituloReporte);
         $temp3 = explode('_', $temp2[1]);
-        $nombreCorto = $temp3[0];
+        $nombreCorto0 = $temp3[0].$temp3[1];
         /// Comento por ahora, pero es la consulta para recuperar el nombre del nodo según ubicación
   //      $para1 = array($nombreCorto);
   //      $log = false;
   //      $consultaNodo = "select localidad from nodos where nombre=?";
   //      $datoNodo = json_decode(hacerSelect($consultaNodo, $log, $para1), true);
   //      $nombreNodo = $datoNodo['resultado'][0]['localidad'];
-        $nombreNodo = $nombreCorto;
+        $nombreNodo = $nombreCorto0;
       }
     }
-    
-    if (isset($_POST['nodoCorto'])){
+    //echo "nombreCorto0: $nombreCorto0<br>nombreNodo: $nombreNodo<br>";
+    if (isset($_POST['nodoCorto'])){//echo "post: ".$_POST['nodoCorto']."<br>";
       $nombreCorto = $_POST['nodoCorto'];
     }
     else {
@@ -147,7 +147,7 @@ if($vida_session < DURACION ) {
         $nombreCorto = 'NODOS';
       }
     }
-
+//echo "fin: <br>nombreNodo: ".$nombreNodo."<br>nombreCorto: ".$nombreCorto."<br>";
     if ($seguir){
       $log = "NO";
       $datos = json_decode(hacerSelect($consulta, $log, $param), true);
@@ -201,7 +201,10 @@ if($vida_session < DURACION ) {
         
         $timestamp = date('dmy_His');
         //$nombreArchivo = $nombreNodoMostrar."_".$timestamp.".pdf";
-        $nombreArchivo = ucwords($nombreCorto)."_".$timestamp.".pdf";
+        if ($nombreCorto === 'archivo'){
+          $nombreCorto = $nombreCorto."_".$nombreNodo;
+        }
+        $nombreArchivo = ucwords($nombreCorto)."_".$timestamp.".pdf";//echo "nombreArchivo: $nombreArchivo<br>";
         //********************************************** FIN Adaptación nombre del nodo sin tildes ni caracteres especiales *****************************
         
         //Instancio objeto de la clase:
@@ -238,7 +241,7 @@ if($vida_session < DURACION ) {
           $sigo = true;
           if ($archivo){
             $nombreNodoMostrar = "Archivo";
-            $nombreReporte = $nombreNodoMostrar;
+            $nombreReporte = $nombreNodoMostrar."_".$nombreNodo;
           }
           else {
             $nombreReporte = $nombreNodoMostrar;

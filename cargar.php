@@ -22,7 +22,7 @@ require_once ('data/config.php');
 require_once ('data/pdo.php');
 require_once ('data/cargarArchivo.php');
 ?>
-  <body>
+  <body onload="resizeTextArea()">
 <?php
   require_once ('header.php');
 ?>
@@ -369,20 +369,20 @@ require_once ('data/cargarArchivo.php');
                                         echo "<td>".$diaMostrar1."</td>";         
                                         break;            
                     case 'causa': if ($fila['causa'] === ''){
-                                    $val = 'N/A';  
+                                    $val = '';  
                                   }
                                   else {
                                     $val = $fila['causa'];
                                   }
-                                  echo "<td><input name='causa' type='text' placeholder='N/A' title='Causa posible' idalarma=".$fila['idalarma']." value='".$val."'></td>";
+                                  echo "<td><textarea name='causa' class='agrandar' placeholder='Causa' title='Causa posible' idalarma=".$fila['idalarma'].">".$val."</textarea></td>";
                                   break;
                     case 'solucion': if ($fila['solucion'] === ''){
-                                        $val = 'N/A';  
+                                        $val = '';  
                                       }
                                       else {
                                         $val = $fila['solucion'];
                                       }
-                                      echo "<td><input name='solucion' type='text' placeholder='N/A' title='Solución posible' idalarma=".$fila['idalarma']." value='".$val."'></td>";
+                                      echo "<td><textarea name='solucion' class='agrandar' placeholder='Solución' title='Solución posible' idalarma=".$fila['idalarma'].">".$val."</textarea></td>";
                                       break;
                     case 'estado':  if ($fila['estado'] === 'Sin procesar'){
                                       $claseEstado = "sinProcesar";

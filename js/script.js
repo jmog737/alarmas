@@ -929,6 +929,16 @@ function validarBusqueda(){
 }
 /********** fin validarBusqueda() **********/
 
+/**
+ * \brief Función que acomoda la altura de los textareas según el td padre.
+ */
+function resizeTextArea() {
+  $("textarea").each(function(){
+    $(this).height($(this).closest("td").height()-4);
+  });
+}
+/********** fin resizeTextArea() **********/
+
 /***********************************************************************************************************************
 /// ************************************************* FUNCIONES USUARIOS ***********************************************
 ************************************************************************************************************************
@@ -1125,10 +1135,9 @@ function todo () {
   ///Según en que url esté, es lo que se carga:
   switch (dir) {
     case "index.php": break;
-                                     
     default: break;
   }  
-
+  
 /*****************************************************************************************************************************
 /// Comienzan las funciones que manejan los eventos relacionados al RESALTADO de los input.
 ******************************************************************************************************************************
@@ -1141,7 +1150,7 @@ $(document).on("focus", ".agrandar", function (){
   $(this).css("background-color", "#e7f128");
   $(this).css("font-weight", "bolder");
   $(this).css("color", "red");
-  $(this).css("height", "100%");
+  //$(this).css("height", "100%");
   //$(this).css("max-width", "100%");
   //$(this).parent().prev().prev().children().prop("checked", true);
 });
@@ -1293,6 +1302,9 @@ $(document).on("change", "#fin", function (){
   $(this).parent().prev().prev().prev().prev().children().prop("checked", true);
 });
 /********** fin on("change", "#fin", function () **********/
+
+/********** fin on("change", "#mes", function () **********/
+
 
 /*****************************************************************************************************************************
 /// Fin de las funciones para el form de CONSULTAS.
@@ -1482,8 +1494,14 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                 var registro;
                                 $("input[type=checkbox]:checked").each(function(){
                                   var idal = $(this).val();
-                                  var causa = $("input[idalarma="+idal+"][name='causa']").val();
-                                  var solucion = $("input[type=text][idalarma="+idal+"][name='solucion']").val();
+                                  var causa = $("textarea[idalarma="+idal+"][name='causa']").val();
+                                  if (causa === undefined){
+                                    causa = '';
+                                  }
+                                  var solucion = $("textarea[idalarma="+idal+"][name='solucion']").val();
+                                  if (solucion === undefined){
+                                    solucion = '';
+                                  }
                                   registro = {idalarma: idal, causa: causa, solucion: solucion};
                                   param.push(registro);
                                 });
@@ -1494,30 +1512,34 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                   var sigo = true;
                                   param.forEach(function callback(item){
                                     if (sigo === true){
-                                      if (item.causa !== 'N/A'){
-                                        if ((causaTemp !== item.causa)&&(causaTemp !== 'N/A')){
+                                      if (item.causa !== ''){
+                                        if ((causaTemp !== item.causa)&&(causaTemp !== '')){
                                           alert('Si se selecciona más de 1 alarma DEBEN tener la misma causa');
                                           sigo = false;
                                           return;
                                         }
                                         else {
                                           causaTemp = item.causa;
-                                        }         
+                                        } 
                                       }
-                                      if (item.solucion !== 'N/A'){
-                                        if ((solucionTemp !== item.solucion)&&(solucionTemp !== 'N/A')){
+                                      if (item.solucion !== ''){
+                                        if ((solucionTemp !== item.solucion)&&(solucionTemp !== '')){
                                           alert('Si se selecciona más de 1 alarma DEBEN tener la misma solución');
                                           sigo = false;
                                           return;
                                         }
                                         else {
                                           solucionTemp = item.solucion;
-                                        }         
+                                        }  
                                       }
                                     }  
                                   });
-                                  if ((causaTemp === 'N/A')&&(solucionTemp === 'N/A')){
-                                    alert('Causa y solución no fueron ingresadas.');
+                                  if (causaTemp === ''){
+                                    alert('La Causa no fue ingresada.');
+                                    sigo = false;
+                                  }
+                                  if ((solucionTemp === '')&&(sigo === true)){
+                                    alert('La solución no fue ingresada.');
                                     sigo = false;
                                   }
                                   var query = '';
