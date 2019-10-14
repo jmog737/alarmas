@@ -574,7 +574,7 @@ function validarEditarNodo(){
   @param rango {Object} Objeto con el mes de inicio del período en caso se quiera consultar por mes.
   @param rango {Object} Objeto con el año de inicio del período en caso se quiera consultar por mes.
 */
-function validarFecha(rango, inicioObject, finObject, mesObject, añoObject){
+function validarFecha(rango, campoFecha, inicioObject, finObject, mesObject, añoObject){
   var validado = true;
   var inicio = inicioObject.val();
   var fin = finObject.val();
@@ -647,16 +647,26 @@ function validarFecha(rango, inicioObject, finObject, mesObject, añoObject){
                           if (inicio === fin){
                             var diaTemp = inicio.split('-');
                             var diaMostrar = diaTemp[2]+"/"+diaTemp[1]+"/"+diaTemp[0];
-                            rangoFecha = "(dia ='"+inicio+"')";
-                            mensajeFecha = "del día: "+diaMostrar;
+                            rangoFecha = "("+campoFecha+" ='"+inicio+"')";
+                            if (campoFecha === 'dia'){
+                              mensajeFecha = "del día: "+diaMostrar;
+                            }
+                            else {
+                              mensajeFecha = "cargadas el día: "+diaMostrar;
+                            }
                           }
                           else {
                             var inicioTemp = inicio.split('-');
                             var inicioMostrar = inicioTemp[2]+"/"+inicioTemp[1]+"/"+inicioTemp[0];
                             var finTemp = fin.split('-');
                             var finMostrar = finTemp[2]+"/"+finTemp[1]+"/"+finTemp[0];
-                            rangoFecha = "(dia >='"+inicio+"') and (dia <='"+fin+"')";
-                            mensajeFecha = "entre las fechas: "+inicioMostrar+" y "+finMostrar;
+                            rangoFecha = "("+campoFecha+" >='"+inicio+"') and ("+campoFecha+" <='"+fin+"')";
+                            if (campoFecha === 'dia'){
+                              mensajeFecha = "entre las fechas: "+inicioMostrar+" y "+finMostrar;
+                            }
+                            else {
+                              mensajeFecha = "cargadas entre las fechas: "+inicioMostrar+" y "+finMostrar;
+                            }
                           }
                         }
                       } /// FIN validación de las fechas intervalo.
@@ -668,7 +678,12 @@ function validarFecha(rango, inicioObject, finObject, mesObject, añoObject){
                   inicio = año+"-01-01";
                   fin = año+"-12-31";
                   fin = hoyFecha;
-                  mensajeFecha = "del año "+año;
+                  if (campoFecha === 'dia'){
+                    mensajeFecha = "del año "+año;
+                  }
+                  else {
+                    mensajeFecha = "cargadas en el año "+año;
+                  }
                 }
                 else {
                   inicio = año+"-"+mes+"-01";
@@ -711,10 +726,15 @@ function validarFecha(rango, inicioObject, finObject, mesObject, añoObject){
                                break;
                     default: break;         
                   }
-                  mensajeFecha = "del mes de "+mesMostrar+" de "+año;
+                  if (campoFecha === 'dia'){
+                    mensajeFecha = "del mes de "+mesMostrar+" de "+año;
+                  }
+                  else {
+                    mensajeFecha = "cargadas en el mes de "+mesMostrar+" de "+año;
+                  }
                 }
                 validado = true;
-                rangoFecha = "(dia >='"+inicio+"') and (dia <'"+fin+"')";
+                rangoFecha = "("+campoFecha+" >='"+inicio+"') and ("+campoFecha+" <'"+fin+"')";
                 d1 = mes;
                 d2 = año;
                 break;
@@ -747,12 +767,14 @@ function validarBusqueda(){
   var fin = $("#fin");
   var mes = $("#mes");
   var año = $("#año");
+  var origenFecha = $('input:radio[name=origenFecha]:checked').val();
   var tipoAlarma = $("#alarma").find('option:selected').val( );
   var usuario = $("#usuarios option:selected").val();
   var usuarioNombre = $("#usuarios option:selected").text();
   var nombreAlarma = $("#nameSearch").val();
   var conditionAlarma = $("#conditionSearch").val();
   var aidAlarma = $("#aidSearch").val();
+  var estado = $("#estado option:selected").val();
   
   if (criterio === 'nodo'){
     if (nodo === 'nada'){
@@ -772,9 +794,16 @@ function validarBusqueda(){
   var mensaje = 'Alarmas';
   var validado = true;
   var rangoFecha = null;
+  var campoFecha = '';
   
+  if (origenFecha === 'alarma'){
+    campoFecha = 'dia';
+  }
+  else {
+    campoFecha = 'fechaCarga';
+  }
   if (radioFecha !== 'todos'){
-    var resultado= validarFecha(radioFecha, inicio, fin, mes, año);
+    var resultado= validarFecha(radioFecha, campoFecha, inicio, fin, mes, año);
     validado = resultado['validado'];
     rangoFecha = resultado['rango'];
     var inicioValidado = resultado['inicio'];
@@ -809,16 +838,16 @@ function validarBusqueda(){
       }
       //query += rangoFecha;
       if (radioFecha === 'mes'){
-        query += "(dia >= ?) and (dia < ?)";
+        query += "("+campoFecha+" >= ?) and ("+campoFecha+" < ?)";
         param += "&"+inicioValidado+"&"+finValidado;
       }
       else {
         if (inicioValidado === finValidado){
-          query += "dia=?";
+          query += campoFecha+"=?";
           param += "&"+inicioValidado+"&FIN";
         }
         else {
-          query += "(dia >= ?) and (dia <= ?)";
+          query += "("+campoFecha+" >= ?) and ("+campoFecha+" <= ?)";
           param += "&"+inicioValidado+"&"+finValidado;
         }
       }
@@ -909,6 +938,29 @@ function validarBusqueda(){
       param += "&AID";
     }
     
+    if (estado !== 'Todos'){
+      if ((criterio === 'nodo')&&(nodo === 'todos')&&(rangoFecha === null)&&(tipoAlarma === 'todas')&&(usuario === 'todos')&&(nombreAlarma === '')&&(conditionAlarma === '')&&(aidAlarma === '')){
+        query += "where ";
+      }
+      else {
+        query += " and ";
+      }
+      query += "estado=?";
+      param += "&"+estado;
+      var mensajeTemp = mensaje.split('Alarmas ');
+      var estadoMostrar = '';
+      if (estado === 'Procesada'){
+        estadoMostrar = 'procesadas';
+      }
+      else {
+        estadoMostrar = 'sin procesar';
+      }
+      mensaje = "Alarmas "+estadoMostrar+' '+mensajeTemp[1];
+    }
+    else {
+      param += "&ESTADO";
+    }
+    
     if (mensaje === 'Alarmas'){
       mensaje = "Todas las alarmas";
     }
@@ -917,7 +969,7 @@ function validarBusqueda(){
       ordenar = ' order by nodo, dia desc, hora desc';
     }
     query += ordenar;
-
+//alert(query+'\n'+param);
     $("#query").val(query);
     $("#param").val(param);
     $("#mensaje").val(mensaje);

@@ -78,7 +78,7 @@ $totalUsuarios = $datos['rows'];
             <td colspan="3"><input type="text" tabindex="2" placeholder="Elegir archivo" title="Elegir el archivo a consultar." name="fileSearch" id="fileSearch" class="agrandar" size="9" onkeyup="showHint(this.value, '#fileSearch', '')"></td>
           </tr>
           <tr>
-            <th colspan="5" class="subTituloTabla1">FECHA DE LA ALARMA</th>
+            <th colspan="5" class="subTituloTabla1">FECHA</th>
           </tr>
           <tr>
             <td class="fondoNaranja">
@@ -129,10 +129,18 @@ $totalUsuarios = $datos['rows'];
             </td>
           </tr>
           <tr>
-            <td class="fondoNaranja">
+            <td>
               <input type="radio" name="criterioFecha" title="Elegir el período a buscar. Seleccionar si se quieren TODOS los movimientos" value="todos" checked="checked">
             </td>
             <th>TODOS</th>
+          </tr>
+          <tr>
+            <td colspan='5'>
+              <input type="radio" name="origenFecha" id="origenFechaAlarma" value="alarma" class="nomostrar visible" checked>
+              <label for="origenFechaAlarma">DE LA ALARMA</label> 
+              <input type="radio" name="origenFecha" id="origenFechaCarga" value="carga" class="nomostrar visible">
+              <label for="origenFechaCarga">DE CARGA</label> 
+            </td>
           </tr>
           <tr>
             <th colspan="5" class="subTituloTabla1">FILTROS</th>
@@ -195,6 +203,16 @@ $totalUsuarios = $datos['rows'];
               </select>
             </td> 
           </tr>
+          <tr>
+            <th colspan="2" class="text-left">Estado:</th>  
+            <td colspan="3">
+              <select name="estado" id="estado" tabindex="12" title="Elegir el usuario.">
+                <option value="Todos">--- TODOS ---</option>
+                <option value="Procesada">Procesadas</option>
+                <option value="Sin procesar">SIN Procesar</option>
+              </select>
+            </td> 
+          </tr>
 <!--          <tr>
             <th colspan="2">Equipo:</th>  
             <td colspan="3">
@@ -208,7 +226,7 @@ $totalUsuarios = $datos['rows'];
           </tr>-->
           <tr>
             <td colspan="5" class="pieTabla">
-              <input type="button" class="btn btn-success" tabindex="12" name="buscar" id="buscar" title="Ejecutar la consulta" value="Consultar" align="center">
+              <input type="button" class="btn btn-success" tabindex="13" name="buscar" id="buscar" title="Ejecutar la consulta" value="Consultar" align="center">
             </td>
           </tr>
         </table>

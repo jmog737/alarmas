@@ -1,3 +1,21 @@
+<?php
+
+header('content-type:text/css');
+ 
+/******** STYLES *********/
+//$colorFondo = '#61122f';
+$colorFondo = '#263c25';
+/****** FIN STYLES *******/
+
+/******* STYLES1: ********/ 
+//$colorFondo = '#d29238';
+/****** FIN STYLES1 ******/
+
+/******** STYLES2: *******/ 
+//$colorFondo = '#cc514d';
+/****** FIN STYLES2 ******/
+
+echo <<<FINCSS
 /**
 ******************************************************
 *  @file styles.css
@@ -20,7 +38,7 @@ html {
   position: relative;
   font-size: 16px;
   color: #fff;
-  background-color: #61122f;
+  background-color: $colorFondo;
   font-family: sans-serif;
   padding: 0px;
   margin: 0px;
@@ -30,7 +48,7 @@ body {
   width: 100%;
   font-size: 16px;
   color: #fff;
-  background-color: #61122f;
+  background-color: $colorFondo;
   font-family: sans-serif;
   padding: 0px;
   margin: 0px;
@@ -149,14 +167,14 @@ main {
 #main-content {
   text-align: center;
   background-color: #ffff99;/* agregardo durante el desarrollo para diferenciar!!!*/
-  background-color: #61122f;
+  background-color: $colorFondo;
   margin: auto;
   padding: 0px;
   padding-top: 20px;
 }
 
 #fila {
-  background-color: #61122f;
+  background-color: $colorFondo;
   /*background-color: #99ffff;*/
   padding: 30px;
   padding-top: 0px;
@@ -173,7 +191,7 @@ a.detailObject:focus, a.detailObject:hover {
 }
 
 #selector {
-  background-color: #61122f;
+  background-color: $colorFondo;
   /*background-color: #99ff99;/* agregardo durante el desarrollo para diferenciar!!!*/
   position: relative;
   padding: 0px;
@@ -184,7 +202,7 @@ a.detailObject:focus, a.detailObject:hover {
   text-decoration: underline;
 }
 #content {
-  background-color: #61122f;
+  background-color: $colorFondo;
   /*background-color: #ffcc99; agregardo durante el desarrollo para diferenciar!!!*/
   padding-left: 50px;
   position: relative;
@@ -338,7 +356,7 @@ hr {
   border-collapse: separate;
   margin: 0 auto;
   border-radius: 25px;
-  max-width: 95% !important;
+  max-width: 60% !important;
   padding: 0px;
 }
 .tabla2 caption {
@@ -350,7 +368,6 @@ hr {
 } 
 .tabla2 th {
   background-color: #0066cc;
-  background-color: #17a2b8;
   color: #ffff00;
   border: #c0c0c0 1px solid;
   margin: 0px;
@@ -420,7 +437,7 @@ box-sizing: border-box;*/
   font-size: 10pt;
 }
 
-/*.tabla2 label {
+.tabla2 label {
   margin: 0px;
   padding: 0px;
   vertical-align: middle;
@@ -431,7 +448,7 @@ box-sizing: border-box;*/
   border: #c0c0c0 1px solid;
   line-height:none;
   width: 100%;
-}*/
+}
 
 .tabla2 .enc {
   background-color:#07ff00;
@@ -445,24 +462,6 @@ box-sizing: border-box;*/
   font-weight: bold;
 }
 
-.tabla2 input[type=radio]+label{
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 16px;cursor: pointer;border-radius: 10px;
-  margin: 0px;
-  background-color: grey;
-  font-weight:bolder;
-  color:#ffffff;
-}
-.tabla2 input[type=radio].visible:checked+label{
-  background-color: #ff0000;
-  background-color: #b21f2d; /* danger */
-  background-color: #1e7e34; /* success */
-  background-color: #ffc107; /* warning */
-  background-color: #17a2b8; /* info */
-  font-weight:bolder;
-  color:#ffffff;
-}
 /******************************* FIN TABLAS ***********************************/
 
 /************************************ ALARMAS *********************************/
@@ -516,10 +515,6 @@ box-sizing: border-box;*/
 }
 .naranja {
   color: #ecb127;
-}
-
-.nomostrar {
-  display: none;
 }
 
 .usuarioIndex {
@@ -1048,11 +1043,11 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
   }
 
   .divider {
-    height: 1px;
-    margin: 9px 0;
-    overflow: hidden;
-    background-color: #e5e5e5;
-  }
+        height: 1px;
+        margin: 9px 0;
+        overflow: hidden;
+        background-color: #e5e5e5;
+    }
   
   .navbar-header button.navbar-toggle {
     margin-top: -85px;
@@ -1161,3 +1156,5 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 
 /************************* END MEDIA QUERIES ********************************/
 
+FINCSS;
+?>

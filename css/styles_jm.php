@@ -373,7 +373,7 @@ hr {
   margin: 0px;
   line-height:none;
   max-width: 100%;
-  text-align: center !important;
+  text-align: center;
   padding: 5px !important;
 }
 .tabla2 tr {
@@ -384,7 +384,7 @@ hr {
 .tabla2 td {
   border: #c0c0c0 1px solid;
   border-collapse: separate;
-  padding: 3px;
+  padding: 1px;
   /*font-size: 0.9em;*/
 }
 .tabla2 td input[type="text"] {
@@ -410,15 +410,18 @@ hr {
   padding: 0px;
 }
 .tabla2 textarea {
-  line-height: normal;
-  width: 100%;
-  border: #c0c0c0 1px solid;
+/*  border: #c0c0c0 1px solid;
   border-collapse: separate;
   text-align: center;
   padding: 0px;
-  background-color:#c1c1bf;
-  /*resize: none;*/
+  background-color: #ffffac;
+  min-height: 80px;
+  max-width: 100px;
+box-sizing: border-box;*/
+	overflow: hidden;
+	box-sizing: border-box; 
 }
+
 .tabla2 .subTituloTabla1 {
   background-color:#57805e;
   background-color: #28ce44;

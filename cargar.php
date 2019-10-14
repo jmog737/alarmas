@@ -159,7 +159,7 @@ require_once ('data/cargarArchivo.php');
                 }
                 else {
                   
-                  $mensaje = "<mark>Alarmas NUEVAS: ".$carga["cargados"]."</mark><br>";
+                  $mensaje = "<mark>Alarmas NUEVAS: ".$carga["cargados"]."</mark><span class='badge  badge-success'>NUEVAS</span><br>";
                   $mensaje .= "Alarmas duplicadas: ".$carga["duplicados"]."<br>";
                   $mensaje .= $carga["mensaje"]."<br>";
                   $mensaje .= "<br>Total de alarmas: ".$carga["lineas"]."<br>";
