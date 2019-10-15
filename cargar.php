@@ -27,7 +27,7 @@ require_once ('data/cargarArchivo.php');
   require_once ('header.php');
 ?>
   <main>
-    <div id='main-content' class='container-fluid'>
+    <div id='main-content' class='container-fluid table-responsive'>
     <?php
       $seguir = true;
       $finValidacion = false;
@@ -289,7 +289,7 @@ require_once ('data/cargarArchivo.php');
             
             echo "<form id='frmCargar' name='frmCargar' method='post'>";
             /// Comienzo tabla para mostrar la consulta:
-            echo "<table class='tabla2'>";
+            echo "<table class='table tabla2'>";
             echo "<caption>Tabla con las alarmas del nodo</caption>";
             $i = $primerRegistro;
             $totalCamposMostrar = 1;
@@ -326,13 +326,13 @@ require_once ('data/cargarArchivo.php');
               /// Extraigo tipo de alarma para poder resaltar en consecuencia:
               $tipoAlarma = $fila['tipoAlarma'];
               switch ($tipoAlarma) {
-                case 'CR': $clase = 'alCritica';
+                case 'CR': $clase = 'alCritica table-danger';
                            break;
                 case 'MJ': $clase = 'alMajor';
                            break;
-                case 'MN': $clase = 'alMinor';
+                case 'MN': $clase = 'alMinor table-warning';
                            break;
-                case 'WR': $clase = 'alWarning';
+                case 'WR': $clase = 'alWarning table-info';
                            break;    
                 case 'NA': $clase = 'alNotAlarmed';
                            break; 
@@ -486,6 +486,7 @@ require_once ('data/cargarArchivo.php');
     </div>      
   </main>      
   <?php
+  require_once ('scripts.php');
   require_once ('footer.php');
   ?>  
   </body>

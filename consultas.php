@@ -42,7 +42,7 @@ $totalUsuarios = $datos['rows'];
   require_once ('header.php');
 ?>
   <main>
-    <div id='main-content' class='container-fluid'>
+    <div id='main-content' class='container-fluid table-responsive'>
       <br>  
       <h2>Consultas hist&oacute;ricas:</h2>
 
@@ -137,9 +137,9 @@ $totalUsuarios = $datos['rows'];
           <tr>
             <td colspan='5'>
               <input type="radio" name="origenFecha" id="origenFechaAlarma" value="alarma" class="nomostrar visible" checked>
-              <label for="origenFechaAlarma">DE LA ALARMA</label> 
+              <label for="origenFechaAlarma" title="Elegir si se quiere filtrar por la fecha de la ALARMA.">DE LA ALARMA</label> 
               <input type="radio" name="origenFecha" id="origenFechaCarga" value="carga" class="nomostrar visible">
-              <label for="origenFechaCarga">DE CARGA</label> 
+              <label for="origenFechaCarga" title="Elegir si se quiere filtrar por la fecha de CARGA del archivo.">DE CARGA</label> 
             </td>
           </tr>
           <tr>
@@ -226,7 +226,7 @@ $totalUsuarios = $datos['rows'];
           </tr>-->
           <tr>
             <td colspan="5" class="pieTabla">
-              <input type="button" class="btn btn-success" tabindex="13" name="buscar" id="buscar" title="Ejecutar la consulta" value="Consultar" align="center">
+              <input type="button" class="btn btn-danger" tabindex="13" name="buscar" id="buscar" title="Ejecutar la consulta" value="Consultar" align="center">
             </td>
           </tr>
         </table>
@@ -244,6 +244,7 @@ $totalUsuarios = $datos['rows'];
     </div>      
   </main>      
   <?php
+  require_once ('scripts.php');
   require_once ('footer.php');
   ?>  
   </body>

@@ -985,9 +985,15 @@ function validarBusqueda(){
  * \brief Función que acomoda la altura de los textareas según el td padre.
  */
 function resizeTextArea() {
+  
   $("textarea").each(function(){
     $(this).height($(this).closest("td").height()-4);
   });
+  alert('antes');
+  $("#tblResultado").DataTable();
+  alert('en medio');
+  $('.dataTables_length').addClass('bs-select');
+  alert('despúes');
 }
 /********** fin resizeTextArea() **********/
 
@@ -1172,6 +1178,7 @@ se llama a la función correspondiente para cargar lo que corresponda (actividad
 Además, en la función también están los handlers para los distintos eventos jquery.
 */
 function todo () {
+  
   ///Levanto la url actual: 
   var urlActual = jQuery(location).attr('pathname');
   var parametros = jQuery(location).attr('search');
@@ -1315,6 +1322,13 @@ $(document).on("change focusin", "#hint", function (){
   $(this).parent().prev().prev().children().prop("checked", true);
 });
 /********** fin on("change focusin", "#hint", function () **********/
+
+///Disparar función al hacer doble click en alguna opción del select #hint.
+///Esto hace que se llame a la función que valida la consulta y luego hace el submit.
+$(document).on("dblclick", "select[name=hint] option", function() {
+  validarBusqueda();
+});
+/********* fin on("dblclick", "select[name=hint] option", function() *********/
 
 ///Disparar función al cambiar la entidad elegida en el select NODO. 
 ///Lo que hace es seleccionar automáticamente el radio button correspondiente.

@@ -338,8 +338,10 @@ hr {
   border-collapse: separate;
   margin: 0 auto;
   border-radius: 25px;
-  max-width: 95% !important;
+  max-width: 80% !important;
   padding: 0px;
+  max-height: 200px;
+  overflow-x: scroll !important;
 }
 .tabla2 caption {
   display: table-caption;
@@ -455,11 +457,10 @@ box-sizing: border-box;*/
   color:#ffffff;
 }
 .tabla2 input[type=radio].visible:checked+label{
-  background-color: #ff0000;
-  background-color: #b21f2d; /* danger */
-  background-color: #1e7e34; /* success */
-  background-color: #ffc107; /* warning */
   background-color: #17a2b8; /* info */
+  background-color: #ffc107; /* warning */
+  background-color: #28a745; /* success */
+  background-color: #dc3545; /* danger */
   font-weight:bolder;
   color:#ffffff;
 }
@@ -485,15 +486,15 @@ box-sizing: border-box;*/
   background-color:#999999;
 }
 .procesada {
-  background-color: #85ca5e;
+  background-color: #85ca5e !important;
 }
 .sinProcesar {
-  background-color:#f7ff00;
+  background-color:#f7ff00 !important;
 }
 /****************************** FIN ALARMAS ***********************************/
 
 .btn {
-  padding: .3rem .75rem !important;
+/*  padding: .3rem .75rem !important;*/
 }
 
 #snapshot {

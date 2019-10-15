@@ -3,7 +3,7 @@
     <div class='container-fluid'>
       <div class='navbar-header'>
         <a href='index.php' title="Ir al inicio" class='float-left d-none d-sm-block'>
-          <div id='logo-img' class='d-none d-sm-block'></div>
+          <div id='logo-img' class='d-none d-sm-block img-fluid'></div>
         </a>
 
         <div class='navbar-brand'>

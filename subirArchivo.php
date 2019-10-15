@@ -42,7 +42,7 @@ require_once ('head.php');
   $totalLocalidades = $datos['rows'];
 ?>
     <main>
-      <div id='main-content' class='container-fluid'>
+      <div id='main-content' class='container-fluid table-responsive'>
         <br>  
         <h2>Cargar archivo:</h2>
         
@@ -88,6 +88,7 @@ require_once ('head.php');
       </div>      
     </main>
 <?php
+  require_once ('scripts.php');
   require_once ('footer.php');
 ?>    
   </body>

@@ -77,7 +77,7 @@ require_once ('head.php');
   $mensajeNuevo = $tituloReporte." (Total: ".$totalDatos.")";
 ?>
     <main>
-      <div id='main-content' class='container-fluid'>
+      <div id='main-content' class='container-fluid table-responsive'>
         <br>  
 <?php
         echo "<h2>".$tituloPagina."</h2>";
@@ -96,7 +96,7 @@ require_once ('head.php');
           
           echo "<form id='frmNodos' name='frmNodos' method='post' action='editarNodo.php'>";
           /// Comienzo tabla para mostrar los usuarios:
-          echo "<table class='tabla2'>";
+          echo "<table class='table tabla2'>";
           echo "<caption>Listado de nodos.</caption>";
           $i = $primerRegistro;
           $totalCamposMostrar = 1;

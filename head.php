@@ -21,13 +21,11 @@
   <input id="maxLimiteSelects" name="maxLimiteSelects" type="text" value="<?php echo MAX_LIMITESELECTS ?>" style="color: black; display: none">
   <title>ALARMAS</title>
   <meta charset='UTF-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <link rel='stylesheet' href='vendor/twbs/bootstrap/dist/css/bootstrap.min.css'>
+  <link rel="stylesheet" href="css/mdb.min.css">
   <link rel='stylesheet' href="css/<?php echo $estilos ?>" >
-  <script src="vendor/components/jquery/jquery.min.js"></script>
-  <!--<script src='js/popper.min.js'></script>-->
-  <script src='vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js'></script>  
-  <script src='js/script.js' type="text/javaScript"></script>
+  
+  
 </head>
-

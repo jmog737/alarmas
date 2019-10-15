@@ -187,14 +187,15 @@ $mensajeNuevo = '';
         echo $rango;
         echo "<br>";
         echo "<form id='frmResultado' name='frmResultado' method='post'>";
-        
+        echo "<div id='table-content' class='table-responsive'>";
         /// Comienzo tabla para mostrar la consulta:
-        echo "<table class='tabla2'>";
+        echo "<table id='tblResultado' class='tabla2 table table-hover w-auto'>";
         echo "<caption>Tabla con el resultado de la consulta</caption>";
         $i = $primerRegistro;
         $totalCamposMostrar = 1;
 
         /// Muestro el encabezado:
+        echo "<thead>";
         echo "<tr>";
         foreach ($camposAlarmas as $key => $value) {   
           if ($camposAlarmas[$key]['mostrarListado'] === 'si'){
@@ -208,10 +209,11 @@ $mensajeNuevo = '';
                 $clase .= "class='tituloTablaDerecho'";
               }
             }
-            echo "<th $clase>".$camposAlarmas[$key]['nombreMostrar']."</th>";
+            echo "<th  scope='col' $clase>".$camposAlarmas[$key]['nombreMostrar']."</th>";
           }
         } /// Fin foreach camposAlarmas para encabezados
         echo "</tr>";
+        echo "</thead>";
         /// Fin encabezados
 
         $keys = array();
@@ -238,13 +240,13 @@ $mensajeNuevo = '';
           /// Extraigo tipo de alarma para poder resaltar en consecuencia:
           $tipoAlarma = $fila['tipoAlarma'];
           switch ($tipoAlarma) {
-            case 'CR': $clase = 'alCritica';
+            case 'CR': $clase = 'alCritica table-danger';
                        break;
             case 'MJ': $clase = 'alMajor';
                        break;
-            case 'MN': $clase = 'alMinor';
+            case 'MN': $clase = 'alMinor table-warning';
                        break;
-            case 'WR': $clase = 'alWarning';
+            case 'WR': $clase = 'alWarning table-info';
                        break;    
             case 'NA': $clase = 'alNotAlarmed';
                        break; 
@@ -326,8 +328,8 @@ $mensajeNuevo = '';
 
         echo "<tr>"
         . "     <td class='pieTabla' colspan='$totalCamposMostrar'>"
-        . "       <input type='button' id='btnActualizarBuscar' name='btnActualizar' class='btn btn-danger' value='Actualizar'>"
-        . "       <input type='button' id='btnExportarBuscar' name='btnExportar' class='btn btn-success' value='Exportar'>"
+        . "       <input type='button' id='btnActualizarBuscar' name='btnActualizar' class='btn btn-secondary btn-md' value='Actualizar'>"
+        . "       <input type='button' id='btnExportarBuscar' name='btnExportar' class='btn btn-success btn-md' value='Exportar'>"
         . "     </td>"
         . "   </tr>";
         echo "</table>";
@@ -385,6 +387,7 @@ $mensajeNuevo = '';
           $paginas .= '</div><br>';
           echo $paginas;
         }
+        echo "</div>";
         ///************************************************** FIN paginación *****************************************************************
       } /// Fin if totalFilas > 0
       else {
@@ -397,6 +400,7 @@ $mensajeNuevo = '';
     </div>      
   </main>      
   <?php
+  require_once ('scripts.php');
   require_once ('footer.php');
   ?>  
   </body>
