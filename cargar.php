@@ -486,7 +486,6 @@ require_once ('data/cargarArchivo.php');
     </div>      
   </main>      
   <?php
-  require_once ('scripts.php');
   require_once ('footer.php');
   ?>  
   </body>

@@ -88,7 +88,6 @@ require_once ('head.php');
       </div>      
     </main>
 <?php
-  require_once ('scripts.php');
   require_once ('footer.php');
 ?>    
   </body>

@@ -244,7 +244,6 @@ $totalUsuarios = $datos['rows'];
     </div>      
   </main>      
   <?php
-  require_once ('scripts.php');
   require_once ('footer.php');
   ?>  
   </body>

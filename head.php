@@ -7,6 +7,7 @@
     $estilos = 'styles.php';
   }
   $estilos = 'styles.css';
+  //$estilos = 'nuevoCSS.css';
   
   require 'vendor/autoload.php';
   require_once 'data/config.php';
@@ -23,9 +24,15 @@
   <meta charset='UTF-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
   <link rel='stylesheet' href='vendor/twbs/bootstrap/dist/css/bootstrap.min.css'>
   <link rel="stylesheet" href="css/mdb.min.css">
+  <link href="css/datatables.min.css" rel="stylesheet">
   <link rel='stylesheet' href="css/<?php echo $estilos ?>" >
   
-  
+  <script src='js/verificarSesion.js' type="text/javaScript"></script>
+  <?php
+  //require_once ('scripts.php');
+  ?>
 </head>

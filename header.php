@@ -92,26 +92,28 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
-        <table id="tblModalPwd" class="tblModal">
-<!--          <tr>
-            <td>Nuevo nombre:</td>
-            <td>
-              <input type="text" id="nombreUser" name="nombreUser" class="agrandar">
-            </td>
-          </tr>-->
-          <tr>
-            <td>Introducir NUEVA contraseña:</td>
-            <td>
-              <input type="password" id="pw1" placeholder="Contraseña NUEVA" title="Ingresar la NUEVA contraseña" class="agrandar" autofocus="true">
-            </td>
-          </tr>
-          <tr>
-            <td>Repetir NUEVA contraseña:</td>
-            <td>
-              <input type="password" id="pw2" placeholder="Contraseña NUEVA" title="Repetir la NUEVA contraseña" class="agrandar">
-            </td>
-          </tr>
-        </table>  
+        <form>
+          <table id="tblModalPwd" class="tblModal">
+  <!--          <tr>
+              <td>Nuevo nombre:</td>
+              <td>
+                <input type="text" id="nombreUser" name="nombreUser" class="agrandar">
+              </td>
+            </tr>-->
+            <tr>
+              <td>Introducir NUEVA contraseña:</td>
+              <td>
+                <input type="password" id="pw1" placeholder="Contraseña NUEVA" title="Ingresar la NUEVA contraseña" class="agrandar" autofocus="true" autocomplete="new password">
+              </td>
+            </tr>
+            <tr>
+              <td>Repetir NUEVA contraseña:</td>
+              <td>
+                <input type="password" id="pw2" placeholder="Contraseña NUEVA" title="Repetir la NUEVA contraseña" class="agrandar" autocomplete="new password">
+              </td>
+            </tr>
+          </table>  
+        </form>  
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-warning" title="Cambiar la contraseña" id="btnModal">Actualizar</button>

@@ -71,3 +71,6 @@
     </div>
   </div>
 </footer>
+<?php 
+require_once("scripts.php");
+?>
