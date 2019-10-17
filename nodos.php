@@ -141,7 +141,7 @@ require_once ('head.php');
                                   $parConsulta = "&cNodo=".base64_encode($consulta);
 
                                   $url = "editarNodo.php?".$parUserCodif.$parOrigen.$parConsulta;
-                                  echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
+                                  echo "<td><a href='".$url."' class='btn btn-sm btn-info' role='button' target='_blank'>Editar</a></td>";
                                   break;    
                   case 'nombre':
                   case 'localidad': echo "<td nowrap>".$fila[$indice]."</td>";
@@ -157,7 +157,7 @@ require_once ('head.php');
             echo "</tr>";
           } /// Fin del procesamiento de las filas con datos
 
-          echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarNodos' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
+          echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarNodos' name='btnExportar'><input type='button' class='btn btn-sm btn-success' value='Exportar'></td></tr>";
           echo "</table>";
 
           echo "<input type='hidden' name='query' value='".$consulta."'>";

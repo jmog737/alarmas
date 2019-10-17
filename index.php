@@ -97,30 +97,32 @@ require_once ('head.php');
     <div id='main-content' class='container-fluid'>
       <br>  
       <h1>Acceso al sistema:</h1>
-      <h3>
 <?php
   if ( isset($_SESSION['error_msg']) ) {
+    echo "<h3>";
     echo('<p style="color:white">'.$_SESSION['error_msg']."</p>\n");
     unset($_SESSION['error_msg']);
+    echo "</h3>";
   }
 ?>
-      </h3>  
       <br>
       <form method='post' name='frmlogin' id='frmLogin'>
-        <table class='tabla2' name='tblLogin'> 
-          <th colspan='2' class="tituloTabla">INGRESO</th>
-          <tr>
-              <th align='left'><font class='negra'>Usuario:</font></th>
-              <td align='center'><input type='text' name='usuario' title='Ingresar el nombre del usuario' placeholder='Nombre de Usuario' id='nombreUsuario' maxlength='15' size='9' autofocus='true' class='agrandar' value=' '></td>
-          </tr>
-          <tr>
-              <th align='left'><font class='negra'>Password:</font></th>
-              <td align='center'><input type='password' name='password' id='password' placeholder="Contraseña" title='Ingresar la contraseña para el usuario' maxlength='15' size='9' class='agrandar' value=''></td>
-          </tr>    
-          <tr>
-              <td colspan='2' class='pieTabla'><input type='submit' value='Log In' name='login' title='Ingresar al sistema' id='login' class='boton' align='center'/></td>
-          </tr>
-        </table>
+        <div id='table-content' class='table-responsive'>
+          <table class='tabla2 table table-hover w-auto' name='tblLogin'> 
+            <th colspan='2' class="tituloTabla">INGRESO</th>
+            <tr>
+                <th align='left'><font class='negra'>Usuario:</font></th>
+                <td align='center'><input type='text' name='usuario' title='Ingresar el nombre del usuario' placeholder='Nombre de Usuario' id='nombreUsuario' maxlength='15' size='9' autofocus='true' class='agrandar' value=' '></td>
+            </tr>
+            <tr>
+                <th align='left'><font class='negra'>Password:</font></th>
+                <td align='center'><input type='password' name='password' id='password' placeholder="Contraseña" title='Ingresar la contraseña para el usuario' maxlength='15' size='9' class='agrandar' value=''></td>
+            </tr>    
+            <tr>
+                <td colspan='2' class='pieTabla'><input type='submit' value='Log In' name='login' title='Ingresar al sistema' id='login' class='btn btn-sm btn-purple' align='center'/></td>
+            </tr>
+          </table>
+        </div>  
       </form>
     </div>
   </main>

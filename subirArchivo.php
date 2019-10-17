@@ -47,42 +47,44 @@ require_once ('head.php');
         <h2>Cargar archivo:</h2>
         
         <form method="POST" name='frmSubir' id='frmSubir' action="cargar.php" enctype="multipart/form-data">
-          <table id="estadisticas" name="estadisticas" class="tabla2">
-          <caption>Formulario para subir el archivo a la base de datos.</caption>
-            <tr>
-              <th colspan="2" class="centrado tituloTabla">SUBIR ARCHIVO</th>
-            </tr>
-            <tr>
-              <th>
-                Archivo:
-              </th>  
-              <td>
-                <input type="file" name="uploadedFile" id="uploadedFile" accept=".csv, .xls"/>
-              </td> 
-            </tr>
-            <tr>
-              <th>
-                Nodo:
-              </th>  
-              <td>
-                <select name="nodo" id="nodo" title="Seleccione por favor el nodo del cual se obtuvo el archivo.">
-                  <option value="nada" nombreCorto="nada">--- Seleccionar NODO ---</option>
-                  <?php
-                  foreach ($localidades as $i => $valor){
-                    $loc = $localidades[$i]['localidad'];
-                    $nombreCorto = $localidades[$i]['nombre'];
-                    $idnodo = $localidades[$i]['idnodo'];
-                    echo "<option value='".$loc."' nombreCorto='".$nombreCorto."' idnodo=".$idnodo.">".$nombreCorto." - ".$loc."</option>";
-                    //echo "<option value='".$loc."---".$nombreCorto."---".$idnodo."'>".$nombreCorto." - ".$loc."</option>";
-                  }
-                  ?>
-                </select>
-              </td> 
-            </tr>
-            <td colspan="2" class="pieTabla">
-              <input type="button"  class="btn btn-danger" name="btnCargar" id="btnCargar" value="CARGAR" />
-            </td>
-          </table>  
+          <div id='table-content' class='table-responsive'>
+            <table id="estadisticas" name="estadisticas" class="tabla2 table table-hover w-auto">
+            <caption>Formulario para subir el archivo a la base de datos.</caption>
+              <tr>
+                <th colspan="2" class="centrado tituloTabla">SUBIR ARCHIVO</th>
+              </tr>
+              <tr>
+                <th>
+                  Archivo:
+                </th>  
+                <td>
+                  <input type="file" name="uploadedFile" id="uploadedFile" accept=".csv, .xls"/>
+                </td> 
+              </tr>
+              <tr>
+                <th>
+                  Nodo:
+                </th>  
+                <td>
+                  <select name="nodo" id="nodo" title="Seleccione por favor el nodo del cual se obtuvo el archivo.">
+                    <option value="nada" nombreCorto="nada">--- Seleccionar NODO ---</option>
+                    <?php
+                    foreach ($localidades as $i => $valor){
+                      $loc = $localidades[$i]['localidad'];
+                      $nombreCorto = $localidades[$i]['nombre'];
+                      $idnodo = $localidades[$i]['idnodo'];
+                      echo "<option value='".$loc."' nombreCorto='".$nombreCorto."' idnodo=".$idnodo.">".$nombreCorto." - ".$loc."</option>";
+                      //echo "<option value='".$loc."---".$nombreCorto."---".$idnodo."'>".$nombreCorto." - ".$loc."</option>";
+                    }
+                    ?>
+                  </select>
+                </td> 
+              </tr>
+              <td colspan="2" class="pieTabla">
+                <input type="button"  class="btn btn-sm btn-danger" name="btnCargar" id="btnCargar" value="CARGAR" />
+              </td>
+            </table>  
+          </div>
         </form>
         <br>
       </div>      

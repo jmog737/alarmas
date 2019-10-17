@@ -160,7 +160,7 @@ require_once ('head.php');
               case 'id': break;
         
               case 'nombre': echo "<tr>
-                                    <td class='enc'>Nombre</td>
+                                    <th class='text-left'>Nombre</th>
                                     <td>
                                       <input type='text' name='nombre' id='nombre' class='agrandar' rows='5' placeholder='Ingrese el nombre.' value='".$datosMostrar[$indice]."'>
                                       <input name='nombreOriginal' id='nombreOriginal' type='hidden' value='".$nombreOriginal."'>  
@@ -168,7 +168,7 @@ require_once ('head.php');
                                   </tr>"; 
                             break;
               case 'localidad': echo "<tr>
-                                        <td class='enc'>Localidad</td>
+                                        <th class='text-left'>Localidad</th>
                                         <td>
                                           <input type='text' name='localidad' id='localidad' class='agrandar' rows='5' placeholder='Ingrese la localidad.' value='".$datosMostrar[$indice]."'>
                                           <input name='localidadOriginal' id='localidadOriginal' type='hidden' value='".$localidadOriginal."'>
@@ -176,7 +176,7 @@ require_once ('head.php');
                                       </tr>"; 
                                 break;  
               case 'ip': echo "<tr>
-                                  <td class='enc'>IP</td>
+                                  <th class='text-left'>IP</th>
                                   <td>
                                     <input type='text' name='ip' id='ip' class='agrandar' rows='5' placeholder='Ingrese la IP.' value='".$datosMostrar[$indice]."'>
                                     <input name='ipOriginal' id='ipOriginal' type='hidden' value='".$ipOriginal."'>
@@ -190,7 +190,7 @@ require_once ('head.php');
                                   $areaMetroMostrar = "NO";
                                 }
                                 echo "<tr>
-                                        <td class='enc'>&Aacute;rea Metro</td>
+                                        <th class='text-left'>&Aacute;rea Metro</th>
                                         <td>
                                           <input type='text' name='areaMetro' id='areaMetro' class='agrandar' rows='5' placeholder='Indique si el nodo pertenece a la zona metro.' value='".$areaMetroMostrar."'>
                                           <input name='areaMetroOriginal' id='areaMetroOriginal' type='hidden' value='".$areaMetroOriginal."'>
@@ -198,7 +198,7 @@ require_once ('head.php');
                                       </tr>"; 
                                 break;          
               case 'tipo': echo "<tr>
-                                        <td class='enc'>Tipo</td>
+                                        <th class='text-left'>Tipo</th>
                                         <td>
                                           <input type='text' name='tipoNodo' id='tipoNodo' class='agrandar' rows='5' placeholder='Ingrese el tipo de dispositivo.' value='".$datosMostrar[$indice]."'>
                                           <input name='tipoOriginal' id='tipoOriginal' type='hidden' value='".$tipoOriginal."'>
@@ -206,7 +206,7 @@ require_once ('head.php');
                                       </tr>"; 
                                 break; 
               case 'observaciones': echo "<tr>
-                                      <td class='enc'>Observaciones</td>
+                                      <th class='text-left'>Observaciones</th>
                                       <td>
                                         <input type='text' name='observaciones' id='observaciones' class='agrandar' rows='5' placeholder='Ingrese las obsevaciones.' value='".$datosMostrar[$indice]."'>
                                         <input name='observacionesOriginal' id='observacionesOriginal' type='hidden' value='".$observacionesOriginal."'>
@@ -215,7 +215,7 @@ require_once ('head.php');
                                 break;                 
               case 'accion': break;                 
               default: echo "<tr>
-                              <td class='enc'>".$camposNodos[$key]['nombreMostrar']."</td>
+                              <th class='text-left'>".$camposNodos[$key]['nombreMostrar']."</th>
                               <td>".$datosMostrar[$indice]."</td>
                             </tr>";                 
             } /// Fin switch indice       
@@ -225,7 +225,7 @@ require_once ('head.php');
         
         <tr>
           <td colspan='2' class='pieTabla'>
-            <input type='button' class='btn btn-danger' name='btnEditarNodo' id='btnEditarNodo' value='EDITAR'>
+            <input type='button' class='btn btn-sm btn-danger' name='btnEditarNodo' id='btnEditarNodo' value='EDITAR'>
           </td>
         </tr>
       </table>

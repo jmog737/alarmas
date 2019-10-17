@@ -289,7 +289,9 @@ require_once ('data/cargarArchivo.php');
             
             echo "<form id='frmCargar' name='frmCargar' method='post'>";
             /// Comienzo tabla para mostrar la consulta:
-            echo "<table class='table tabla2'>";
+            /// Comienzo tabla para mostrar la consulta:
+            echo "<div id='table-content' class='table-responsive'>";
+            echo "<table class='tabla2 table table-hover w-auto'>";
             echo "<caption>Tabla con las alarmas del nodo</caption>";
             $i = $primerRegistro;
             $totalCamposMostrar = 1;
@@ -415,8 +417,8 @@ require_once ('data/cargarArchivo.php');
             
             echo "<tr>"
             . "     <td class='pieTabla' colspan='$totalCamposMostrar'>"
-            . "       <input type='button' id='btnActualizarCargar' name='btnActualizar' class='btn btn-danger' value='Actualizar'>"
-            . "       <input type='button' id='btnExportarCargar' name='btnExportar' class='btn btn-success' value='Exportar'>"
+            . "       <input type='button' id='btnActualizarCargar' name='btnActualizar' class='btn btn-sm btn-danger' value='Actualizar'>"
+            . "       <input type='button' id='btnExportarCargar' name='btnExportar' class='btn btn-sm btn-success' value='Exportar'>"
             . "     </td>"
             . "   </tr>";
             echo "</table>";
@@ -472,6 +474,7 @@ require_once ('data/cargarArchivo.php');
               $paginas .= '</div><br>';
               echo $paginas;
             }
+            echo "</div>";
             ///************************************************** FIN paginación *****************************************************************
           } /// Fin if totalFilas > 0
           else {

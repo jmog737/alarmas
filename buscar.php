@@ -187,10 +187,12 @@ $mensajeNuevo = '';
         echo $rango;
         echo "<br>";
         echo "<form id='frmResultado' name='frmResultado' method='post'>";
-        echo "<div id='table-content' class='table-responsive'>";
+        
         /// Comienzo tabla para mostrar la consulta:
+        echo "<div id='table-content' class='table-responsive'>";
         echo "<table id='tblResultado' class='tabla2 table table-hover w-auto'>";
         echo "<caption>Tabla con el resultado de la consulta</caption>";
+        
         $i = $primerRegistro;
         $totalCamposMostrar = 0;
 
@@ -209,7 +211,7 @@ $mensajeNuevo = '';
                 $clase .= "class='tituloTablaDerecho'";
               }
             }
-            echo "<th $clase>".$camposAlarmas[$key]['nombreMostrar']."</th>";
+            echo "<th scope='col' $clase>".$camposAlarmas[$key]['nombreMostrar']."</th>";
           }
         } /// Fin foreach camposAlarmas para encabezados
         echo "</tr>";
@@ -225,19 +227,20 @@ $mensajeNuevo = '';
         if ($nombreNodo === 'TODOS'){
           $nodoAnterior = '';
         }
+        
         echo "<tbody>";
         /// Comienzo proceso de cada fila:
         foreach ($datos['resultado'] as $key1 => $fila ) {
-//          if (isset($nodoAnterior)&&($nodoAnterior === '')){
-//            $nodoAnterior = $fila['nodo'];
-//            echo "<tr><th class='subTituloTabla1' colspan='$totalCamposMostrar'>$arrayNodos[$nodoAnterior]</th></tr>";
-//          }
-//          $nodoActual = $fila['nodo'];
-//          if (isset($nodoAnterior)&&($nodoActual !== $nodoAnterior)){
-//            $nodoAnterior = $nodoActual;
-//            echo "<tr><th class='subTituloTabla1' colspan='$totalCamposMostrar'>$arrayNodos[$nodoAnterior]</th></tr>";
-//            //$i = 1;
-//          }      
+          if (isset($nodoAnterior)&&($nodoAnterior === '')){
+            $nodoAnterior = $fila['nodo'];
+            echo "<tr><th class='subTituloTabla1' colspan='$totalCamposMostrar'>$arrayNodos[$nodoAnterior]</th></tr>";
+          }
+          $nodoActual = $fila['nodo'];
+          if (isset($nodoAnterior)&&($nodoActual !== $nodoAnterior)){
+            $nodoAnterior = $nodoActual;
+            echo "<tr><th class='subTituloTabla1' colspan='$totalCamposMostrar'>$arrayNodos[$nodoAnterior]</th></tr>";
+            //$i = 1;
+          }      
           /// Extraigo tipo de alarma para poder resaltar en consecuencia:
           $tipoAlarma = $fila['tipoAlarma'];
           switch ($tipoAlarma) {
@@ -267,7 +270,9 @@ $mensajeNuevo = '';
               //$nodoActual = $fila['nodo'];
               
               switch ($indice){
-                case 'id':  echo "<td nowrap>".$i." - <input type='checkbox' name='update' value='".$fila['idalarma']."'></td>";
+                case 'id':  echo "<td nowrap>".$i." - ";
+                            echo "<input type='checkbox' name='update' value='".$fila['idalarma']."'>";
+                            echo "</td>";
                             $i++;
                             break;
                 case 'dia': $dia = $fila[$indice];
@@ -316,41 +321,21 @@ $mensajeNuevo = '';
                                 $parParam = "&pAlarm=".base64_encode($paramSerial);
 
                                 $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parConsulta.$parParam;
-                                echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
+                                echo "<td class='align-middle'><a href='".$url."' role='button' class='btn btn-sm btn-info' target='_blank'>Editar</a></td>";
                                 break;         
                 default:  echo "<td>".$fila[$indice]."</td>";
                           break;
               } /// Fin switch indice      
             } /// Fin if mostrarListado 
           } /// Fin foreach camposAlarmas
-
           echo "</tr>";
         } /// Fin del procesamiento de las filas con datos
-?>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="pieTabla">
-          <input type="button" id="btnActualizarBuscar" name="btnActualizar" class="btn btn-secondary btn-md" value="Actualizar">
-        </td>
-        <td>
-          <input type='button' id='btnExportarBuscar' name='btnExportar' class='btn btn-success btn-md' value='Exportar'>
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-        
-<?php
+        echo "<tr>";
+        echo "  <td class='pieTabla' colspan='$totalCamposMostrar'>";
+        echo "    <button type='button' id='btnActualizarBuscar' name='btnActualizar' class='btn blue accent-4 btn-md' value=''>Actualizar</button>";
+        echo "    <button type='button' id='btnExportarBuscar' name='btnExportar' class='btn btn-dark-green btn-md' value=''>Exportar</button>";
+        echo "  </td>";
+        echo "</tr>";
         echo "</tbody>";
         echo "</table>";
 
