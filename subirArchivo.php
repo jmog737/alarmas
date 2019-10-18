@@ -49,40 +49,50 @@ require_once ('head.php');
         <form method="POST" name='frmSubir' id='frmSubir' action="cargar.php" enctype="multipart/form-data">
           <div id='table-content' class='table-responsive'>
             <table id="estadisticas" name="estadisticas" class="tabla2 table table-hover w-auto">
-            <caption>Formulario para subir el archivo a la base de datos.</caption>
-              <tr>
-                <th colspan="2" class="centrado tituloTabla">SUBIR ARCHIVO</th>
-              </tr>
-              <tr>
-                <th>
-                  Archivo:
-                </th>  
-                <td>
-                  <input type="file" name="uploadedFile" id="uploadedFile" accept=".csv, .xls"/>
-                </td> 
-              </tr>
-              <tr>
-                <th>
-                  Nodo:
-                </th>  
-                <td>
-                  <select name="nodo" id="nodo" title="Seleccione por favor el nodo del cual se obtuvo el archivo.">
-                    <option value="nada" nombreCorto="nada">--- Seleccionar NODO ---</option>
-                    <?php
-                    foreach ($localidades as $i => $valor){
-                      $loc = $localidades[$i]['localidad'];
-                      $nombreCorto = $localidades[$i]['nombre'];
-                      $idnodo = $localidades[$i]['idnodo'];
-                      echo "<option value='".$loc."' nombreCorto='".$nombreCorto."' idnodo=".$idnodo.">".$nombreCorto." - ".$loc."</option>";
-                      //echo "<option value='".$loc."---".$nombreCorto."---".$idnodo."'>".$nombreCorto." - ".$loc."</option>";
-                    }
-                    ?>
-                  </select>
-                </td> 
-              </tr>
-              <td colspan="2" class="pieTabla">
-                <input type="button"  class="btn btn-sm btn-danger" name="btnCargar" id="btnCargar" value="CARGAR" />
-              </td>
+              <caption>Formulario para subir el archivo a la base de datos.</caption>
+              <thead>
+                <tr>
+                  <th colspan="2" scope='col' class="centrado tituloTabla">SUBIR ARCHIVO</th>
+                </tr>
+              </thead>
+              
+              <tbody>
+                <tr>
+                  <th scope='row' class='text-left'>Archivo:</th>  
+                  <td>
+                    <div class="custom-file">
+                      <input type="file" name="uploadedFile" id="uploadedFile" class='custom-file-input'  lang="es" accept=".csv, .xls"/>
+                      <label class="custom-file-label" for="uploadedFile">Seleccionar archivo</label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr>
+                  <th scope='row' class='text-left'>Nodo:</th>  
+                  <td>
+                    <select name="nodo" id="nodo" class='custom-select-sm custom-select' title="Seleccione por favor el nodo del cual se obtuvo el archivo.">
+                      <option value="nada" nombreCorto="nada">--- Seleccionar NODO ---</option>
+                      <?php
+                      foreach ($localidades as $i => $valor){
+                        $loc = $localidades[$i]['localidad'];
+                        $nombreCorto = $localidades[$i]['nombre'];
+                        $idnodo = $localidades[$i]['idnodo'];
+                        echo "<option value='".$loc."' nombreCorto='".$nombreCorto."' idnodo=".$idnodo.">".$nombreCorto." - ".$loc."</option>";
+                        //echo "<option value='".$loc."---".$nombreCorto."---".$idnodo."'>".$nombreCorto." - ".$loc."</option>";
+                      }
+                      ?>
+                    </select>
+                  </td> 
+                </tr>
+              </tbody>
+              
+              <tfoot>
+                <tr>
+                  <td colspan="2" class="pieTabla">
+                    <input type="button"  class="btn btn-sm btn-danger" name="btnCargar" id="btnCargar" value="CARGAR" />
+                  </td>
+                </tr>
+              </tfoot>
+                
             </table>  
           </div>
         </form>

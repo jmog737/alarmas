@@ -96,12 +96,14 @@ require_once ('head.php');
           
           echo "<form id='frmUsuarios' name='frmUsuarios' method='post' action='editarUsuario.php'>";
           /// Comienzo tabla para mostrar los usuarios:
-          echo "<table class='table tabla2'>";
+          echo "<div name='table-content' class='table-responsive'>";
+          echo "<table id='tblUsuarios' name='tblUsuarios' class='tabla2 table table-hover w-auto'>";
           echo "<caption>Listado de usuarios.</caption>";
           $i = $primerRegistro;
           $totalCamposMostrar = 1;
             
           /// Muestro el encabezado:
+          echo "<thead>";
           echo "<tr>";
           foreach ($camposUsuarios as $key => $value) {   
             if ($camposUsuarios[$key]['mostrarListado'] === 'si'){
@@ -115,15 +117,17 @@ require_once ('head.php');
                   $clase = "class='tituloTablaDerecho'";
                 }
               }
-              echo "<th $clase>".$camposUsuarios[$key]['nombreMostrar']."</th>";
+              echo "<th scope='row' $clase>".$camposUsuarios[$key]['nombreMostrar']."</th>";
             }
           } /// Fin foreach camposAlarmas para encabezados
           echo "</tr>";
+          echo "</thead>";
           /// Fin encabezados
-                  
+            
+          echo "<tbody>";
           /// Comienzo proceso de cada fila:
           foreach ($usuarios as $key1 => $fila ) {
-            echo "<tr class='".$clase."'>";
+            echo "<tr class='table-success'>";
 
             $idusuario = $fila['idusuario'];
 
@@ -155,7 +159,7 @@ require_once ('head.php');
                                   $parConsulta = "&cUser=".base64_encode($consulta);
 
                                   $url = "editarUsuario.php?".$parUserCodif.$parOrigen.$parConsulta;
-                                  echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
+                                  echo "<td><a href='".$url."' class='btn btn-sm btn-info' role='button' target='_blank'>Editar</a></td>";
                                   break;    
                   case 'nombre':
                   case 'apellido':  echo "<td nowrap>".$fila[$indice]."</td>";
@@ -168,9 +172,18 @@ require_once ('head.php');
 
             echo "</tr>";
           } /// Fin del procesamiento de las filas con datos
-
-          echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarUsuarios' name='btnExportar'><input type='button' class='btn btn-success' value='Exportar'></td></tr>";
+          echo "</tbody>";
+          
+          echo "<tfoot>";
+          echo "  <tr>";
+          echo "    <td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarUsuarios' name='btnExportar'>";
+          echo "      <input type='button' class='btn btn-success btn-sm' value='Exportar'>";
+          echo "    </td>";
+          echo "  </tr>";
+          echo "</tfoot>";
+          
           echo "</table>";
+          echo "</div>";
 
           echo "<input type='hidden' name='query' value='".htmlentities($consulta, ENT_QUOTES)."'>";
           echo "<input type='hidden' name='mensaje' value='".$tituloReporte."'>";

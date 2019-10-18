@@ -142,93 +142,102 @@ require_once ('head.php');
     ?>
     <br>
     <form id='frmEditarNodo' name='frmEditarNodo' method='post'>
-      <table name='tblEditarNodo' id='tblEditarNodo' class='tabla2'>
-        <caption>Formulario para la edici&oacute;n del nodo</caption>
-        <tr>
-          <th colspan='2' class='tituloTabla'>EDITAR NODO</th>
-        </tr>
-        
-        <?php
-        $i = 1;
-              
-        /// Recorro el array con los campos para ver cuales hay que mostrar y cuales no.
-        foreach ($camposNodos as $key => $value) {   
-          if ($camposNodos[$key]['mostrarEditar'] === 'si'){
-            $indice = $camposNodos[$key]['nombreDB'];
-            
-            switch ($indice){
-              case 'id': break;
-        
-              case 'nombre': echo "<tr>
-                                    <th class='text-left'>Nombre</th>
+      <div name='table-content' class='table-responsive'>
+        <table name='tblEditarNodo' id='tblEditarNodo' class='tabla2 table table-hover w-auto'>
+          <caption>Formulario para la edici&oacute;n del nodo</caption>
+          
+          <thead>
+            <tr>
+              <th colspan='2' scope='col' class='tituloTabla'>EDITAR NODO</th>
+            </tr>
+          </thead>
+          <?php
+          $i = 1;
+          
+          echo "<tbody>";
+          /// Recorro el array con los campos para ver cuales hay que mostrar y cuales no.
+          foreach ($camposNodos as $key => $value) {   
+            if ($camposNodos[$key]['mostrarEditar'] === 'si'){
+              $indice = $camposNodos[$key]['nombreDB'];
+
+              switch ($indice){
+                case 'id': break;
+
+                case 'nombre':  echo "<tr>
+                                        <th scope='row' class='text-left'>Nombre</th>
+                                        <td>
+                                          <input type='text' name='nombre' id='nombre' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el nombre.' value='".$datosMostrar[$indice]."'>
+                                          <input name='nombreOriginal' id='nombreOriginal' type='hidden' value='".$nombreOriginal."'>  
+                                        </td>
+                                    </tr>"; 
+                                break;
+                case 'localidad': echo "<tr>
+                                          <th scope='row' class='text-left'>Localidad</th>
+                                          <td>
+                                            <input type='text' name='localidad' id='localidad' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese la localidad.' value='".$datosMostrar[$indice]."'>
+                                            <input name='localidadOriginal' id='localidadOriginal' type='hidden' value='".$localidadOriginal."'>
+                                          </td>
+                                        </tr>"; 
+                                  break;  
+                case 'ip':  echo "<tr>
+                                    <th scope='row' class='text-left'>IP</th>
                                     <td>
-                                      <input type='text' name='nombre' id='nombre' class='agrandar' rows='5' placeholder='Ingrese el nombre.' value='".$datosMostrar[$indice]."'>
-                                      <input name='nombreOriginal' id='nombreOriginal' type='hidden' value='".$nombreOriginal."'>  
+                                      <input type='text' name='ip' id='ip' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese la IP.' value='".$datosMostrar[$indice]."'>
+                                      <input name='ipOriginal' id='ipOriginal' type='hidden' value='".$ipOriginal."'>
                                     </td>
                                   </tr>"; 
-                            break;
-              case 'localidad': echo "<tr>
-                                        <th class='text-left'>Localidad</th>
-                                        <td>
-                                          <input type='text' name='localidad' id='localidad' class='agrandar' rows='5' placeholder='Ingrese la localidad.' value='".$datosMostrar[$indice]."'>
-                                          <input name='localidadOriginal' id='localidadOriginal' type='hidden' value='".$localidadOriginal."'>
-                                        </td>
-                                      </tr>"; 
-                                break;  
-              case 'ip': echo "<tr>
-                                  <th class='text-left'>IP</th>
-                                  <td>
-                                    <input type='text' name='ip' id='ip' class='agrandar' rows='5' placeholder='Ingrese la IP.' value='".$datosMostrar[$indice]."'>
-                                    <input name='ipOriginal' id='ipOriginal' type='hidden' value='".$ipOriginal."'>
-                                  </td>
-                                </tr>"; 
-                          break; 
-              case 'areaMetro': if ($datosMostrar[$indice] === "1"){
-                                  $areaMetroMostrar = "SI";
-                                }
-                                else {
-                                  $areaMetroMostrar = "NO";
-                                }
-                                echo "<tr>
-                                        <th class='text-left'>&Aacute;rea Metro</th>
-                                        <td>
-                                          <input type='text' name='areaMetro' id='areaMetro' class='agrandar' rows='5' placeholder='Indique si el nodo pertenece a la zona metro.' value='".$areaMetroMostrar."'>
-                                          <input name='areaMetroOriginal' id='areaMetroOriginal' type='hidden' value='".$areaMetroOriginal."'>
-                                        </td>
-                                      </tr>"; 
-                                break;          
-              case 'tipo': echo "<tr>
-                                        <th class='text-left'>Tipo</th>
-                                        <td>
-                                          <input type='text' name='tipoNodo' id='tipoNodo' class='agrandar' rows='5' placeholder='Ingrese el tipo de dispositivo.' value='".$datosMostrar[$indice]."'>
-                                          <input name='tipoOriginal' id='tipoOriginal' type='hidden' value='".$tipoOriginal."'>
-                                        </td>
-                                      </tr>"; 
-                                break; 
-              case 'observaciones': echo "<tr>
-                                      <th class='text-left'>Observaciones</th>
+                            break; 
+                case 'areaMetro': if ($datosMostrar[$indice] === "1"){
+                                    $areaMetroMostrar = "SI";
+                                  }
+                                  else {
+                                    $areaMetroMostrar = "NO";
+                                  }
+                                  echo "<tr>
+                                          <th scope='row' class='text-left'>&Aacute;rea Metro</th>
+                                          <td>
+                                            <input type='text' name='areaMetro' id='areaMetro' class='agrandar form-control form-control-sm' rows='5' placeholder='Indique si el nodo pertenece a la zona metro.' value='".$areaMetroMostrar."'>
+                                            <input name='areaMetroOriginal' id='areaMetroOriginal' type='hidden' value='".$areaMetroOriginal."'>
+                                          </td>
+                                        </tr>"; 
+                                  break;          
+                case 'tipo':  echo "<tr>
+                                      <th scope='row' class='text-left'>Tipo</th>
                                       <td>
-                                        <input type='text' name='observaciones' id='observaciones' class='agrandar' rows='5' placeholder='Ingrese las obsevaciones.' value='".$datosMostrar[$indice]."'>
-                                        <input name='observacionesOriginal' id='observacionesOriginal' type='hidden' value='".$observacionesOriginal."'>
+                                        <input type='text' name='tipoNodo' id='tipoNodo' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el tipo de dispositivo.' value='".$datosMostrar[$indice]."'>
+                                        <input name='tipoOriginal' id='tipoOriginal' type='hidden' value='".$tipoOriginal."'>
                                       </td>
                                     </tr>"; 
-                                break;                 
-              case 'accion': break;                 
-              default: echo "<tr>
-                              <th class='text-left'>".$camposNodos[$key]['nombreMostrar']."</th>
-                              <td>".$datosMostrar[$indice]."</td>
-                            </tr>";                 
-            } /// Fin switch indice       
-          } /// Fin if si mostrarEditar 
-        } /// Fin foreach camposNodos
-        ?>
+                              break; 
+                case 'observaciones': echo "<tr>
+                                              <th scope='row' class='text-left'>Observaciones</th>
+                                              <td>
+                                                <input type='text' name='observaciones' id='observaciones' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese las obsevaciones.' value='".$datosMostrar[$indice]."'>
+                                                <input name='observacionesOriginal' id='observacionesOriginal' type='hidden' value='".$observacionesOriginal."'>
+                                              </td>
+                                            </tr>"; 
+                                      break;                 
+                case 'accion': break;                 
+                default: echo "<tr>
+                                <th scope='row' class='text-left'>".$camposNodos[$key]['nombreMostrar']."</th>
+                                <td>".$datosMostrar[$indice]."</td>
+                              </tr>";                 
+              } /// Fin switch indice       
+            } /// Fin if si mostrarEditar 
+          } /// Fin foreach camposNodos
+          ?>
+          </tbody>
         
-        <tr>
-          <td colspan='2' class='pieTabla'>
-            <input type='button' class='btn btn-sm btn-danger' name='btnEditarNodo' id='btnEditarNodo' value='EDITAR'>
-          </td>
-        </tr>
-      </table>
+          <tfoot>
+            <tr>
+              <td colspan='2' class='pieTabla'>
+                <input type='button' class='btn btn-sm btn-danger' name='btnEditarNodo' id='btnEditarNodo' value='EDITAR'>
+              </td>
+            </tr>
+          </tfoot>  
+          
+        </table>
+      </div>  
     <?php
       echo "<input type='hidden' name='idnodo' value=".$idnodo.">";
       echo "<input type='hidden' name='query' value='".htmlentities($consulta, ENT_QUOTES)."'>";

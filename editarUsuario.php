@@ -141,99 +141,108 @@ require_once ('head.php');
     ?>
     <br>
     <form id='frmEditarUsuario' name='frmEditarUsuario' method='post'>
-      <table name='tblEditarUsuario' id='tblEditarUsuario' class='tabla2'>
-        <caption>Formulario para la edici&oacute;n del usuario</caption>
-        <tr>
-          <th colspan='2' class='tituloTabla'>EDITAR USUARIO</th>
-        </tr>
-        
-        <?php
-        $i = 1;
-              
-        /// Recorro el array con los campos para ver cuales hay que mostrar y cuales no.
-        foreach ($camposUsuarios as $key => $value) {   
-          if ($camposUsuarios[$key]['mostrarEditar'] === 'si'){
-            $indice = $camposUsuarios[$key]['nombreDB'];
-            
-            switch ($indice){
-              case 'id': break;
-        
-              case 'nombre': echo "<tr>
-                                    <td class='enc'>Nombre</td>
-                                    <td>
-                                      <input type='text' name='nombre' id='nombre' class='agrandar' rows='5' placeholder='Ingrese el nombre.' value='".$datosMostrar[$indice]."'>
-                                      <input name='nombreOriginal' id='nombreOriginal' type='hidden' value='".$nombreOriginal."'>  
-                                    </td>
-                                  </tr>"; 
-                            break;
-              case 'apellido': echo "<tr>
-                                      <td class='enc'>Apellido</td>
+      <div name='table-content' class='table-responsive'>
+        <table id="tblEditarUsuario" name="tblEditarUsuario"  class='tabla2 table table-hover w-auto'>  
+          <caption>Formulario para la edici&oacute;n del usuario</caption>
+          
+          <thead>
+            <tr>
+              <th colspan='2' scope='col' class='tituloTabla'>EDITAR USUARIO</th>
+            </tr>
+          </thead>
+          <?php
+          $i = 1;
+
+          echo "<tbody>";
+          /// Recorro el array con los campos para ver cuales hay que mostrar y cuales no.
+          foreach ($camposUsuarios as $key => $value) {   
+            if ($camposUsuarios[$key]['mostrarEditar'] === 'si'){
+              $indice = $camposUsuarios[$key]['nombreDB'];
+
+              switch ($indice){
+                case 'id': break;
+
+                case 'nombre': echo "<tr>
+                                      <th scope='row' class='text-left'>Nombre</th>
                                       <td>
-                                        <input type='text' name='apellido' id='apellido' class='agrandar' rows='5' placeholder='Ingrese el apellido.' value='".$datosMostrar[$indice]."'>
-                                        <input name='apellidoOriginal' id='apellidoOriginal' type='hidden' value='".$apellidoOriginal."'>
+                                        <input type='text' name='nombre' id='nombre' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el nombre.' value='".$datosMostrar[$indice]."'>
+                                        <input name='nombreOriginal' id='nombreOriginal' type='hidden' value='".$nombreOriginal."'>  
                                       </td>
                                     </tr>"; 
-                                break;  
-              case 'tamPagina': if ($datosMostrar[$indice] === null){
-                                  $tamaPag = "No ingresado";
-                                }
-                                else {
-                                  $tamaPag = (int)$datosMostrar[$indice];
-                                }
-                                echo "<tr>
-                                      <td class='enc'>Tama&nacute;o de P&aacute;gina</td>
-                                      <td>
-                                        <input type='text' name='tamPaginaUser' id='tamPaginaUser' class='agrandar' rows='5' placeholder='Ingrese el tamaño para la p&aacute;gina.' value='".$tamaPag."'>
-                                        <input name='tamPaginaOriginal' id='tamPaginaOriginal' type='hidden' value='".$tamPaginaOriginal."'>
-                                      </td>
-                                    </tr>"; 
-                                break; 
-              case 'limiteSelects': if ($datosMostrar[$indice] === null){
-                                      $limite = "No ingresado";
-                                    }
-                                    else {
-                                      $limite = (int)$datosMostrar[$indice];
-                                    }
-                                    echo "<tr>
-                                      <td class='enc'>L&iacute;mite Selects</td>
-                                      <td>
-                                        <input type='text' name='limiteSelectsUser' id='limiteSelectsUser' class='agrandar' rows='5' placeholder='Ingrese el tama&nacute;o para los selects.' value='".$limite."'>
-                                        <input name='limiteSelectsOriginal' id='limiteSelectsOriginal' type='hidden' value='".$limiteSelectsOriginal."'>
-                                      </td>
-                                    </tr>"; 
-                                break; 
-              case 'appUser': echo "<tr>
-                                      <td class='enc'>Usuario en la App</td>
-                                      <td>
-                                        <input type='text' name='appUser' id='appUser' class='agrandar' rows='5' placeholder='Ingrese el nombre para el usuario de la app.' value='".$datosMostrar[$indice]."'>
-                                        <input name='appUserOriginal' id='appUserOriginal' type='hidden' value='".$appUserOriginal."'>
-                                      </td>
-                                    </tr>"; 
-                                break;  
-              case 'observaciones': echo "<tr>
-                                      <td class='enc'>Observaciones</td>
-                                      <td>
-                                        <input type='text' name='observaciones' id='observaciones' class='agrandar' rows='5' placeholder='Ingrese las obsevaciones.' value='".$datosMostrar[$indice]."'>
-                                        <input name='observacionesOriginal' id='observacionesOriginal' type='hidden' value='".$observacionesOriginal."'>
-                                      </td>
-                                    </tr>"; 
-                                break;                 
-              case 'accion': break;                 
-              default: echo "<tr>
-                              <td class='enc'>".$camposUsuarios[$key]['nombreMostrar']."</td>
-                              <td>".$datosMostrar[$indice]."</td>
-                            </tr>";                 
-            } /// Fin switch indice       
-          } /// Fin if si mostrarEditar 
-        } /// Fin foreach camposUsuarios
-        ?>
-        
-        <tr>
-          <td colspan='2' class='pieTabla'>
-            <input type='button' class='btn btn-danger' name='btnEditarUsuario' id='btnEditarUsuario' value='EDITAR'>
-          </td>
-        </tr>
-      </table>
+                              break;
+                case 'apellido': echo "<tr>
+                                        <th scope='row' class='text-left'>Apellido</th>
+                                        <td>
+                                          <input type='text' name='apellido' id='apellido' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el apellido.' value='".$datosMostrar[$indice]."'>
+                                          <input name='apellidoOriginal' id='apellidoOriginal' type='hidden' value='".$apellidoOriginal."'>
+                                        </td>
+                                      </tr>"; 
+                                  break;  
+                case 'tamPagina': if ($datosMostrar[$indice] === null){
+                                    $tamaPag = "No ingresado";
+                                  }
+                                  else {
+                                    $tamaPag = (int)$datosMostrar[$indice];
+                                  }
+                                  echo "<tr>
+                                          <th scope='row' class='text-left'>Tama&nacute;o de P&aacute;gina</th>
+                                          <td>
+                                            <input type='text' name='tamPaginaUser' id='tamPaginaUser' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el tamaño para la p&aacute;gina.' value='".$tamaPag."'>
+                                            <input name='tamPaginaOriginal' id='tamPaginaOriginal' type='hidden' value='".$tamPaginaOriginal."'>
+                                          </td>
+                                        </tr>"; 
+                                  break; 
+                case 'limiteSelects': if ($datosMostrar[$indice] === null){
+                                        $limite = "No ingresado";
+                                      }
+                                      else {
+                                        $limite = (int)$datosMostrar[$indice];
+                                      }
+                                      echo "<tr>
+                                              <th scope='row' class='text-left'>L&iacute;mite Selects</th>
+                                              <td>
+                                                <input type='text' name='limiteSelectsUser' id='limiteSelectsUser' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el tama&nacute;o para los selects.' value='".$limite."'>
+                                                <input name='limiteSelectsOriginal' id='limiteSelectsOriginal' type='hidden' value='".$limiteSelectsOriginal."'>
+                                              </td>
+                                            </tr>"; 
+                                  break; 
+                case 'appUser': echo "<tr>
+                                        <th scope='row' class='text-left'>Usuario en la App</th>
+                                        <td>
+                                          <input type='text' name='appUser' id='appUser' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el nombre para el usuario de la app.' value='".$datosMostrar[$indice]."'>
+                                          <input name='appUserOriginal' id='appUserOriginal' type='hidden' value='".$appUserOriginal."'>
+                                        </td>
+                                      </tr>"; 
+                                  break;  
+                case 'observaciones': echo "<tr>
+                                              <th scope='row' class='text-left'>Observaciones</th>
+                                              <td>
+                                                <input type='text' name='observaciones' id='observaciones' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese las obsevaciones.' value='".$datosMostrar[$indice]."'>
+                                                <input name='observacionesOriginal' id='observacionesOriginal' type='hidden' value='".$observacionesOriginal."'>
+                                              </td>
+                                            </tr>"; 
+                                  break;                 
+                case 'accion': break;                 
+                default: echo "<tr>
+                                <th scope='row' class='text-left'>".$camposUsuarios[$key]['nombreMostrar']."</th>
+                                <td>".$datosMostrar[$indice]."</td>
+                              </tr>";                 
+              } /// Fin switch indice       
+            } /// Fin if si mostrarEditar 
+          } /// Fin foreach camposUsuarios
+          ?>
+          </tbody>
+          
+          <tfoot>
+            <tr>
+              <td colspan='2' class='pieTabla'>
+                <input type='button' class='btn btn-danger' name='btnEditarUsuario' id='btnEditarUsuario' value='EDITAR'>
+              </td>
+            </tr>
+          </tfoot>
+          
+        </table>
+      </div>
     <?php
       echo "<input type='hidden' name='idusuario' value=".$idusuario.">";
       echo "<input type='hidden' name='query' value='".htmlentities($consulta, ENT_QUOTES)."'>";

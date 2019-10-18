@@ -189,8 +189,8 @@ $mensajeNuevo = '';
         echo "<form id='frmResultado' name='frmResultado' method='post'>";
         
         /// Comienzo tabla para mostrar la consulta:
-        echo "<div id='table-content' class='table-responsive'>";
-        echo "<table id='tblResultado' class='tabla2 table table-hover w-auto'>";
+        echo "<div name='table-content' class='table-responsive'>";
+        echo "<table id='tblResultado' name='tblResultado' class='tabla2 table table-hover w-auto'>";
         echo "<caption>Tabla con el resultado de la consulta</caption>";
         
         $i = $primerRegistro;
@@ -244,13 +244,13 @@ $mensajeNuevo = '';
           /// Extraigo tipo de alarma para poder resaltar en consecuencia:
           $tipoAlarma = $fila['tipoAlarma'];
           switch ($tipoAlarma) {
-            case 'CR': $clase = 'alCritica table-danger';
+            case 'CR': $clase = 'table-danger';
                        break;
             case 'MJ': $clase = 'alMajor';
                        break;
-            case 'MN': $clase = 'alMinor table-warning';
+            case 'MN': $clase = 'table-warning';
                        break;
-            case 'WR': $clase = 'alWarning table-info';
+            case 'WR': $clase = 'table-info';
                        break;    
             case 'NA': $clase = 'alNotAlarmed';
                        break; 
@@ -295,7 +295,9 @@ $mensajeNuevo = '';
                               else {
                                 $val = $fila['causa'];
                               }
-                              echo "<td><textarea name='causa' class='agrandar' placeholder='Causa' title='Causa posible' idalarma=".$fila['idalarma'].">".$val."</textarea></td>";
+                              echo "<td>";
+                              echo "  <textarea name='causa' class='agrandar md-textarea ".$clase."' placeholder='Causa' title='Causa posible' idalarma=".$fila['idalarma'].">".$val."</textarea>";
+                              echo "</td>";
                               break;
                 case 'solucion': if ($fila['solucion'] === ''){
                                     $val = '';  
@@ -303,7 +305,9 @@ $mensajeNuevo = '';
                                   else {
                                     $val = $fila['solucion'];
                                   }
-                                  echo "<td><textarea name='solucion' class='agrandar' placeholder='Solución' title='Solución posible' idalarma=".$fila['idalarma'].">".$val."</textarea></td>";
+                                  echo "<td>";
+                                  echo "  <textarea name='solucion' class='agrandar md-textarea ".$clase."' placeholder='Solucion' title='Solución posible' idalarma=".$fila['idalarma'].">".$val."</textarea>";
+                                  echo "</td>";
                                   break;
                 case 'estado':  if ($fila['estado'] === 'Sin procesar'){
                                   $claseEstado = "sinProcesar";
@@ -330,13 +334,17 @@ $mensajeNuevo = '';
           } /// Fin foreach camposAlarmas
           echo "</tr>";
         } /// Fin del procesamiento de las filas con datos
+        echo "</tbody>";
+        
+        echo "<tfoot>";
         echo "<tr>";
         echo "  <td class='pieTabla' colspan='$totalCamposMostrar'>";
-        echo "    <button type='button' id='btnActualizarBuscar' name='btnActualizar' class='btn blue accent-4 btn-md' value=''>Actualizar</button>";
+        echo "    <button type='button' id='btnActualizarBuscar' name='btnActualizar' class='btn blue accent-4 btn-md white-text' value=''>Actualizar</button>";
         echo "    <button type='button' id='btnExportarBuscar' name='btnExportar' class='btn btn-dark-green btn-md' value=''>Exportar</button>";
         echo "  </td>";
         echo "</tr>";
-        echo "</tbody>";
+        echo "</tfoot>";
+        
         echo "</table>";
 
         echo "<input type='hidden' name='query' id='query' value='".$consulta."'>";

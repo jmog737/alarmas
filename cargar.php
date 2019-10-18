@@ -290,13 +290,14 @@ require_once ('data/cargarArchivo.php');
             echo "<form id='frmCargar' name='frmCargar' method='post'>";
             /// Comienzo tabla para mostrar la consulta:
             /// Comienzo tabla para mostrar la consulta:
-            echo "<div id='table-content' class='table-responsive'>";
-            echo "<table class='tabla2 table table-hover w-auto'>";
+            echo "<div name='table-content' class='table-responsive'>";
+            echo "<table id='tblCargar' name='tblCargar' class='tabla2 table table-hover w-auto'>";
             echo "<caption>Tabla con las alarmas del nodo</caption>";
             $i = $primerRegistro;
             $totalCamposMostrar = 1;
             
             /// Muestro el encabezado:
+            echo "<thead>";
             echo "<tr>";
             foreach ($camposAlarmas as $key => $value) {   
               if ($camposAlarmas[$key]['mostrarListado'] === 'si'){
@@ -310,10 +311,11 @@ require_once ('data/cargarArchivo.php');
                     $clase = "class='tituloTablaDerecho'";
                   }
                 }
-                echo "<th $clase>".$camposAlarmas[$key]['nombreMostrar']."</th>";
+                echo "<th scope='row' $clase>".$camposAlarmas[$key]['nombreMostrar']."</th>";
               }
             } /// Fin foreach camposAlarmas para encabezados
             echo "</tr>";
+            echo "</thead>";
             /// Fin encabezados
             
 //            $keysAlarmas = array();
@@ -321,7 +323,7 @@ require_once ('data/cargarArchivo.php');
 //              $idalarma0 = $fila0['idalarma'];
 //              $keysAlarmas[] = $idalarma0;
 //            } /// Fin foreach datos para sacar los keys
-            
+            echo "<tbody>";
             /// Comienzo proceso de cada fila:
             foreach ($datos['resultado'] as $key1 => $fila ) {
               
@@ -376,7 +378,9 @@ require_once ('data/cargarArchivo.php');
                                   else {
                                     $val = $fila['causa'];
                                   }
-                                  echo "<td><textarea name='causa' class='agrandar' placeholder='Causa' title='Causa posible' idalarma=".$fila['idalarma'].">".$val."</textarea></td>";
+                                  echo "<td>";
+                                  echo "  <textarea name='causa' class='agrandar md-textarea ".$clase."' placeholder='Causa' title='Causa posible' idalarma=".$fila['idalarma'].">".$val."</textarea>";
+                                  echo "</td>";
                                   break;
                     case 'solucion': if ($fila['solucion'] === ''){
                                         $val = '';  
@@ -384,7 +388,9 @@ require_once ('data/cargarArchivo.php');
                                       else {
                                         $val = $fila['solucion'];
                                       }
-                                      echo "<td><textarea name='solucion' class='agrandar' placeholder='Solución' title='Solución posible' idalarma=".$fila['idalarma'].">".$val."</textarea></td>";
+                                      echo "<td>";
+                                      echo "  <textarea name='solucion' class='agrandar md-textarea ".$clase."' placeholder='Solución' title='Solución posible' idalarma=".$fila['idalarma'].">".$val."</textarea>";
+                                      echo "</td>";
                                       break;
                     case 'estado':  if ($fila['estado'] === 'Sin procesar'){
                                       $claseEstado = "sinProcesar";
@@ -404,7 +410,7 @@ require_once ('data/cargarArchivo.php');
                                     //$url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parKeysCodif;
                                     $url = "editarAlarma.php?".$parAlCodif.$parOrigen.$parConsulta.$paramCodif;
                                     //$parCod = base64_encode($url);//echo "url: ".$url."<br>url encoded: ".$parCod."<br>";
-                                    echo "<td><a href='".$url."' target='_blank'>Editar</a></td>";
+                                    echo "<td><a href='".$url."' role='button' class='btn btn-sm btn-info' target='_blank'>Editar</a></td>";
                                     break;         
                     default:  echo "<td>".$fila[$indice]."</td>";
                               break;
@@ -414,14 +420,19 @@ require_once ('data/cargarArchivo.php');
               
               echo "</tr>";
             } /// Fin del procesamiento de las filas con datos
+            echo "</tbody>";
             
+            echo "<tfoot>";
             echo "<tr>"
             . "     <td class='pieTabla' colspan='$totalCamposMostrar'>"
             . "       <input type='button' id='btnActualizarCargar' name='btnActualizar' class='btn btn-sm btn-danger' value='Actualizar'>"
             . "       <input type='button' id='btnExportarCargar' name='btnExportar' class='btn btn-sm btn-success' value='Exportar'>"
             . "     </td>"
             . "   </tr>";
+            echo "</tfoot>";
+            
             echo "</table>";
+            echo "</div>";
             
             echo "<input type='hidden' name='query' value='".$consulta."'>";
             echo "<input type='hidden' name='param' value='".$paramSerial."'>";
@@ -474,7 +485,6 @@ require_once ('data/cargarArchivo.php');
               $paginas .= '</div><br>';
               echo $paginas;
             }
-            echo "</div>";
             ///************************************************** FIN paginación *****************************************************************
           } /// Fin if totalFilas > 0
           else {

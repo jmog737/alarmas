@@ -96,12 +96,15 @@ require_once ('head.php');
           
           echo "<form id='frmNodos' name='frmNodos' method='post' action='editarNodo.php'>";
           /// Comienzo tabla para mostrar los usuarios:
-          echo "<table class='table tabla2'>";
+          echo "<div name='table-content' class='table-responsive'>";
+          echo "<table id='tblNodos' name='tblNodos'  class='tabla2 table table-hover w-auto'>";
           echo "<caption>Listado de nodos.</caption>";
+          
           $i = $primerRegistro;
           $totalCamposMostrar = 1;
             
           /// Muestro el encabezado:
+          echo "<thead>";
           echo "<tr>";
           foreach ($camposNodos as $key => $value) {   
             if ($camposNodos[$key]['mostrarListado'] === 'si'){
@@ -115,15 +118,17 @@ require_once ('head.php');
                   $clase = "class='tituloTablaDerecho'";
                 }
               }
-              echo "<th $clase>".$camposNodos[$key]['nombreMostrar']."</th>";
+              echo "<th scope='row' $clase>".$camposNodos[$key]['nombreMostrar']."</th>";
             }
           } /// Fin foreach camposAlarmas para encabezados
           echo "</tr>";
+          echo "</thead>";
           /// Fin encabezados
             
+          echo "<tbody>";
           /// Comienzo proceso de cada fila:
           foreach ($nodos as $key1 => $fila ) {
-            echo "<tr class='".$clase."'>";
+            echo "<tr class='table-warning'>";
 
             $idnodo = $fila['idnodo'];
 
@@ -144,7 +149,7 @@ require_once ('head.php');
                                   echo "<td><a href='".$url."' class='btn btn-sm btn-info' role='button' target='_blank'>Editar</a></td>";
                                   break;    
                   case 'nombre':
-                  case 'localidad': echo "<td nowrap>".$fila[$indice]."</td>";
+                  case 'localidad': echo "<td nowrap class='text-left'>".$fila[$indice]."</td>";
                                     break;
 //                  case 'ip':  echo "<td><a href='$fila[$indice]' target='_blank'>$fila[$indice]</a></td>";      
 //                              break;
@@ -156,10 +161,19 @@ require_once ('head.php');
 
             echo "</tr>";
           } /// Fin del procesamiento de las filas con datos
-
-          echo "<tr><td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarNodos' name='btnExportar'><input type='button' class='btn btn-sm btn-success' value='Exportar'></td></tr>";
+          echo "</tbody>";
+          
+          echo "<tfoot>";
+          echo "  <tr>";
+          echo "    <td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarNodos' name='btnExportar'>";
+          echo "      <input type='button' class='btn btn-sm btn-success' value='Exportar'>";
+          echo "    </td>";
+          echo "  </tr>";
+          echo "</tfoot>";
+          
           echo "</table>";
-
+          echo "</div>";
+          
           echo "<input type='hidden' name='query' value='".$consulta."'>";
           echo "<input type='hidden' name='mensaje' value='".$tituloReporte."'>";
           echo "<input type='hidden' name='offset' id='offset' value=''>";

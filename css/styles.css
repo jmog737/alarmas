@@ -286,6 +286,7 @@ hr {
 .tituloTabla {
   border-radius: 25px 25px 0 0;
   text-align: center;
+  font-weight: 800 !important;
 }
 .pieTabla {
   border-radius: 0 0 25px 25px;
@@ -365,6 +366,7 @@ hr {
   max-width: 100%;
   text-align: center;
   padding: 5px !important;
+  font-weight: 700;
 }
 .tabla2 tr {
   border: #c0c0c0 1px solid;
@@ -401,33 +403,29 @@ hr {
   padding: 0px;
 }
 .tabla2 textarea {
-/*  border: #c0c0c0 1px solid;
-  border-collapse: separate;
-  text-align: center;
-  padding: 0px;
-  background-color: #ffffac;
-  min-height: 80px;
-  max-width: 100px;
-box-sizing: border-box;*/
 	overflow: hidden;
 	box-sizing: border-box; 
   border: 0px;
-  max-width: 110px;
+  max-width: 120px;
 }
 
 .tabla2 .subTituloTabla1 {
   background-color:#57805e;
   background-color: #28ce44;
   text-align: center;
-  color: #071c40;
+/*  color: #071c40;*/
+  color: #ffffff;
+  font-weight: 800;
   /*font-size: 10pt;*/
 }
 .tabla2 .subTituloTabla2 {
   background-color:#9fadea;
   background-color: #f5d684;
   text-align: center;
-  color: #071c40;
+  /*  color: #071c40;*/
+  color: #ffffff;
   font-size: 10pt;
+  font-weight: 800;
 }
 
 .tabla2 .enc {
@@ -462,18 +460,22 @@ box-sizing: border-box;*/
   color:#ffffff;
 }
 
+
+/***************************************************************************************************/
 /* NUEVOS ESTILOS MDB */
-#table-content {
+div[name=table-content] {
   width: 99%;
   margin: auto;
   padding: 0px;
 }
-
 table.table td{
   padding: 0px;
 }
-table.table tr textArea{
+table.table textArea{
   border: 0px;
+  min-width: 100px;
+  padding: 0px;
+  margin: 0px;
 }
 table.dataTable thead .sorting:after,
 table.dataTable thead .sorting:before,
@@ -487,14 +489,19 @@ table.dataTable thead .sorting_desc_disabled:after,
 table.dataTable thead .sorting_desc_disabled:before {
 bottom: .8em;
 }
+/***************************************************************************************************/
+
 /******************************* FIN TABLAS ***********************************/
 
 /************************************ ALARMAS *********************************/
 .alCritica {
-  background-color:#fd5151;
+  background-color:#f5c6cb;
 }
 .alMajor {
   background-color:#ffa929;
+}
+.table-hover .alMajor:hover {
+  background-color:#ff7609;
 }
 .alMinor {
   background-color:#ffff7c;
@@ -514,6 +521,7 @@ bottom: .8em;
 .sinProcesar {
   background-color:#f7ff00 !important;
 }
+
 /****************************** FIN ALARMAS ***********************************/
 
 .btn {

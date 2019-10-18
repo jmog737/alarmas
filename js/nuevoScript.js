@@ -73,10 +73,10 @@ function showHint(str, id, seleccionado) {
       var unico = '';
       if (totalSugerencias >= 1) {
         if ((parseInt($("#productoGrafica").length, 10) > 0)||(parseInt($("#producto").length, 10) > 0)){
-          mostrar = '<select name="hint" id="hint" class="hint" size="15">';
+          mostrar = '<select name="hint" id="hint" class="hint custom-select-sm custom-select" size="15">';
         }
         else {
-          mostrar = '<select name="hint" id="hint" class="hint" multiple size="15">';
+          mostrar = '<select name="hint" id="hint" class="hint custom-select-sm custom-select" multiple size="15">';
         }
         if (totalSugerencias > 1) {
           mostrar += '<option value="NADA" name="NADA">--Seleccionar--</option>';
@@ -877,7 +877,7 @@ function validarBusqueda(){
  */
 function resizeTextArea() { 
   $("textarea").each(function(){
-    $(this).height($(this).closest("td").height()-4);
+    $(this).height($(this).closest("tr").height()-4);
   });
 }
 /********** fin resizeTextArea() **********/
@@ -1613,6 +1613,7 @@ $(document).ready(function(){
 //    "scrollX": true
 //  });
 //  $('.dataTables_length').addClass('bs-select');
+//$('.mdb-select').materialSelect();
 });
 /********** fin on("ready", todo()) **********/
 
