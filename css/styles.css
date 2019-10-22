@@ -205,7 +205,7 @@ a.detailObject:focus, a.detailObject:hover {
   width: 100%;
   background-color: #023184;
  position: absolute;
-/*  position: fixed;*/
+  /*position: fixed;*/
   height: 110px;
 }
 .panel-footer div.row {
@@ -410,8 +410,9 @@ hr {
 }
 
 .tabla2 .subTituloTabla1 {
-  background-color:#57805e;
   background-color: #28ce44;
+  background-color: #88b38f;
+  background-color:#77bd82;
   text-align: center;
 /*  color: #071c40;*/
   color: #ffffff;
@@ -460,7 +461,6 @@ hr {
   color:#ffffff;
 }
 
-
 /***************************************************************************************************/
 /* NUEVOS ESTILOS MDB */
 div[name=table-content] {
@@ -499,6 +499,7 @@ bottom: .8em;
 }
 .alMajor {
   background-color:#ffa929;
+  background-color: #ffbb55;
 }
 .table-hover .alMajor:hover {
   background-color:#ff7609;
@@ -731,12 +732,12 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 }
 
 /******************************** MODAL **************************************/
-.tituloModal {
+/*.tituloModal {
   background-color: #023184;
 }
 .tblModal {
   color: #000;
-}
+}*/
 
 #modalExportar .modal-header {
   background-color: #e44040;

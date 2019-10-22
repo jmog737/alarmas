@@ -127,7 +127,7 @@ require_once ('head.php');
           echo "<tbody>";
           /// Comienzo proceso de cada fila:
           foreach ($usuarios as $key1 => $fila ) {
-            echo "<tr class='table-success'>";
+            echo "<tr class='table-info'>";
 
             $idusuario = $fila['idusuario'];
 
@@ -177,7 +177,7 @@ require_once ('head.php');
           echo "<tfoot>";
           echo "  <tr>";
           echo "    <td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarUsuarios' name='btnExportar'>";
-          echo "      <input type='button' class='btn btn-success btn-sm' value='Exportar'>";
+          echo "      <input type='button' class='btn btn-dark-green btn-sm' value='Exportar'>";
           echo "    </td>";
           echo "  </tr>";
           echo "</tfoot>";

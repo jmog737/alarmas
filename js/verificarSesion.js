@@ -8,7 +8,6 @@ function verificarSesion(mensaje, cookie) {
   if (mensaje !== ''){ 
     const dateTime = Date.now();
     const tiempo = Math.floor(dateTime / 1000);
-    //alert(mensaje+': '+tiempo);
   }
   else {
     mensaje = 'XXX';
@@ -88,20 +87,14 @@ function verificarSesion(mensaje, cookie) {
             }
           }  
         }
-        //alert('Motivo: '+user+'\n'+usuarioViejo.toUpperCase()+":\nTú sesión ha estado inactiva por más de "+mostrarSesion+"\nPor favor, por seguridad, ¡vuelve a loguearte!.\n\ntiempo seteado: "+oldTime+'\nactual: '+temp+'\n\nDuración Sesión: '+duracionSesion+'s\nmensaje: '+mensaje);
         alert(usuarioViejo.toUpperCase()+":\n\nTú sesión ha estado inactiva por más de "+mostrarSesion+"\nPor favor, por seguridad, ¡vuelve a loguearte!.\n\n"+'Motivo: '+user+"\nTiempo seteado: "+oldTime+'\nTiempo actual: '+temp);
         window.location.assign("salir.php");
       }
       else {
-//        $("#usuarioSesion").val(user);
-//        $("#userID").val(user_id);
-//        $("#timestampSesion").val(timestamp);
 //        $("#main-content").focus();
-        //alert('¡Actualicé!\n\nTiempo viejo: '+oldTime+'\nNuevo tiempo: '+temp+'\n\nDuración Sesión: '+duracionSesion+'\nmensaje: '+mensaje+'\n\nsesion: '+sesion+'\nDesde: '+window.location.href);
-        
-        document.getElementById("usuarioSesion").valueOf(user);
-        document.getElementById("userID").valueOf(user_id);
-        document.getElementById("timestampSesion").valueOf(timestamp);
+        document.getElementById("usuarioSesion").value = user;
+        document.getElementById("userID").value = user_id;
+        document.getElementById("timestampSesion").value = timestamp;
       }
     }
   };

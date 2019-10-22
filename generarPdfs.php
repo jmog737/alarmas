@@ -32,6 +32,11 @@ class PDF extends PDF_MC_Table
     {
     global $fecha, $hora, $tituloHeader, $x, $marcaAgua, $textoMarcaAgua, $orientacion;
     
+    //Defino color para el borde de la página:
+    $this->SetDrawColor(0, 0, 0);
+    //Defino grosor de los bordes:
+    $this->SetLineWidth(.35);
+    
     $anchoPage = $this->GetPageWidth();
     $anchoDia = 20;
     $xLogo = 2;
@@ -141,20 +146,37 @@ class PDF extends PDF_MC_Table
     /// Defino un ancho máximo para la tabla cosa de no llegar a los extremos:
     $anchoTabla = 0.9*$tamPagina;
        
-    //Defino color para los bordes:
-    $this->SetDrawColor(0, 0, 0);
+    //Defino color para los bordes de la tabla:
+    //$this->SetDrawColor(0, 0, 0);
+    //$this->SetDrawColor(171, 166, 166);
+    $this->SetDrawColor(255, 255, 255);
     //Defino grosor de los bordes:
-    $this->SetLineWidth(.3);
+    $this->SetLineWidth(.55);
+    $this->SetAutoPageBreak(true, $hFooter);
     
     ///***************************************************************** TITULO **************************************************************
     /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
-    $this->SetFont('Courier', 'BU', 14);
+    $tamTitulo = 18;
+    $tamTituloMinimo = 13;
+    $this->SetFont('Courier', 'BU', $tamTitulo);
     $this->SetTextColor(colorTituloReporte[0], colorTituloReporte[1], colorTituloReporte[2]);
     
     $xTituloReporte = round((($tamPagina-$anchoTitulo)/2), 2);
     $this->SetX($xTituloReporte);
     
-    $nbTitulo = $this->NbLines($anchoTitulo, $tituloReporte);
+    //$nbTitulo = $this->NbLines($anchoTitulo, $tituloReporte);
+    $seguirTitulo = true;
+    while ($seguirTitulo === true){
+      $nbTitulo = $this->NbLines($anchoTitulo, $tituloReporte);
+      if (($nbTitulo > 1)&&($tamTitulo > $tamTituloMinimo)){
+        $tamTitulo--;
+        $this->SetFont('Courier', 'BU', $tamTitulo);
+      }
+      else {
+        $seguirTitulo = false;
+      }
+    }
+    
     $hTituloMulti=$hTitulo/$nbTitulo;
 
     if ($nbTitulo > 1) {
@@ -265,7 +287,7 @@ class PDF extends PDF_MC_Table
       ///******************** FIN Cálculo del alto de la fila *******************************************************************************
       
       ///*************************************** ENCABEZADO DE PÁGINA (pageBreak) ***********************************************************
-      if($this->GetY()+$h0>$this->PageBreakTrigger){
+      if($this->GetY()+$h0+0.58>$this->PageBreakTrigger){
         $this->AddPage($this->CurOrientation);
         $this->SetAutoPageBreak(true, $hFooter);
         ///****************************************************** TITULO (pageBreak) ********************************************************
@@ -301,7 +323,8 @@ class PDF extends PDF_MC_Table
         $this->SetTextColor(0); 
         ///******************************************** FIN CAMPOS TABLA (pageBreak) *********************************************************
       }
-      ///*************************************** FIN ENCABEZADO DE PÁGINA (pageBreak) ********************************************************
+      ///*************************************** FIN ENCABEZADO DE PÁGINA (pageBreak) *******************************************************
+      
       $this->SetTextColor(colorRegistrosTexto[0], colorRegistrosTexto[1], colorRegistrosTexto[2]);
       $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
       
@@ -327,31 +350,52 @@ class PDF extends PDF_MC_Table
           $x1=$this->GetX();
           $y=$this->GetY();
       
-          if ($campo['nombreDB'] === 'tipoAlarma'){
-            $fillAnterior = $fill;
-            $fill = true;
-            $tipoAlarma = $fila['tipoAlarma'];
-            switch ($tipoAlarma){
-              case 'MN':  $this->setFillColor(colorAlarmaMNFondo[0], colorAlarmaMNFondo[1], colorAlarmaMNFondo[2]);
-                          break;
-              case 'CR':  $this->setFillColor(colorAlarmaCRFondo[0], colorAlarmaCRFondo[1], colorAlarmaCRFondo[2]);
-                          break;
-              case 'MJ':  $this->setFillColor(colorAlarmaMJFondo[0], colorAlarmaMJFondo[1], colorAlarmaMJFondo[2]);
-                          break;
-              case 'WR':  $this->setFillColor(colorAlarmaWRFondo[0], colorAlarmaWRFondo[1], colorAlarmaWRFondo[2]);
-                          break;
-              case 'NA':  $this->setFillColor(colorAlarmaNAFondo[0], colorAlarmaNAFondo[1], colorAlarmaNAFondo[2]);
-                          break;
-              case 'NR':  $this->setFillColor(colorAlarmaNRFondo[0], colorAlarmaNRFondo[1], colorAlarmaNRFondo[2]);
-                          break;          
-              default:  $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+          $tipoAlarma = $fila['tipoAlarma'];
+          switch ($tipoAlarma){
+            case 'MN':  $this->setFillColor(colorAlarmaMNFondo[0], colorAlarmaMNFondo[1], colorAlarmaMNFondo[2]);
                         break;
-            }
-          }
-          else {
-            $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+            case 'CR':  $this->setFillColor(colorAlarmaCRFondo[0], colorAlarmaCRFondo[1], colorAlarmaCRFondo[2]);
+                        break;
+            case 'MJ':  $this->setFillColor(colorAlarmaMJFondo[0], colorAlarmaMJFondo[1], colorAlarmaMJFondo[2]);
+                        break;
+            case 'WR':  $this->setFillColor(colorAlarmaWRFondo[0], colorAlarmaWRFondo[1], colorAlarmaWRFondo[2]);
+                        break;
+            case 'NA':  $this->setFillColor(colorAlarmaNAFondo[0], colorAlarmaNAFondo[1], colorAlarmaNAFondo[2]);
+                        break;
+            case 'NR':  $this->setFillColor(colorAlarmaNRFondo[0], colorAlarmaNRFondo[1], colorAlarmaNRFondo[2]);
+                        break;          
+            default:  $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+                      break;
           }
           
+          /// Comento para poner el fondo en toda la línea y no solo en el campo tipoAlarma:
+//          if ($campo['nombreDB'] === 'tipoAlarma'){
+//            $fillAnterior = $fill;
+//            $fill = true;
+//            $tipoAlarma = $fila['tipoAlarma'];
+//            switch ($tipoAlarma){
+//              case 'MN':  $this->setFillColor(colorAlarmaMNFondo[0], colorAlarmaMNFondo[1], colorAlarmaMNFondo[2]);
+//                          break;
+//              case 'CR':  $this->setFillColor(colorAlarmaCRFondo[0], colorAlarmaCRFondo[1], colorAlarmaCRFondo[2]);
+//                          break;
+//              case 'MJ':  $this->setFillColor(colorAlarmaMJFondo[0], colorAlarmaMJFondo[1], colorAlarmaMJFondo[2]);
+//                          break;
+//              case 'WR':  $this->setFillColor(colorAlarmaWRFondo[0], colorAlarmaWRFondo[1], colorAlarmaWRFondo[2]);
+//                          break;
+//              case 'NA':  $this->setFillColor(colorAlarmaNAFondo[0], colorAlarmaNAFondo[1], colorAlarmaNAFondo[2]);
+//                          break;
+//              case 'NR':  $this->setFillColor(colorAlarmaNRFondo[0], colorAlarmaNRFondo[1], colorAlarmaNRFondo[2]);
+//                          break;          
+//              default:  $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+//                        break;
+//            }
+//          }
+//          else {
+//            //$this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+//          }
+        
+          /// Fuerzo fill a true para poner el fondo en toda la línea y no solo en el campo tipoAlarma:
+          $fill = true;
           $f = ($fill) ? 'F' : '';
           //Draw the border
           $this->Rect($x1,$y,$anchoCampo,$h0, $f);
@@ -364,6 +408,7 @@ class PDF extends PDF_MC_Table
           else {
             $this->MultiCell($anchoCampo, $h0, $datito,1, $a, $fill);
           } 
+          
           if ($campo['nombreDB'] === 'tipoAlarma'){
             $fill = $fillAnterior;
           }
@@ -386,6 +431,7 @@ class PDF extends PDF_MC_Table
     ///Agrego el rectángulo con el borde redondeado:
     $this->RoundedRect($xTabla, $y, $anchoTabla, $h, 3.5, '34', 'DF');
     ///***************************************************** FIN BORDE REDONDEADO DE CIERRE *************************************************
+    //
     ///********************************************************* FIN TABLA ******************************************************************
   }
   
@@ -393,7 +439,8 @@ class PDF extends PDF_MC_Table
   function armarTablaNodos(){
     global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $camposNodos;
     
-    $hTitulo = 14;
+    $this->SetAutoPageBreak(true, $hFooter);
+    $hTitulo = 18;
     $tamPagina = $this->GetPageWidth();
     /// Defino un ancho máximo para el título cosa de no llegar a los extremos:
     $anchoTitulo = 0.80*$tamPagina;
@@ -402,9 +449,9 @@ class PDF extends PDF_MC_Table
     $anchoTabla = 0.9*$tamPagina;
        
     //Defino color para los bordes:
-    $this->SetDrawColor(0, 0, 0);
+    $this->SetDrawColor(255, 255, 255);
     //Defino grosor de los bordes:
-    $this->SetLineWidth(.3);
+    $this->SetLineWidth(.55);
     
     ///***************************************************************** TITULO **************************************************************
     /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
@@ -468,10 +515,11 @@ class PDF extends PDF_MC_Table
     ///********************************************************* COMIENZO DATOS **************************************************************
     $this->SetTextColor(colorRegistrosTexto[0], colorRegistrosTexto[1], colorRegistrosTexto[2]);
     $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+//    $this->setFillColor(colorAlarmaMNFondo[0], colorAlarmaMNFondo[1], colorAlarmaMNFondo[2]);
     $this->SetFont('Courier', '', 9);
     $fill = 1;
     $fillAnterior = $fill;
-    $a = 'C';
+    $a = 'L';
     $this->Ln();
     $this->SetX($xTabla);
 //    if ($nombreNodo === 'TODOS'){
@@ -491,18 +539,20 @@ class PDF extends PDF_MC_Table
             $dat = trim(utf8_decode($fila[$datoCampo['nombreDB']]));
             $tamDat = $this->GetStringWidth($dat);
             $w1 = (($datoCampo['tam']*$anchoTabla)/$tamTablaCampos);
-            $nb=max($nb,$this->NbLines($w1,$dat)); 
+            $nb = max($nb,$this->NbLines($w1,$dat)); 
           }    
         }
       }
       $h0=$h*$nb;
-      ///******************** FIN Cálculo del alto de la fila *******************************************************************************
+      ///******************** FIN Cálculo del alto de la fila ********************************************************************************
       
-      ///*************************************** ENCABEZADO DE PÁGINA (pageBreak) ***********************************************************
-      if($this->GetY()+$h0>$this->PageBreakTrigger){
+      ///*************************************** ENCABEZADO DE PÁGINA (pageBreak) ************************************************************
+      ///Se agrega el 0,58 para contemplar el ancho del borde:
+      if($this->GetY()+$h0+0.58>$this->PageBreakTrigger){
         $this->AddPage($this->CurOrientation);
         $this->SetAutoPageBreak(true, $hFooter);
         ///****************************************************** TITULO (pageBreak) ********************************************************
+        
         /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
         $this->SetFont('Courier', 'BU', $hTitulo);
         $this->SetX($xTituloReporte);
@@ -536,8 +586,9 @@ class PDF extends PDF_MC_Table
         ///******************************************** FIN CAMPOS TABLA (pageBreak) *********************************************************
       }
       ///*************************************** FIN ENCABEZADO DE PÁGINA (pageBreak) ********************************************************
+      
       $this->SetTextColor(colorRegistrosTexto[0], colorRegistrosTexto[1], colorRegistrosTexto[2]);
-      $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+      //$this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
       
       foreach ($camposNodos as $ind0 => $campo){
         if ($campo['mostrarReporte'] === 'si'){
@@ -545,6 +596,7 @@ class PDF extends PDF_MC_Table
           
           switch ($campo['nombreDB']){
             case 'id':  $datito = $j;
+                        $a = 'C';
                         break;
             case 'areaMetro': if ($fila[$campo['nombreDB']] === "1"){
                                 $datito = "SI";
@@ -552,8 +604,13 @@ class PDF extends PDF_MC_Table
                               else {
                                 $datito = "NO";
                               }
-                              break;                 
+                              $a = 'C';
+                              break;   
+            case 'tipo':  $a = 'C';   
+                          $datito = trim(utf8_decode(html_entity_decode($fila[$campo['nombreDB']])));
+                          break;
             default:  $datito = trim(utf8_decode(html_entity_decode($fila[$campo['nombreDB']])));
+                      $a = 'L';
                       break;
           }
           
@@ -565,6 +622,11 @@ class PDF extends PDF_MC_Table
           $y=$this->GetY();
       
           $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+          
+          /// Agregado nuevo color para el fondo de TODOS los registros:
+          $this->setFillColor(colorAlarmaMNFondo[0], colorAlarmaMNFondo[1], colorAlarmaMNFondo[2]);
+          $fill = true;
+          /// Fin agregado
           
           $f = ($fill) ? 'F' : '';
           //Draw the border
@@ -614,7 +676,7 @@ class PDF extends PDF_MC_Table
   function armarTablaUsuarios(){
     global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $camposUsuarios;
     
-    $hTitulo = 14;
+    $hTitulo = 18;
     $tamPagina = $this->GetPageWidth();
     /// Defino un ancho máximo para el título cosa de no llegar a los extremos:
     $anchoTitulo = 0.80*$tamPagina;
@@ -623,9 +685,13 @@ class PDF extends PDF_MC_Table
     $anchoTabla = 0.9*$tamPagina;
        
     //Defino color para los bordes:
-    $this->SetDrawColor(0, 0, 0);
+//    $this->SetDrawColor(0, 0, 0);
+//    //Defino grosor de los bordes:
+//    $this->SetLineWidth(.3);
+    $this->SetDrawColor(255, 255, 255);
     //Defino grosor de los bordes:
-    $this->SetLineWidth(.3);
+    $this->SetLineWidth(.55);
+    $this->SetAutoPageBreak(true, $hFooter);
     
     ///***************************************************************** TITULO **************************************************************
     /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
@@ -718,7 +784,7 @@ class PDF extends PDF_MC_Table
       ///******************** FIN Cálculo del alto de la fila *******************************************************************************
       
       ///*************************************** ENCABEZADO DE PÁGINA (pageBreak) ***********************************************************
-      if($this->GetY()+$h0>$this->PageBreakTrigger){
+      if($this->GetY()+$h0+0.58>$this->PageBreakTrigger){
         $this->AddPage($this->CurOrientation);
         $this->SetAutoPageBreak(true, $hFooter);
         ///****************************************************** TITULO (pageBreak) ********************************************************
@@ -764,6 +830,7 @@ class PDF extends PDF_MC_Table
           
           switch ($campo['nombreDB']){
             case 'id':  $datito = $j;
+                        $a = 'C';
                         break;
             case 'tamPagina':
             case 'limiteSelects': if ($fila[$campo['nombreDB']] === NULL){
@@ -772,8 +839,10 @@ class PDF extends PDF_MC_Table
                                   else {
                                     $datito = $fila[$campo['nombreDB']];
                                   }
+                                  $a = 'C';
                                   break;
             default:  $datito = trim(utf8_decode(html_entity_decode($fila[$campo['nombreDB']])));
+                      $a = 'C';
                       break;
           }
           
@@ -784,7 +853,11 @@ class PDF extends PDF_MC_Table
           $x1=$this->GetX();
           $y=$this->GetY();
       
-          $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+//          $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);
+          /// Agregado nuevo color para el fondo de TODOS los registros:
+          $this->setFillColor(colorAlarmaWRFondo[0], colorAlarmaWRFondo[1], colorAlarmaWRFondo[2]);
+          $fill = true;
+          /// Fin agregado
           
           $f = ($fill) ? 'F' : '';
           //Draw the border

@@ -166,7 +166,7 @@ require_once ('head.php');
           echo "<tfoot>";
           echo "  <tr>";
           echo "    <td class='pieTabla' colspan='$totalCamposMostrar' id='btnExportarNodos' name='btnExportar'>";
-          echo "      <input type='button' class='btn btn-sm btn-success' value='Exportar'>";
+          echo "      <input type='button' class='btn btn-sm btn-dark-green' value='Exportar'>";
           echo "    </td>";
           echo "  </tr>";
           echo "</tfoot>";

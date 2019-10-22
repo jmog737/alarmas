@@ -236,7 +236,7 @@ require_once ('head.php');
           <tfoot>
             <tr>
               <td colspan='2' class='pieTabla'>
-                <input type='button' class='btn btn-danger' name='btnEditarUsuario' id='btnEditarUsuario' value='EDITAR'>
+                <input type='button' class='btn btn-sm btn-blue accent-4' name='btnEditarUsuario' id='btnEditarUsuario' value='EDITAR'>
               </td>
             </tr>
           </tfoot>

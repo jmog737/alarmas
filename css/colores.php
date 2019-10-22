@@ -33,32 +33,44 @@ define("colorTextoLegal", array(234, 229, 227));
 define("colorTituloReporte", array(255, 0, 0));
 
 ///Color Título de la tabla:
+//define("colorTituloTablaTexto", array(255, 255, 255));
+//define("colorTituloTablaFondo", array(2, 49, 136));
 define("colorTituloTablaTexto", array(255, 255, 255));
-define("colorTituloTablaFondo", array(2, 49, 136));
+//define("colorTituloTablaFondo", array(23, 162, 184));
+define("colorTituloTablaFondo", array(69, 169, 85));
 
 ///Color Subtítulo:
 define("colorSubtitulo", array(134, 144, 144));
 
 ///Color SubtítuloTabla:
-define("colorSubtituloTablaTexto", array(255, 0, 0));
-define("colorSubtituloTablaFondo", array(40, 206, 68));
+//define("colorSubtituloTablaTexto", array(255, 0, 0));
+//define("colorSubtituloTablaFondo", array(40, 206, 68));
+define("colorSubtituloTablaTexto", array(255, 255, 255));
+//define("colorSubtituloTablaFondo", array(136, 179, 143));
+define("colorSubtituloTablaFondo", array(119, 189, 130));
 
 ///Borde redondeado intermedio:
 define("colorBordeRedondeado", array(157, 176, 243));
 
 ///Color Campos:
-define("colorCamposFondo", array(0, 176, 243));
-define("colorCamposTexto", array(255, 255, 255));
+//define("colorCamposFondo", array(0, 176, 243));
+//define("colorCamposTexto", array(255, 255, 255));
+define("colorCamposFondo", array(23, 162, 184));
+define("colorCamposTexto", array(255, 255, 0));
 
 ///Color Registros:
 define("colorRegistrosTexto", array(0, 0, 0));
 define("colorRegistrosFondo", array(220, 223, 232));
 
 ///Colores para los tipos de alarma:
-define("colorAlarmaMNFondo", array(255, 255, 124));
-define("colorAlarmaMJFondo", array(255, 169, 41));
-define("colorAlarmaCRFondo", array(253, 81, 81));
-define("colorAlarmaWRFondo", array(117, 236, 236));
+//define("colorAlarmaMNFondo", array(255, 255, 124));
+//define("colorAlarmaMJFondo", array(255, 169, 41));
+//define("colorAlarmaCRFondo", array(253, 81, 81));
+//define("colorAlarmaWRFondo", array(117, 236, 236));
+define("colorAlarmaMNFondo", array(255, 238, 186));
+define("colorAlarmaMJFondo", array(255, 187, 85));
+define("colorAlarmaCRFondo", array(245, 198, 203));
+define("colorAlarmaWRFondo", array(190, 229, 235));
 define("colorAlarmaNAFondo", array(159, 182, 133));
 define("colorAlarmaNRFondo", array(153, 153, 153));
 

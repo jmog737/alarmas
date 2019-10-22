@@ -151,6 +151,7 @@ require_once ('head.php');
               <th colspan='2' scope='col' class='tituloTabla'>EDITAR NODO</th>
             </tr>
           </thead>
+          
           <?php
           $i = 1;
           
@@ -231,13 +232,14 @@ require_once ('head.php');
           <tfoot>
             <tr>
               <td colspan='2' class='pieTabla'>
-                <input type='button' class='btn btn-sm btn-danger' name='btnEditarNodo' id='btnEditarNodo' value='EDITAR'>
+                <input type='button' class='btn btn-sm btn-blue accent-4' name='btnEditarNodo' id='btnEditarNodo' value='EDITAR'>
               </td>
             </tr>
           </tfoot>  
           
         </table>
-      </div>  
+      </div>
+     
     <?php
       echo "<input type='hidden' name='idnodo' value=".$idnodo.">";
       echo "<input type='hidden' name='query' value='".htmlentities($consulta, ENT_QUOTES)."'>";

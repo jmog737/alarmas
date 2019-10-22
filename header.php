@@ -59,6 +59,28 @@
       </div><!-- .collapse .navbar-collapse -->
     </div><!-- .container -->
   </nav><!-- #header-nav -->
+  
+  <script lang="javasript/text">
+    var dir = window.location.pathname;
+    var temp = dir.split("/");
+    var tam = temp.length;
+    var pagina = temp[tam-1];
+    if (pagina !== 'index.php'){
+      verificarSesion('', 's');
+      var duracion0 = <?php echo DURACION ?>;
+      /// Se agrega un tiempo extra cosa de estar seguro que venció el tiempo (si queda en el límite habrá veces 
+      ///que lo detecta y otras que no teniendo que esperar nuevamente un tiempo de DURACION para volver a probar
+      var tiempoChequeo = parseInt(duracion0*1000, 10)+2000;
+      
+      setInterval(function(){
+        verificarSesion('¡Llamé desde setInterval!', 'n');
+      }, tiempoChequeo);
+    }
+    else {
+      /// Se agrega para sobre escribir el autocompletado del navegador con el usuario y contraseña:
+      //setTimeout(function(){vaciarFrmLogin()}, 600);
+    }
+  </script>
 
 </header>
 

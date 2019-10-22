@@ -19,7 +19,7 @@ if(!isset($_SESSION))
 <?php 
 require_once ('head.php');
 ?>
-<body>
+<body onload='foco()'>
 <?php
   require_once ('header.php');
   require_once('data/pdo.php');
@@ -116,11 +116,7 @@ require_once ('head.php');
   $temp1 = explode('-', $datosMostrar['fechaCarga']);
   $diaMostrar1 = $temp1[2]."/".$temp1[1]."/".$temp1[0];
 ?>
-<main>
-  <script>
-    window.location = '#tituloEditarAlarma';
-  </script>
-  
+<main> 
   <div id='main-content' class='container-fluid'>
     <?php
     if (isset($_POST['btnEditarAlarma'])){
@@ -131,11 +127,15 @@ require_once ('head.php');
     <h2 id="tituloEditarAlarma">Datos de la alarma <?php echo $idMostrar?></h2>
 
     <form id='frmEditarAlarma' name='frmEditarAlarma' method='post'>
-      <table name='tblEditarAlarma' id='tblEditarAlarma' class='tabla2'>
+      <div name='table-content' class='table-responsive'>
+      <table name='tblEditarAlarma' id='tblEditarAlarma' class='tabla2 table table-hover w-auto'>
         <caption>Formulario para la edici&oacute;n de la alarma</caption>
-        <tr>
-          <th colspan='2' class='tituloTabla'>EDITAR ALARMA</th>
-        </tr>
+        
+        <thead>
+          <tr>
+            <th colspan='2' scope='col' class='tituloTabla'>EDITAR ALARMA</th>
+          </tr>
+        </thead>
         
         <?php
         $i = 1;
@@ -165,6 +165,8 @@ require_once ('head.php');
           default: break;
         } /// Fin switch tipoEstado
 
+        echo "<tbody>";
+        
         /// Recorro el array con los campos para ver cuales hay que mostrar y cuales no.
         /// Para los que hay que hacerlo, veo si es alguno que requiera un formato especial (la fecha o el tipo de alarma) o no.
         foreach ($camposAlarmas as $key => $value) {   
@@ -174,17 +176,17 @@ require_once ('head.php');
             switch ($indice){
               case 'id': break;
               case 'dia': echo "<tr>
-                                  <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                                  <th scope='row' class='text-left'>".$camposAlarmas[$key]['nombreMostrar']."</th>
                                   <td>".$diaMostrar."</td>
                                 </tr>";
                           break;
               case 'fechaCarga':  echo "<tr>
-                                          <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                                          <th scope='row' class='text-left'>".$camposAlarmas[$key]['nombreMostrar']."</th>
                                           <td>".$diaMostrar1."</td>
                                         </tr>";
                                   break;          
               case 'causa': echo "<tr>
-                                    <td class='enc'>Posible Causa</td>
+                                    <th scope='row' class='text-left'>Posible Causa</th>
                                     <td>
                                       <textarea type='text' name='causa' id='causa' class='agrandar' rows='5' placeholder='Ingrese el motivo probable.'>".$datosMostrar[$indice]."</textarea>
                                       <input name='causaOriginal' id='causaOriginal' type='hidden' value='".$causaOriginal."'>  
@@ -192,7 +194,7 @@ require_once ('head.php');
                                   </tr>"; 
                             break;
               case 'solucion': echo "<tr>
-                                      <td class='enc'>Posible Soluci&oacute;n</td>
+                                      <th scope='row' class='text-left'>Posible Soluci&oacute;n</th>
                                       <td>
                                         <textarea type='text' name='sln' id='sln' class='agrandar' rows='5' placeholder='Ingrese la posible soluci&oacute;n.'>".$datosMostrar[$indice]."</textarea>
                                         <input name='solucionOriginal' id='solucionOriginal' type='hidden' value='".$solucionOriginal."'>
@@ -200,41 +202,46 @@ require_once ('head.php');
                                     </tr>"; 
                                 break;
               case 'usuario': echo "<tr>
-                                      <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                                      <th scope='row' class='text-left'>".$camposAlarmas[$key]['nombreMostrar']."</th>
                                       <td>".$usuarioMostrar."</td>
                                     </tr>";
                               break;  
               case 'nodo':  echo "<tr>
-                                    <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                                    <th scope='row' class='text-left foco'>".$camposAlarmas[$key]['nombreMostrar']."</th>
                                     <td>".$localidad."</td>
                                  </tr>";
                             break;              
               case 'tipoAlarma': echo "<tr>
-                                        <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                                        <th scope='row' class='text-left'>".$camposAlarmas[$key]['nombreMostrar']."</th>
                                         <td class='".$claseAlarma."'>".$datosMostrar[$indice]."</td>
                                       </tr>";
                                  break;
               case 'estado':  echo "<tr>
-                                      <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                                      <th scope='row' class='text-left'>".$camposAlarmas[$key]['nombreMostrar']."</th>
                                       <td class='".$claseEstado."'>".$datosMostrar[$indice]."</td>
                                     </tr>";
                               break;                 
               case 'accion': break;                 
               default: echo "<tr>
-                              <td class='enc'>".$camposAlarmas[$key]['nombreMostrar']."</td>
+                              <th scope='row' class='text-left'>".$camposAlarmas[$key]['nombreMostrar']."</th>
                               <td>".$datosMostrar[$indice]."</td>
                             </tr>";                 
             } /// Fin switch indice       
           } /// Fin if si mostrarEditar 
         } /// Fin foreach camposAlarmas
         ?>
+        </tbody>
         
-        <tr>
-          <td colspan='2' class='pieTabla'>
-            <input type='submit' class='btn btn-danger' name='btnEditarAlarma' id='btnEditarAlarma' value='EDITAR'>
-          </td>
-        </tr>
+        <tfoot>
+          <tr>
+            <td colspan='2' class='pieTabla'>
+              <input type='submit' class='btn btn-sm btn-blue accent-4' name='btnEditarAlarma' id='btnEditarAlarma' value='EDITAR'>
+            </td>
+          </tr>
+        </tfoot>
+        
       </table>
+      </div>
     </form>
 
     <div id="navegacion" class="pagination">

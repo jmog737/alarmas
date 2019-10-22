@@ -24,18 +24,15 @@ var maxLimiteSelects = parseInt($("#maxLimiteSelects").val(), 10);
   \brief Función que valida que el parámetro pasado sea un entero.
   @param numero Dato a validar.                  
 */
-function validarEntero(numero) {//alert(valor);
+function validarEntero(numero) {
   if (isNaN(numero)){
-    //alert ("Ups... " + numero + " no es un número.");
     return false;
   } 
   else {
     if (numero % 1 == 0) {
-      //alert ("Es un numero entero");
       return true;
     } 
     else {
-      //alert ("Es un numero decimal");
       return false;
     }
   }
@@ -155,8 +152,12 @@ function validarIngreso () {
   verificarSesion('', 's');
   var usuario = $("#nombreUsuario").val();
   if ((usuario === ' ')||(usuario === "null")||(usuario === '')){ 
-    alert('¡Debe ingresar el nombre de usuario!');
-    $("#nombreUsuario").focus();
+    //alert('¡Debe ingresar el nombre de usuario!');
+    $("#tituloAdvertencia").html('ATENCIÓN');
+    $("#mensajeAdvertencia").html('¡Debe ingresar el nombre de usuario!');
+    $("#modalAdvertencia").modal("show");
+    $("#caller").val("user");
+//    $("#nombreUsuario").focus();
   }
   else {
     $("#frmLogin").submit();
@@ -172,14 +173,22 @@ function validarSubmitCargar(){
   var archivoASubir = $("#uploadedFile").val();
   
   if ((archivoASubir === undefined)||(archivoASubir === '')){
-    alert('No se seleccionó archivo alguno.\nPor favor verifique!.');
+    //alert('No se seleccionó archivo alguno.\nPor favor verifique!.');
+    $("#tituloAdvertencia").html('ATENCIÓN');
+    $("#mensajeAdvertencia").html('No se seleccionó archivo alguno.<br>¡Por favor verifique!.');
+    $("#modalAdvertencia").modal("show");
+    $("#caller").val("noFile");
     return false;
   }
   else {
     var nodo = $("option:selected", "#nodo").val();
     if (nodo === 'nada'){
-      alert('Hay que seleccionar un nodo.\nPor favor verifique!.');
-      $("#nodo").focus();
+      //alert('Hay que seleccionar un nodo.\nPor favor verifique!.');
+      $("#tituloAdvertencia").html('ATENCIÓN');
+      $("#mensajeAdvertencia").html('Hay que seleccionar un nodo.<br>¡Por favor verifique!.');
+      $("#modalAdvertencia").modal("show");
+      $("#caller").val("noNodo");
+//      $("#nodo").focus();
       return false;
     }
     else {
@@ -191,20 +200,26 @@ function validarSubmitCargar(){
       //var tam = archivo2.length;
       //var nombreArchivo = archivo2[tam-1];
       
-      //alert('nombreCorto: '+nombreNodoCorto+'\nnodo: '+$("#nodo").val()+'\narchivo: '+nombreArchivo+'\nextension: '+ extension);
-      
       var posOcs = nombreNodoCorto.search("#");
       if (posOcs === -1){
         if (extension === 'csv'){
-          alert('Se seleccionó un archivo de OCS (.csv) para un PSS32 ('+nombreNodoCorto+').\n¡Por favor verifique!.');
-          $("#nodo").focus();
+          //alert('Se seleccionó un archivo de OCS (.csv) para un PSS32 ('+nombreNodoCorto+').\n¡Por favor verifique!.');
+          $("#tituloAdvertencia").html('ATENCIÓN');
+          $("#mensajeAdvertencia").html('Se seleccionó un archivo de OCS (.csv) para un PSS32 ('+nombreNodoCorto+').<br>¡Por favor verifique!.');
+          $("#modalAdvertencia").modal("show");
+          $("#caller").val("noNodo");
+//          $("#nodo").focus();
           return false;
         }
       }
       else {
         if (extension === 'xls'){
-          alert('Se seleccionó un archivo de PSS32 (.xls) para un OCS ('+nombreNodoCorto+').\n¡Por favor verifique!.');
-          $("#nodo").focus();
+          //alert('Se seleccionó un archivo de PSS32 (.xls) para un OCS ('+nombreNodoCorto+').\n¡Por favor verifique!.');
+          $("#tituloAdvertencia").html('ATENCIÓN');
+          $("#mensajeAdvertencia").html('Se seleccionó un archivo de PSS32 (.xls) para un OCS ('+nombreNodoCorto+').<br>¡Por favor verifique!.');
+          $("#modalAdvertencia").modal("show");
+          $("#caller").val("noNodo");
+//          $("#nodo").focus();
           return false;
         }
       }
@@ -230,45 +245,6 @@ function validarSubmitCargar(){
 /********** fin validarSubmitCargar() **********/
 
 /**
- * \brief Función que valida el form para cargar el archivo de un PSS32.
- */
-function validarSubmitCargarPSS32(){
-  verificarSesion('', 's');
-  var archivoASubir = $("#uploadedFilePSS32").val();
-  
-  if ((archivoASubir === undefined)||(archivoASubir === '')){
-    alert('No se seleccionó archivo alguno.\nPor favor verifique!.');
-    return false;
-  }
-  else {
-    if ($("#nodo").val() === 'nada'){
-      alert('Hay que seleccionar un nodo.\nPor favor verifique!.');
-      $("#nodo").focus();
-      return false;
-    }
-    else {
-      var nombreNodoCorto = $("option:selected", "#nodo").attr("nombreCorto");
-      var temp = nombreNodoCorto.split("#");
-      var nombreSinOCS = temp[0];
-      
-      /// Extraigo la info de los atributos del option pues NO se pasan en el POST
-      /// En base a las mismas modifico el valor del option para poder pasarlos por el POST
-      var idnodo = $("option:selected", "#nodo").attr("idnodo");
-      var nodo = $("option:selected", "#nodo").val();
-      $("option:selected", "#nodo").val(nodo+'---'+nombreNodoCorto+'---'+idnodo);
-      
-      var temp1 = archivoASubir.split(".");
-      var archivo1 = temp1[0];
-      var archivo2 = archivo1.split("\\");
-      var tam = archivo2.length;
-      var nombreArchivo = archivo2[tam-1];
-      $("#frmSubirPSS32").submit();
-    }
-  }
-}
-/********** fin validarSubmitCargarPSS32() **********/
-
-/**
  * \brief Función que valida el form para editar una alarma.
  */
 function validarEditarAlarma(){
@@ -280,17 +256,29 @@ function validarEditarAlarma(){
   var causaOriginal = $("#causaOriginal").val();
   //alert('causa: '+causa+' --- causaOriginal: '+causaOriginal+'\nsolucion: '+solucion+' --- Solucion Original: '+solucionOriginal);
   if (causa === ''){
-    alert('La causa NO puede quedar vacía.\nPor favor verifique.');
-    $("#causa").focus();
+    //alert('La causa NO puede quedar vacía.\nPor favor verifique.');
+    $("#tituloAdvertencia").html('ATENCIÓN');
+    $("#mensajeAdvertencia").html('La causa NO puede quedar vacía.<br>¡Por favor verifique!.');
+    $("#modalAdvertencia").modal("show");
+    $("#caller").val("causaEditarAlarma");
+//    $("#causa").focus();
   }
   else {
     if (solucion === ''){
-      alert('La solución NO puede quedar vacía.\nPor favor verifique.');
-      $("#sln").focus();
+//      alert('La solución NO puede quedar vacía.\nPor favor verifique.');
+      $("#tituloAdvertencia").html('ATENCIÓN');
+      $("#mensajeAdvertencia").html('La solución NO puede quedar vacía.<br>¡Por favor verifique!.');
+      $("#modalAdvertencia").modal("show");
+      $("#caller").val("solucionEditarAlarma");
+//      $("#sln").focus();
     }
     else {
       if ((causa === causaOriginal)&&(solucion === solucionOriginal)){
-        alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+//        alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+        $("#tituloAviso").html('AVISO');
+        $("#mensajeAviso").html('No hubo cambios en los datos.<br>¡Por favor verifique!.');
+        $("#modalAviso").modal("show");
+//        $("#caller").val("sinCambiosEditarAlarma"); 
       }
       else {
         seguir = true;
@@ -322,25 +310,40 @@ function validarEditarUsuario(){
   var observacionesOriginal = $("#observacionesOriginal").val();
   //alert('nombre: '+nombre+' --- Original: '+nombreOriginal+'\napellido: '+apellido+' --- Original: '+apellidoOriginal+'\nappUser: '+appUser+' --- Original: '+appUserOriginal+'\ntamPagina: '+tamPaginaUser+' --- Original: '+tamPaginaOriginal+'\nselects: '+limiteSelectsUser+' --- Original: '+limiteSelectsOriginal+'\nobservaciones: '+observaciones+' --- Original: '+observacionesOriginal);
   if (nombre === ''){
-    alert('El nombre NO puede quedar vacío.\nPor favor verifique.');
-    $("#nombre").val(nombreOriginal);
-    $("#nombre").focus();
+//    alert('El nombre NO puede quedar vacío.\nPor favor verifique.');
+    $("#tituloAdvertencia").html('ATENCIÓN');
+    $("#mensajeAdvertencia").html('El nombre NO puede quedar vacío.<br>¡Por favor verifique!.');
+    $("#modalAdvertencia").modal("show");
+    $("#caller").val("nombreEditarUsuario");
+//    $("#nombre").val(nombreOriginal);
+//    $("#nombre").focus();
   }
   else {
     if (apellido === ''){
-      alert('El apellido NO puede quedar vacío.\nPor favor verifique.');
-      $("#apellido").val(apellidoOriginal);
-      $("#apellido").focus();
+//      alert('El apellido NO puede quedar vacío.\nPor favor verifique.');
+      $("#tituloAdvertencia").html('ATENCIÓN');
+      $("#mensajeAdvertencia").html('El apellido NO puede quedar vacío.<br>¡Por favor verifique!.');
+      $("#modalAdvertencia").modal("show");
+      $("#caller").val("apellidoEditarUsuario");
+//      $("#apellido").val(apellidoOriginal);
+//      $("#apellido").focus();
     }
     else {
       if (appUser === ''){
-        alert('El nombre de usuario para la app NO puede quedar vacío.\nPor favor verifique.');
-        $("#appUser").val(appUserOriginal);
-        $("#appUser").focus();
+//        alert('El nombre de usuario para la app NO puede quedar vacío.\nPor favor verifique.');
+        $("#tituloAdvertencia").html('ATENCIÓN');
+        $("#mensajeAdvertencia").html('El nombre de usuario para la app NO puede quedar vacío.<br>¡Por favor verifique!.');
+        $("#modalAdvertencia").modal("show");
+        $("#caller").val("appUserEditarUsuario");
+//        $("#appUser").val(appUserOriginal);
+//        $("#appUser").focus();
       }
       else {
         if ((nombre === nombreOriginal)&&(apellido === apellidoOriginal)&&(tamPaginaUser === tamPaginaOriginal)&&(limiteSelectsUser === limiteSelectsOriginal)&&(appUser === appUserOriginal)&&(observaciones === observacionesOriginal)){
-          alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+//          alert('No hubo cambios en los datos de la alarma.\nPor favor verifique.');
+          $("#tituloAviso").html('AVISO');
+          $("#mensajeAviso").html('No hubo cambios en los datos.<br>¡Por favor verifique!.');
+          $("#modalAviso").modal("show");
         }
         else {
           var validarTamaño = validarEntero(tamPaginaUser);
@@ -353,11 +356,15 @@ function validarEditarUsuario(){
               $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
                 var resultado = parseInt(request["rows"], 10);
                 if ((resultado > 0)&&(nombre !== nombreOriginal)&&(apellido !== apellidoOriginal)&&(appUser !== appUserOriginal)) {
-                  alert('Ya existe un usuario con esos datos. Por favor verifique.');
-                  $("#nombre").val(nombreOriginal);
-                  $("#apellido").val(apellidoOriginal);
-                  $("#appUser").val(appUserOriginal);
-                  $("#nombre").focus();
+//                  alert('Ya existe un usuario con esos datos. Por favor verifique.');
+                  $("#tituloAviso").html('AVISO');
+                  $("#mensajeAviso").html('Ya existe un usuario con esos datos.<br>¡Por favor verifique!.');
+                  $("#modalAviso").modal("show");
+                  $("#caller").val("usuarioExiste");
+//                  $("#nombre").val(nombreOriginal);
+//                  $("#apellido").val(apellidoOriginal);
+//                  $("#appUser").val(appUserOriginal);
+//                  $("#nombre").focus();
                 }
                 else {
                   $("#frmEditarUsuario").submit();
@@ -365,15 +372,23 @@ function validarEditarUsuario(){
               });
             }
             else {
-              alert('El tamaño para los selects debe ser un entero positivo y menor a '+maxLimiteSelects);
-              $("#limiteSelectsUser").val(limiteSelectsOriginal);
-              $("#limiteSelectsUser").focus();
+//              alert('El tamaño para los selects debe ser un entero positivo y menor a '+maxLimiteSelects);
+                $("#tituloAdvertencia").html('ATENCIÓN');
+                $("#mensajeAdvertencia").html('El tamaño para los selects debe ser un entero positivo y menor a '+maxLimiteSelects+'.<br>¡Por favor verifique!.');
+                $("#modalAdvertencia").modal("show");
+                $("#caller").val("limiteSelectsEditarUsuario");
+//              $("#limiteSelectsUser").val(limiteSelectsOriginal);
+//              $("#limiteSelectsUser").focus();
             }
           }
           else {
-            alert('El tamaño de página debe ser un entero positivo y menor a '+maxTamPagina);
-            $("#tamPaginaUser").val(tamPaginaOriginal);
-            $("#tamPaginaUser").focus();
+//            alert('El tamaño de página debe ser un entero positivo y menor a '+maxTamPagina);
+              $("#tituloAdvertencia").html('ATENCIÓN');
+              $("#mensajeAdvertencia").html('El tamaño de página debe ser un entero positivo y menor a '+maxTamPagina+'.<br>¡Por favor verifique!.');
+              $("#modalAdvertencia").modal("show");
+              $("#caller").val("tamPaginaEditarUsuario");
+//            $("#tamPaginaUser").val(tamPaginaOriginal);
+//            $("#tamPaginaUser").focus();
           }
         }
       }   
@@ -897,23 +912,34 @@ function actualizarUser() {
     var pw2 = $("#pw2").val();
 
     if (pw1 === ''){
-      alert('La contraseña 1 NO puede estar vacía.\nPor favor verifique.');
-      $("#pw1").focus();
+      //alert('La contraseña 1 NO puede estar vacía.\nPor favor verifique.');
+      $("#tituloAdvertencia").text('ATENCIÓN');
+      $("#mensajeAdvertencia").html('¡La contraseña 1 NO puede estar vacía!.<br>Por favor verifique.');
+      $("#modalAdvertencia").modal("show");
+      $("#caller").val("pwd1Vacio");
+//      $("#pw1").focus();
     }
     else {
       if (pw2 === ''){
-        alert('La contraseña 2 NO puede estar vacía.\nPor favor verifique.');
-        $("#pw2").focus();
+        //alert('La contraseña 2 NO puede estar vacía.\nPor favor verifique.');
+        $("#tituloAdvertencia").text('ATENCIÓN');
+        $("#mensajeAdvertencia").html('¡La contraseña 2 NO puede estar vacía!.<br>Por favor verifique.');
+        $("#modalAdvertencia").modal("show");
+        $("#caller").val("pwd2Vacio");
+//        $("#pw2").focus();
       }
       else {
         if (pw1 !== pw2) {
-          alert('Las contraseñas ingresadas NO son iguales.\nPor favor verifique.');
-          $("#pw1").val('');
-          $("#pw2").val('');
-          $("#pw1").focus();
+          //alert('Las contraseñas ingresadas NO son iguales.\nPor favor verifique.');
+          $("#tituloAdvertencia").text('ATENCIÓN');
+          $("#mensajeAdvertencia").html('¡Las contraseñas ingresadas NO son iguales!.<br>Por favor verifique.');
+          $("#modalAdvertencia").modal("show");
+          $("#caller").val("pwdDiferentes");
+//          $("#pw1").val('');
+//          $("#pw2").val('');
+//          $("#pw1").focus();
         }
         else {
-          //alert('hay que actualizar a: '+$("#usuarioSesion").val()+'\nID: '+$("#userID").val());
           /******** COMENTO PARTE DEL USUARIO POR AHORA **********************/
           ///var user = $("#nombreUser").val();
           var iduser = $("#userID").val();
@@ -930,15 +956,18 @@ function actualizarUser() {
           $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
             //var resultado = request["resultado"];
             if (resultado === "OK") {
-              alert('Los datos se modificaron correctamente!.');
+              //alert('Los datos se modificaron correctamente!.');
+              $("#tituloAviso").text('AVISO');
+              $("#mensajeAviso").html('¡Los datos se modificaron correctamente!.');
+              $("#modalAviso").modal("show");
               $("#modalPwd").modal("hide");
-              //cargarEditarMovimiento(idmov, "main-content");
-              //inhabilitarMovimiento();
             }
             else {
-              alert('Hubo un problema en la actualización. Por favor verifique.');
-            }
-            
+              //alert('Hubo un problema en la actualización. Por favor verifique.');
+              $("#tituloAviso").text('AVISO');
+              $("#mensajeAviso").html('¡Hubo un problema en la actualización. Por favor verifique.');
+              $("#modalAdvertencia").modal("show");
+            }         
           });
         }
       }
@@ -964,16 +993,24 @@ function actualizarParametros()  {
     var validarPage = validarEntero(pageSize);
     var seguir = true;
     if ((pageSize <= 0) || (pageSize > limiteMaximoPagina) || (pageSize === "null") || (!validarPage)){
-      alert('El tamaño de la página DEBE ser un entero entre 1 y '+limiteMaximoPagina+'.\nPor favor verifique.');
+      //alert('El tamaño de la página DEBE ser un entero entre 1 y '+limiteMaximoPagina+'.\nPor favor verifique.');
+      $("#tituloAdvertencia").text('ATENCIÓN');
+      $("#mensajeAdvertencia").html('El tamaño de la página DEBE ser un entero entre 1 y '+limiteMaximoPagina+'.<br>Por favor verifique.');
+      $("#modalAdvertencia").modal("show");
+      $("#caller").val("pageSize");
       seguir = false;
-      $("#pageSize").focus();
+//      $("#pageSize").focus();
     }
     else {
           var validarLimiteSelects = validarEntero(limiteSelects);
           if ((limiteSelects <= 0) || (limiteSelects > limiteMaximoSelects) || (limiteSelects === "null") || (!validarLimiteSelects)){
-            alert('El tamaño máximo para los selects DEBE ser un entero entre 1 y '+limiteMaximoSelects+'.\nPor favor verifique.');
+            //alert('El tamaño máximo para los selects DEBE ser un entero entre 1 y '+limiteMaximoSelects+'.\nPor favor verifique.');
+            $("#tituloAdvertencia").text('ATENCIÓN');
+            $("#mensajeAdvertencia").html('El tamaño máximo para los selects DEBE ser un entero entre 1 y '+limiteMaximoSelects+'.<br>Por favor verifique.');
+            $("#modalAdvertencia").modal("show");
+            $("#caller").val("selectSize");
             seguir = false;
-            $("#tamSelects").focus();
+//            $("#tamSelects").focus();
           } 
     }///***************** FIN validación **************
 
@@ -1059,7 +1096,7 @@ function actualizarRegistro()  {
 ///Disparar funcion cuando algún elemento de la clase agrandar reciba el foco.
 ///Se usa para resaltar el elemento seleccionado.
 $(document).on("focus", ".agrandar", function (){
-  $(this).css("font-size", "1.35em");
+  $(this).css("font-size", "1.15em");
   $(this).css("background-color", "#e7f128");
   $(this).css("font-weight", "bolder");
   $(this).css("color", "red");
@@ -1133,6 +1170,20 @@ $(document).on("click", "#buscar", function(){
   validarBusqueda();
 });
 
+///Disparar función al hacer doble click en alguna parte de la fila (td).
+///Esto hace que se cambie el estado del checkbox que selecciona la propia fila.
+$(document).on("dblclick", "#tblCargar td, #tblResultado td", function() {
+  var miCheckbox = $(this).closest("tr").find(":checkbox");
+  var estado = miCheckbox.prop("checked");
+  if (estado === true){
+    miCheckbox.prop("checked", false);
+  }
+  else {
+    miCheckbox.prop("checked", true);
+  }
+});
+/********* fin on("dblclick", "#tblResultado td", function() *********/
+
 ///Disparar función al hacer click en alguno de los links con las PÁGINAS de los resultados.
 ///Básicamente arma la consulta para mostrar la pagina solicitada y llama a la función para ejecutarla.
 $(document).on("click", ".paginate", function (){
@@ -1173,7 +1224,7 @@ $(document).on("click", ".paginate", function (){
 $(document).on("change focusin", "#hint", function (){
   //verificarSesion('', 's');
   /// Selecciono radio button correspondiente:
-  $(this).parent().prev().prev().children().prop("checked", true);
+  $(this).closest("tr").find(":radio").prop("checked", true);
 });
 /********** fin on("change focusin", "#hint", function () **********/
 
@@ -1187,7 +1238,8 @@ $(document).on("dblclick", "select[name=hint] option", function() {
 ///Disparar función al cambiar la entidad elegida en el select NODO. 
 ///Lo que hace es seleccionar automáticamente el radio button correspondiente.
 $(document).on("change", "[name=nodo]", function (){
-  $(this).parent().prev().prev().children().prop("checked", true);
+  //$(this).parent().prev().prev().children().prop("checked", true);
+  $(this).closest("tr").find(":radio").prop("checked", true);
 });
 /********** fin on("change", "[name=nodo]", function () **********/
 
@@ -1195,7 +1247,8 @@ $(document).on("change", "[name=nodo]", function (){
 ///Si se eligió algún mes quiere decir que la búsqueda es por mes/año 
 ///Lo que hace es seleccionar automáticamente el radio button correspondiente.
 $(document).on("change", "#mes", function (){
-  $(this).parent().prev().prev().children().prop("checked", true);
+ // $(this).parent().prev().prev().children().prop("checked", true);
+  $(this).closest("tr").find(":radio").prop("checked", true);
 });
 /********** fin on("change", "#mes", function () **********/
 
@@ -1203,7 +1256,8 @@ $(document).on("change", "#mes", function (){
 ///Si se eligió algún año quiere decir que la búsqueda por mes/año 
 ///Lo que hace es seleccionar automáticamente el radio button correspondiente.
 $(document).on("change", "#año", function (){
-  $(this).parent().prev().prev().prev().prev().children().prop("checked", true);
+  //$(this).parent().prev().prev().prev().prev().children().prop("checked", true);
+  $(this).closest("tr").find(":radio").prop("checked", true);
 });
 /********** fin on("change", "#año", function () **********/
 
@@ -1211,7 +1265,7 @@ $(document).on("change", "#año", function (){
 ///Si se eligió alguna fecha de inicio quiere decir que la búsqueda es por rango (inicio/fin) 
 ///Lo que hace es seleccionar automáticamente el radio button correspondiente.
 $(document).on("change", "#inicio", function (){
-  $(this).parent().prev().prev().children().prop("checked", true);
+  $(this).closest("tr").find(":radio").prop("checked", true);
 });
 /********** fin on("change", "#inicio", function () **********/
 
@@ -1219,7 +1273,8 @@ $(document).on("change", "#inicio", function (){
 ///Si se eligió alguna fecha de fin quiere decir que la búsqueda es por rango (inicio/fin) 
 ///Lo que hace es seleccionar automáticamente el radio button correspondiente.
 $(document).on("change", "#fin", function (){
-  $(this).parent().prev().prev().prev().prev().children().prop("checked", true);
+  //$(this).parent().prev().prev().prev().prev().children().prop("checked", true);
+  $(this).closest("tr").find(":radio").prop("checked", true);
 });
 /********** fin on("change", "#fin", function () **********/
 
@@ -1279,6 +1334,70 @@ $(document).on("keypress", "#pw2", function(e) {
   }  
 });
 /********** fin on("keypress", "#pw2", function(e) **********/
+       
+///Disparar función al cerrarse el modal con mensajes de ADVERTENCIA
+///Detecta quien llamó y actúa en consecuencia
+$(document).on("hidden.bs.modal", "#modalAdvertencia", function() {
+  var caller = $("#caller").val();
+  switch (caller){
+    case "user":  $("#nombreUsuario").focus();
+                  break;
+    case "pwd1Vacio": $("#pw1").focus();
+                      break;
+    case "pwd2Vacio": $("#pw2").focus();
+                      break;
+    case "pwdDiferentes": $("#pw1").val('');
+                          $("#pw2").val('');
+                          $("#pw1").focus();   
+                          break;
+    case "pageSize":  $("#pageSize").focus();
+                      break;
+    case "selectSize":  $("#tamSelects").focus();
+                        break;  
+    case "noNodo":$("#nodo").focus();
+                  break;
+    case "causaEditarAlarma": $("#causa").focus();
+                              break;
+    case "solucionEditarAlarma":  $("#sln").focus();
+                                  break;
+    case "nombreEditarUsuario": $("#nombre").val($("#nombreOriginal").val());
+                                $("#nombre").focus();
+                                break;
+    case "apellidoEditarUsuario": $("#apellido").val($("#apellidoOriginal").val());
+                                $("#apellido").focus();
+                                break;   
+    case "appUserEditarUsuario":  $("#appUser").val($("#appUserOriginal").val());
+                                  $("#appUser").focus();
+                                  break; 
+    case "tamPaginaEditarUsuario":  $("#tamPaginaUser").val($("#tamPaginaOriginal").val());
+                                    $("#tamPaginaUser").focus();
+                                    break;
+    case "limiteSelectsEditarUsuario":  $("#limiteSelectsUser").val($("#limiteSelectsOriginal").val());
+                                        $("#limiteSelectsUser").focus();
+                                        break;                            
+    default: break;                       
+  }
+});
+/********** fin on("hidden.bs.modal", "#modalAdvertencia", function() **********/   
+
+///Disparar función al cerrarse el modal con mensajes de AVISO
+///Detecta quien llamó y actúa en consecuencia
+$(document).on("hidden.bs.modal", "#modalAviso", function() {
+  var caller = $("#caller").val();
+  switch (caller){
+    case "user":  $("#nombreUsuario").focus();
+                  break;
+    case "pwd1Vacio": $("#pw1").focus();
+                      break;
+    case "usuarioExiste": $("#nombre").val($("#nombreOriginal").val());
+                          $("#apellido").val($("#apellidoOriginal").val());
+                          $("#appUser").val($("#appUserOriginal").val());
+                          $("#nombre").focus();        
+                          break;
+    default: break;                       
+  }
+});
+/********** fin on("hidden.bs.modal", "#modalAviso", function() **********/ 
 
 /*****************************************************************************************************************************
 /// **************************************************** FIN MODAL USARIO ****************************************************
@@ -1494,7 +1613,6 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                 break;
     default: break;
   }
-  //alert(elemento.attr('name'));
 //  elemento.attr("action", "exportar.php");
 //  elemento.attr("target", "_blank");
 //  elemento.submit();
@@ -1569,7 +1687,6 @@ $(document).on("click", "#btnEditarNodo", function(e) {
 
 ///Función que muestra/oculta las flechas para subir y bajar la página según el scroll:
 $(window).scroll(function() {
-//alert('en el scroll');
   if ($(this).scrollTop() > 80) {
     $('.arrow').fadeIn(50);
   } else {

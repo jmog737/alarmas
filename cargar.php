@@ -330,13 +330,13 @@ require_once ('data/cargarArchivo.php');
               /// Extraigo tipo de alarma para poder resaltar en consecuencia:
               $tipoAlarma = $fila['tipoAlarma'];
               switch ($tipoAlarma) {
-                case 'CR': $clase = 'alCritica table-danger';
+                case 'CR': $clase = 'table-danger';
                            break;
                 case 'MJ': $clase = 'alMajor';
                            break;
-                case 'MN': $clase = 'alMinor table-warning';
+                case 'MN': $clase = 'table-warning';
                            break;
-                case 'WR': $clase = 'alWarning table-info';
+                case 'WR': $clase = 'table-info';
                            break;    
                 case 'NA': $clase = 'alNotAlarmed';
                            break; 
@@ -425,8 +425,8 @@ require_once ('data/cargarArchivo.php');
             echo "<tfoot>";
             echo "<tr>"
             . "     <td class='pieTabla' colspan='$totalCamposMostrar'>"
-            . "       <input type='button' id='btnActualizarCargar' name='btnActualizar' class='btn btn-sm btn-danger' value='Actualizar'>"
-            . "       <input type='button' id='btnExportarCargar' name='btnExportar' class='btn btn-sm btn-success' value='Exportar'>"
+            . "       <input type='button' id='btnExportarCargar' name='btnExportar' class='btn btn-sm btn-dark-green' value='Exportar'>"
+            . "       <input type='button' id='btnActualizarCargar' name='btnActualizar' class='btn btn-sm btn-blue accent-4' value='Actualizar'>"  
             . "     </td>"
             . "   </tr>";
             echo "</tfoot>";

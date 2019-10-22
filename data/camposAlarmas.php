@@ -15,13 +15,13 @@ if(!isset($_SESSION))
 
 /// Defino array con todos los campos presentes en la base de datos, su nombre a mostrar en pantalla, el orden a mostrar y si se
 /// tienen que mostrar o no.
-$camposAlarmas[] = ['nombreDB'=>'id','nombreMostrar'=>'Id', 'orden'=>0, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>0.8, 'especial'=>'no', 'formato'=>''];///id
+$camposAlarmas[] = ['nombreDB'=>'id','nombreMostrar'=>'Id', 'orden'=>0, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>0.9, 'especial'=>'no', 'formato'=>''];///id
 $camposAlarmas[] = ['nombreDB'=>'idalarma','nombreMostrar'=>'Id Alarma', 'orden'=>1, 'mostrarListado'=>'no', 'mostrarEditar'=>'no', 'mostrarReporte'=>'no', 'mostrarExcel'=>'no', 'tam'=>1, 'especial'=>'no', 'formato'=>''];///idalarma
 $camposAlarmas[] = ['nombreDB'=>'dia','nombreMostrar'=>'Fecha', 'orden'=>2, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>2.0, 'especial'=>'no', 'formato'=>''];///fecha
 $camposAlarmas[] = ['nombreDB'=>'hora','nombreMostrar'=>'Hora', 'orden'=>3, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>1.7, 'especial'=>'no', 'formato'=>''];///hora
 $camposAlarmas[] = ['nombreDB'=>'nombre','nombreMostrar'=>'Nombre', 'orden'=>4, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>2.7, 'especial'=>'no', 'formato'=>''];///nombre
 $camposAlarmas[] = ['nombreDB'=>'compound','nombreMostrar'=>'Compound', 'orden'=>5, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>1.7, 'especial'=>'no', 'formato'=>''];///compound
-$camposAlarmas[] = ['nombreDB'=>'tipoAID','nombreMostrar'=>'AID(ASAP)', 'orden'=>7, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>1.6, 'especial'=>'no', 'formato'=>''];///tipo aid
+$camposAlarmas[] = ['nombreDB'=>'tipoAID','nombreMostrar'=>'AID(ASAP)', 'orden'=>7, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>1.9, 'especial'=>'no', 'formato'=>''];///tipo aid
 $camposAlarmas[] = ['nombreDB'=>'tipoAlarma','nombreMostrar'=>'Alarma', 'orden'=>6, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>1.4, 'especial'=>'no', 'formato'=>''];///tipo alarma
 $camposAlarmas[] = ['nombreDB'=>'tipoCondicion','nombreMostrar'=>'Condici&oacute;n', 'orden'=>8, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>2, 'especial'=>'no', 'formato'=>''];///tipo condicion
 $camposAlarmas[] = ['nombreDB'=>'descripcion','nombreMostrar'=>'Descripci&oacute;n', 'orden'=>10, 'mostrarListado'=>'si', 'mostrarEditar'=>'si', 'mostrarReporte'=>'si', 'mostrarExcel'=>'si', 'tam'=>2.4, 'especial'=>'no', 'formato'=>''];///descripcion
