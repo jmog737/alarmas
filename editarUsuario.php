@@ -129,7 +129,7 @@ require_once ('head.php');
 ?>
 <main>
   <script>
-    window.location = '#tituloEditarUsuario';
+//    window.location = '#tituloEditarUsuario';
   </script>
   
   <div id='main-content' class='container-fluid'>
@@ -165,7 +165,7 @@ require_once ('head.php');
                 case 'nombre': echo "<tr>
                                       <th scope='row' class='text-left'>Nombre</th>
                                       <td>
-                                        <input type='text' name='nombre' id='nombre' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el nombre.' value='".$datosMostrar[$indice]."'>
+                                        <input type='text' name='nombre' id='nombre' autofocus class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el nombre.' value='".$datosMostrar[$indice]."'>
                                         <input name='nombreOriginal' id='nombreOriginal' type='hidden' value='".$nombreOriginal."'>  
                                       </td>
                                     </tr>"; 

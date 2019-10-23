@@ -169,17 +169,28 @@ $colorFondoTituloLeyendaPie1 = '#b19dda';
 $colorFondoTituloLeyendaPie2 = '#7c90d4';
 
 ///***************************************************** FIN COLORES para las GRAFICAS *******************************************
+//
 ///************************************************************* COLORES EXCEL ***************************************************
 ///NOTA: SOLO ACEPTA EN FORMATO HEXA (Salvo en formato de números)
 //$colorTabAlarmas = '023184';
-$colorTabBoveda = '46A743';
+//$colorTabBoveda = '46A743';
 $colorTabAlarmas = 'E02309';
 
-$colorBordeTitulo = '023184';
+//$colorBordeTitulo = '023184';
+$colorBordeTitulo = 'ffffff';
 //$colorFondoTitulo = sprintf("%02x%02x%02x", colorSubtitulo[0], colorSubtitulo[1], colorSubtitulo[2]);
-$colorFondoTitulo = '4acba7';
+//$colorFondoTitulo = '238632';//4acba7
+//$colorTextoTitulo = 'ffffff';
+$colorFondoTitulo = 'ffffff';
+$colorTextoTitulo = 'ff0000';
 
-$colorFondoCampos = 'AEE2FA';
+$colorFondoBorde = '45a955';
+$colorTextoSubTitulo = 'ffffff';
+$colorTextoDatos = '8c8080';
+
+//$colorFondoCampos = 'AEE2FA';
+$colorFondoCampos = '17a2b8';
+$colorTextoCampos = 'ffff00';
 $colorFondoTextoLegal = 'DFDFDF';
 
 $colorTotal = 'ff0000';
@@ -187,21 +198,30 @@ $colorFondoTotal = 'f3FF00';
 
 $colorStock = 'Blue';
 $colorFondoDefault = 'A9FF96';
-$colorFondoMN = 'ffff7c';
-$colorFondoMJ = 'ffa929';
-$colorFondoCR = 'fd5151';
-$colorFondoWR = '75ecec';
+//$colorFondoMN = 'ffff7c';
+//$colorFondoMJ = 'ffa929';
+//$colorFondoCR = 'fd5151';
+//$colorFondoWR = '75ecec';
+//$colorFondoNA = '9FB685';
+//$colorFondoNR = '999999';
+//$colorFondoNodo = '28ce44';
+//$colorTextoNodo = '071c40';
+$colorFondoMN = 'ffeeba';
+$colorFondoMJ = 'ffbb55';
+$colorFondoCR = 'f5c6cb';
+$colorFondoWR = 'bee5eb';
 $colorFondoNA = '9FB685';
 $colorFondoNR = '999999';
-$colorFondoNodo = '28ce44';
-$colorTextoNodo = '071c40';
+$colorFondoNodo = '77bd82';
+$colorTextoNodo = 'ffffff';
 
 $colorComRegular = 'd3d3d3';
 $colorComDiff = 'ffff00';
 $colorComStock = '38ff1d';
 $colorComPlastico = 'FF9999';
 
-$colorBordeRegular = '023184';
+//$colorBordeRegular = '023184';
+$colorBordeRegular = 'ffffff';
 $colorFondoCamposResumen = 'b3a8ac';
 $colorBordeResumen = '023184';
 $colorCategorias = 'Blue';

@@ -292,9 +292,23 @@ class PDF extends PDF_MC_Table
         $this->SetAutoPageBreak(true, $hFooter);
         ///****************************************************** TITULO (pageBreak) ********************************************************
         /// Defino el tipo de letra y tamaño para el título pues GetStingWidth calcula el ancho en base a esto:
-        $this->SetFont('Courier', 'BU', $hTitulo);
+        $this->SetFont('Courier', 'BU', $tamTitulo);
         $this->SetX($xTituloReporte);
         $this->SetTextColor(colorTituloReporte[0], colorTituloReporte[1], colorTituloReporte[2]);
+
+        $seguirTitulo1 = true;
+        while ($seguirTitulo1 === true){
+          $nbTitulo = $this->NbLines($anchoTitulo, $tituloReporte);
+          if (($nbTitulo > 1)&&($tamTitulo > $tamTituloMinimo)){
+            $tamTitulo--;
+            $this->SetFont('Courier', 'BU', $tamTitulo);
+          }
+          else {
+            $seguirTitulo1 = false;
+          }
+        }
+    
+        $hTituloMulti=$hTitulo/$nbTitulo;
 
         if ($nbTitulo > 1) {
           $this->MultiCell($anchoTitulo, $hTituloMulti, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
@@ -302,6 +316,14 @@ class PDF extends PDF_MC_Table
         else {
           $this->MultiCell($anchoTitulo, $hTitulo, utf8_decode(html_entity_decode($tituloReporte)),0, 'C', false);
         }
+
+        $this->Ln(0.1);
+        $this->SetX($xTituloReporte);
+
+        $tituloTotal = "(Total: ".$totalFilas.")";
+        $this->Cell($anchoTitulo, $hTitulo/3, utf8_decode($tituloTotal), 0, 1,'C', false);
+
+        $this->Ln(5);
         $y = $this->GetY();
         ///****************************************************** FIN TITULO (pageBreak) *****************************************************
 

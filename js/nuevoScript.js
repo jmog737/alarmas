@@ -419,31 +419,50 @@ function validarEditarNodo(){
   var observacionesOriginal = $("#observacionesOriginal").val();
   //alert('nombre: '+nombre+' --- Original: '+nombreOriginal+'\napellido: '+localidad+' --- Original: '+localidadOriginal+'\nip: '+ip+' --- Original: '+ipOriginal+'\ntipo: '+tipo+' --- Original: '+tipoOriginal+'\narea Metro: '+areaMetro+' --- Original: '+areaMetroOriginal+'\nobservaciones: '+observaciones+' --- Original: '+observacionesOriginal);
   if (nombre === ''){
-    alert('El nombre NO puede quedar vacío.\nPor favor verifique.');
-    $("#nombre").val(nombreOriginal);
-    $("#nombre").focus();
+//    alert('El nombre NO puede quedar vacío.\nPor favor verifique.');
+    $("#tituloAdvertencia").html('ATENCIÓN');
+    $("#mensajeAdvertencia").html('El nombre NO puede quedar vacío.<br>¡Por favor verifique!.');
+    $("#modalAdvertencia").modal("show");
+    $("#caller").val("nombreEditarNodo");
+//    $("#nombre").val(nombreOriginal);
+//    $("#nombre").focus();
   }
   else {
     if (localidad === ''){
-      alert('La localidad NO puede quedar vacía.\nPor favor verifique.');
-      $("#localidad").val(localidadOriginal);
-      $("#localidad").focus();
+//      alert('La localidad NO puede quedar vacía.\nPor favor verifique.');
+      $("#tituloAdvertencia").html('ATENCIÓN');
+      $("#mensajeAdvertencia").html('La localidad NO puede quedar vacía.<br>¡Por favor verifique!.');
+      $("#modalAdvertencia").modal("show");
+      $("#caller").val("localidadEditarNodo");
+//      $("#localidad").val(localidadOriginal);
+//      $("#localidad").focus();
     }
     else {
       if (tipo === ''){
-        alert('El tipo de dispositivo NO puede quedar vacío.\nPor favor verifique.');
-        $("#tipoNodo").val(tipoOriginal);
-        $("#tipoNodo").focus();
+//        alert('El tipo de dispositivo NO puede quedar vacío.\nPor favor verifique.');
+        $("#tituloAdvertencia").html('ATENCIÓN');
+        $("#mensajeAdvertencia").html('El tipo de dispositivo NO puede quedar vacío.<br>¡Por favor verifique!.');
+        $("#modalAdvertencia").modal("show");
+        $("#caller").val("tipoEditarNodo");
+//        $("#tipoNodo").val(tipoOriginal);
+//        $("#tipoNodo").focus();
       }
       else {
         if ((areaMetro !== 'SI')&&(areaMetro !== 'si')&&(areaMetro !== 'Si')&&(areaMetro !== 'sI')&&(areaMetro !== 'NO')&&(areaMetro !== 'no')&&(areaMetro !== 'No')&&(areaMetro !== 'nO')&&(areaMetro !== "1")&&(areaMetro !== "0")&&(areaMetro !== 1)&&(areaMetro !== 0)){
-          alert('Área metro debe ser sólo SI o NO. \Por favor verifique.');
-          $("#areaMetro").val(areaMetroOriginal);
-          $("#areaMetro").focus();
+//          alert('Área metro debe ser sólo SI o NO. \Por favor verifique.');
+          $("#tituloAdvertencia").html('ATENCIÓN');
+          $("#mensajeAdvertencia").html('Área metro debe ser sólo SI o NO.<br>¡Por favor verifique!.');
+          $("#modalAdvertencia").modal("show");
+          $("#caller").val("areaMetroEditarNodo");
+//          $("#areaMetro").val(areaMetroOriginal);
+//          $("#areaMetro").focus();
         }
         else {
           if ((nombre === nombreOriginal)&&(localidad === localidadOriginal)&&(tipo === tipoOriginal)&&(ip === ipOriginal)&&(areaMetro === areaMetroOriginal)&&(observaciones === observacionesOriginal)){
-            alert('No hubo cambios en los datos del nodo.\nPor favor verifique.');
+//            alert('No hubo cambios en los datos del nodo.\nPor favor verifique.');
+            $("#tituloAviso").html('AVISO');
+            $("#mensajeAviso").html('No hubo cambios en los datos.<br>¡Por favor verifique!.');
+            $("#modalAviso").modal("show");
           }
           else {
             var url = "data/getJSON.php";
@@ -453,11 +472,15 @@ function validarEditarNodo(){
               var resultado = parseInt(request["rows"], 10);
               //alert(resultado+'\n'+nombre+'--'+nombreOriginal+'\n'+localidad+'--'+localidadOriginal+'\n'+tipo+'--'+tipoOriginal);
               if ((resultado > 0)) {
-                alert('Ya existe un nodo con esos datos. Por favor verifique.');
-                $("#nombre").val(nombreOriginal);
-                $("#localidad").val(localidadOriginal);
-                $("#tipoNodo").val(tipoOriginal);
-                $("#nombre").focus();
+//                alert('Ya existe un nodo con esos datos. Por favor verifique.');
+                $("#tituloAviso").html('AVISO');
+                $("#mensajeAviso").html('Ya existe un nodo con esos datos.<br>¡Por favor verifique!.');
+                $("#modalAviso").modal("show");
+                $("#caller").val("nodoExiste");
+//                $("#nombre").val(nombreOriginal);
+//                $("#localidad").val(localidadOriginal);
+//                $("#tipoNodo").val(tipoOriginal);
+//                $("#nombre").focus();
               }
               else {
                 $("#frmEditarNodo").submit();
@@ -525,8 +548,12 @@ function validarFecha(rango, campoFecha, inicioObject, finObject, mesObject, añ
     case 'intervalo': ///Comienzo la validación de las fechas:  
                       if ((inicio === '') && (fin === '')) 
                         {
-                        alert('Debe seleccionar al menos una de las dos fechas. Por favor verifique!.');
-                        inicioObject.focus();
+//                        alert('Debe seleccionar al menos una de las dos fechas. Por favor verifique!.');
+                        $("#tituloAdvertencia").html('ATENCIÓN');
+                        $("#mensajeAdvertencia").html('Debe seleccionar al menos una de las dos fechas.<br>¡Por favor verifique!.');
+                        $("#modalAdvertencia").modal("show");
+                        $("#caller").val("fechaIntervalo");
+//                        inicioObject.focus();
                         validado = false;
                         //return false;
                       }
@@ -543,7 +570,11 @@ function validarFecha(rango, campoFecha, inicioObject, finObject, mesObject, añ
 
                         if (inicio>fin) 
                           {
-                          alert('Error. La fecha inicial NO puede ser mayor que la fecha final. Por favor verifique.');
+//                          alert('Error. La fecha inicial NO puede ser mayor que la fecha final. Por favor verifique.');
+                          $("#tituloAdvertencia").html('ATENCIÓN');
+                          $("#mensajeAdvertencia").html('La fecha inicial NO puede ser mayor que la fecha final.<br>¡Por favor verifique!.');
+                          $("#modalAdvertencia").modal("show");
+                          $("#caller").val("fechaInicioMayor");
                           validado = false;
                           //return false;
                         }
@@ -683,16 +714,25 @@ function validarBusqueda(){
   var estado = $("#estado option:selected").val();
   
   if (criterio === 'nodo'){
-    if (nodo === 'nada'){
-      alert('Se debe seleccionar un nodo.\nPor favor verifique!.');
-      $("#nodo").focus();
-      return false;
-    }
+    /// Se comenta la opción "nada" pues ya no está. Se pasó a TODOS por defecto:
+//    if (nodo === 'nada'){
+////      alert('Se debe seleccionar un nodo.\nPor favor verifique!.');
+//      $("#tituloAdvertencia").html('ATENCIÓN');
+//      $("#mensajeAdvertencia").html('Se debe seleccionar un nodo.<br>¡Por favor verifique!.');
+//      $("#modalAdvertencia").modal("show");
+//      $("#caller").val("nodoConsulta");
+////      $("#nodo").focus();
+//      return false;
+//    }
   }
   else {
     if ((archivo === '')||(archivo === undefined)||(archivo === 'NADA')){
-      alert('Se debe seleccionar un archivo.\nPor favor verifique!.');
-      $("#hint").focus();
+//      alert('Se debe seleccionar un archivo.\nPor favor verifique!.');
+      $("#tituloAdvertencia").html('ATENCIÓN');
+      $("#mensajeAdvertencia").html('Se debe seleccionar un archivo.<br>¡Por favor verifique!.');
+      $("#modalAdvertencia").modal("show");
+      $("#caller").val("archivoConsulta");
+//      $("#fileSearch").focus();
       return false;
     }
   }
@@ -897,6 +937,11 @@ function resizeTextArea() {
 }
 /********** fin resizeTextArea() **********/
 
+function foco(){
+//  window.location = '#tituloEditarNodo';
+//  alert('fdsd');
+}
+
 /***********************************************************************************************************************
 /// ************************************************* FUNCIONES USUARIOS ***********************************************
 ************************************************************************************************************************
@@ -966,7 +1011,7 @@ function actualizarUser() {
               //alert('Hubo un problema en la actualización. Por favor verifique.');
               $("#tituloAviso").text('AVISO');
               $("#mensajeAviso").html('¡Hubo un problema en la actualización. Por favor verifique.');
-              $("#modalAdvertencia").modal("show");
+              $("#modalAviso").modal("show");
             }         
           });
         }
@@ -1039,8 +1084,12 @@ function actualizarParametros()  {
       //alert('Valores a cambiar:\nPagina: '+pageSize+'\nHistorial General: '+limiteHistorialGeneral+'\nHistorial Producto: '+limiteHistorialProducto);
       
       if (!cambioPagina && !cambioSelects){
-        alert('No se cambiaron los parámetros dado que todos eran iguales.');
-        $("#modalParametros").modal("hide");
+//        alert('No se cambiaron los parámetros dado que todos eran iguales.');
+        $("#tituloAviso").text('AVISO');
+        $("#mensajeAviso").html('No se cambiaron los parámetros dado que todos eran iguales.<br>¡Por favor verifique!.');
+        $("#modalAviso").modal("show");
+        $("#caller").val("parametrosIguales");
+//        $("#modalParametros").modal("hide");
       }
       else {
         $.getJSON(url, {tamPagina: ""+pageSize+"", tamSelects: ""+limiteSelects+"", log: log}).done(function(request) {
@@ -1048,30 +1097,47 @@ function actualizarParametros()  {
           if (request.resultadoDB === "OK"){
             //alert('Los parametros se actualizaron correctamente en la base de datos!');
             if (cambioPagina && cambioSelects){
-              alert('Todos los parámetros se cambiaron con éxito:\n\nNUEVOS PARÁMETROS:\n---------------------------\nTamaño de página: '+pageSize+'\nTamaño de Selects: '+limiteSelects+'\n---------------------------');
+//              alert('Todos los parámetros se cambiaron con éxito:\n\nNUEVOS PARÁMETROS:\n---------------------------\nTamaño de página: '+pageSize+'\nTamaño de Selects: '+limiteSelects+'\n---------------------------');
+              $("#tituloSuccess").text('ÉXITO');
+              $("#mensajeSuccess").html('NUEVOS PARÁMETROS:<br>---------------------------<br>Tamaño de página: '+pageSize+'<br>Tamaño de Selects: '+limiteSelects+'<br>---------------------------');
+              $("#modalParametros").modal("hide");
+              $("#modalSuccess").modal("show");
+              $("#caller").val("todosParametrosBien");
             }
             else {
               if (!cambioPagina && !cambioSelects){
-                alert('No se cambiaron los parámetros.');
+//                alert('No se cambiaron los parámetros.');
+                $("#tituloAviso").text('AVISO');
+                $("#mensajeAviso").html('No se cambiaron los parámetros.<br>¡Por favor verifique!.');
+                $("#modalAviso").modal("show");
+                $("#caller").val("parametrosIguales");
               }
               else {
-                var mostrar = '-------- NUEVOS PARÁMETROS: --------';
+                var mostrar = 'NUEVOS PARÁMETROS:<br>-----------------------------';
                 if (cambioPagina){
-                  mostrar += '\n# Tamaño de página: '+pageSize;
+                  mostrar += '<br># Tamaño de página: '+pageSize;
                 }
                 if (cambioSelects){
-                  mostrar += '\n# Tamaño de Selects: '+limiteSelects;
+                  mostrar += '<br># Tamaño de Selects: '+limiteSelects;
                 }
-                mostrar += '\n--------------------------------------------';
-                alert(mostrar);
+                mostrar += '<br>-----------------------------';
+//                alert(mostrar);
+                $("#tituloSuccess").text('ÉXITO');
+                $("#mensajeSuccess").html(mostrar);
+                $("#modalParametros").modal("hide");
+                $("#modalSuccess").modal("show");
+                $("#caller").val("parametrosBien");
               }
             }
           }
           else {
-            alert('Hubo un problema al actualizar los datos en la base de datos.\nPor favor inténtelo nuevamente.');
+//            alert('Hubo un problema al actualizar los datos en la base de datos.\nPor favor inténtelo nuevamente.');
+            $("#tituloAviso").text('AVISO');
+            $("#mensajeAviso").html('Hubo un problema al actualizar los datos en la base de datos.<br>¡Por favor verifique!.');
+            $("#modalAviso").modal("show");
           }
-          $("#modalParametros").modal("hide");
-          location.reload(true);
+//          $("#modalParametros").modal("hide");
+//          location.reload(true);
         });
       }///************ FIN ELSE TODOS IGUALES ****
     }///************ FIN IF SEGUIR ***************
@@ -1278,9 +1344,6 @@ $(document).on("change", "#fin", function (){
 });
 /********** fin on("change", "#fin", function () **********/
 
-/********** fin on("change", "#mes", function () **********/
-
-
 /*****************************************************************************************************************************
 /// Fin de las funciones para el form de CONSULTAS.
 ******************************************************************************************************************************
@@ -1374,7 +1437,34 @@ $(document).on("hidden.bs.modal", "#modalAdvertencia", function() {
                                     break;
     case "limiteSelectsEditarUsuario":  $("#limiteSelectsUser").val($("#limiteSelectsOriginal").val());
                                         $("#limiteSelectsUser").focus();
-                                        break;                            
+                                        break;  
+    case "nombreEditarNodo":$("#nombre").val($("#nombreOriginal").val());
+                            $("#nombre").focus();  
+                            break;
+    case "localidadEditarNodo": $("#localidad").val($("#localidadOriginal").val());
+                                $("#localidad").focus();
+                                break;
+    case "tipoEditarNodo": $("#tipoNodo").val($("#tipoOriginal").val());
+                           $("#tipoNodo").focus();
+                           break;
+    case "areaMetroEditarNodo": $("#areaMetro").val($("#areaMetroOriginal").val());
+                                $("#areaMetro").focus(); 
+                                break;
+    case "fechaIntervalo":  S
+    case "fechaInicioMayor":  $("#inicio").focus();
+                              break;      
+    case "nodoConsulta": $("#nodo").focus();
+                         break;
+    case "archivoConsulta": $("#fileSearch").focus();
+                            break;  
+    case "sinCausa":  var tr = $(":checked:first").closest('tr');
+                      var textarea = $(tr).find('[name=causa]');
+                      $(textarea).focus();
+                      break;
+    case "sinSolucion": var tr = $(":checked:first").closest('tr');
+                        var textarea = $(tr).find('[name=solucion]');
+                        $(textarea).focus();
+                        break;
     default: break;                       
   }
 });
@@ -1394,10 +1484,32 @@ $(document).on("hidden.bs.modal", "#modalAviso", function() {
                           $("#appUser").val($("#appUserOriginal").val());
                           $("#nombre").focus();        
                           break;
+    case "nodoExiste":  $("#nombre").val($("#nombreOriginal").val());
+                        $("#localidad").val($("#localidadOriginal").val());
+                        $("#tipoNodo").val($("#tipoOriginal").val());
+                        $("#nombre").focus();
+                        break;
+    case "parametrosIguales": $("#pageSize").focus();
+                              break;
     default: break;                       
   }
 });
 /********** fin on("hidden.bs.modal", "#modalAviso", function() **********/ 
+
+///Disparar función al cerrarse el modal con mensajes de SUCCESS
+///Detecta quien llamó y actúa en consecuencia
+$(document).on("hidden.bs.modal", "#modalSuccess", function() {
+  var caller = $("#caller").val();
+  switch (caller){
+    case "actualizarBien": 
+    case "parametrosBien":
+    case "todosParametrosBien": //$("#modalParametros").modal("hide");
+                                location.reload(true);
+                                break;
+    default: break;                       
+  }
+});
+/********** fin on("hidden.bs.modal", "#modalSuccess", function() **********/ 
 
 /*****************************************************************************************************************************
 /// **************************************************** FIN MODAL USARIO ****************************************************
@@ -1553,7 +1665,11 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                     if (sigo === true){
                                       if (item.causa !== ''){
                                         if ((causaTemp !== item.causa)&&(causaTemp !== '')){
-                                          alert('Si se selecciona más de 1 alarma DEBEN tener la misma causa');
+//                                          alert('Si se selecciona más de 1 alarma DEBEN tener la misma causa');
+                                          $("#tituloAdvertencia").text('ATENCIÓN');
+                                          $("#mensajeAdvertencia").html('Si se selecciona más de 1 alarma DEBEN tener la MISMA CAUSA.<br>Por favor verifique.');
+                                          $("#modalAdvertencia").modal("show");
+                                          $("#caller").val("mismaCausa");
                                           sigo = false;
                                           return;
                                         }
@@ -1563,7 +1679,11 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                       }
                                       if (item.solucion !== ''){
                                         if ((solucionTemp !== item.solucion)&&(solucionTemp !== '')){
-                                          alert('Si se selecciona más de 1 alarma DEBEN tener la misma solución');
+//                                          alert('Si se selecciona más de 1 alarma DEBEN tener la misma solución');
+                                          $("#tituloAdvertencia").text('ATENCIÓN');
+                                          $("#mensajeAdvertencia").html('Si se selecciona más de 1 alarma DEBEN tener la MISMA SOLUCIÓN.<br>Por favor verifique.');
+                                          $("#modalAdvertencia").modal("show");
+                                          $("#caller").val("mismaSolucion");
                                           sigo = false;
                                           return;
                                         }
@@ -1574,11 +1694,19 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                     }  
                                   });
                                   if (causaTemp === ''){
-                                    alert('La Causa no fue ingresada.');
+//                                    alert('La Causa no fue ingresada.');
+                                    $("#tituloAdvertencia").text('ATENCIÓN');
+                                    $("#mensajeAdvertencia").html('La Causa no fue ingresada.<br>Por favor verifique.');
+                                    $("#modalAdvertencia").modal("show");
+                                    $("#caller").val("sinCausa");
                                     sigo = false;
                                   }
                                   if ((solucionTemp === '')&&(sigo === true)){
-                                    alert('La solución no fue ingresada.');
+//                                    alert('La solución no fue ingresada.');
+                                    $("#tituloAdvertencia").text('ATENCIÓN');
+                                    $("#mensajeAdvertencia").html('La solución no fue ingresada.<br>Por favor verifique.');
+                                    $("#modalAdvertencia").modal("show");
+                                    $("#caller").val("sinSolucion");
                                     sigo = false;
                                   }
                                   var query = '';
@@ -1588,23 +1716,33 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                       if (id.idalarma !== param[0].idalarma){
                                         query += ' or idalarma='+id.idalarma;
                                       }
-                                    })
+                                    });
                                     query += ")";
                                     var url = "data/updateJSON.php";
                                     var log = "NO";
                                     $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
                                       if (resultado === "OK") {
-                                        alert('Los datos se modificaron correctamente!.');
-                                        location.reload();
+//                                        alert('Los datos se modificaron correctamente!.');
+                                        $("#tituloSuccess").text('ÉXITO');
+                                        $("#mensajeSuccess").html('¡Los datos se modificaron correctamente!.');
+                                        $("#modalSuccess").modal("show");
+                                        $("#caller").val("actualizarBien");
+//                                        location.reload();
                                       }
                                       else {
-                                        alert('Hubo un problema en la actualización. Por favor verifique.');
+//                                        alert('Hubo un problema en la actualización. Por favor verifique.');
+                                        $("#tituloAviso").text('AVISO');
+                                        $("#mensajeAviso").html('¡Hubo un problema en la actualización. Por favor verifique.');
+                                        $("#modalAviso").modal("show");
                                       }
                                     });
                                   }  
                                 }
                                 else {
-                                  alert('No se han seleccionado alarmas.\nPor favor verifique.');
+//                                  alert('No se han seleccionado alarmas.\nPor favor verifique.');
+                                  $("#tituloAdvertencia").html('ATENCIÓN');
+                                  $("#mensajeAdvertencia").html('No se seleccionaron alarmas.<br>¡Por favor verifique!.');
+                                  $("#modalAdvertencia").modal("show");                                 
                                 }
                                 break;
     case 'btnActualizarUsuarios': elemento = $("#frmUsuarios"); 

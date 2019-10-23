@@ -47,7 +47,8 @@ function generarExcelAlarmas($reg) {
   $hoja->getTabColor()->setRGB($GLOBALS["colorTabAlarmas"]);
   
   $colId = 'A';
-  $filaEncabezado = '3';
+  $filaEncabezado = '4';
+  $filaBordeInicial = '3';
   
   $totalCampos = 0;
   $nombreCampos = array();
@@ -65,7 +66,8 @@ function generarExcelAlarmas($reg) {
   
   ///******************************************************** INICIO formato TIPO CONSULTA ***************************************************
   $hoja->mergeCells($colId.'1:'.$colFinal.'1');
-  $hoja->setCellValue($colId."1", $tituloReporte);
+  $totalDatos = count($reg);
+  $hoja->setCellValue($colId."1", $tituloReporte." (Total: ".$totalDatos.")");
   
   /// Formato del mensaje con el tipo de consulta:
   $mensajeTipo = $colId.'1:'.$colFinal.'1';
@@ -74,6 +76,8 @@ function generarExcelAlarmas($reg) {
       'font' => array(
           'bold' => true,
           'underline' => true,
+          'color' => array('rgb' => $GLOBALS["colorTextoTitulo"]),
+          'size' => 16,
         ),
       'borders' => array(
               'allBorders' => array(
@@ -86,13 +90,39 @@ function generarExcelAlarmas($reg) {
          'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
          'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
       ),
-      'fill' => array(
-          'color' => array('rgb' => $GLOBALS["colorFondoTitulo"]),
-          'fillType' => 'solid',
-        ),
+    // Comento porque ahora está con fondo blanco!:
+//      'fill' => array(
+//          'color' => array('rgb' => $GLOBALS["colorFondoTitulo"]),
+//          'fillType' => 'solid',
+//        ),
       );
   $hoja->getStyle($mensajeTipo)->applyFromArray($styleMensajeTipo);
   ///*********************************************************** FIN formato TIPO CONSULTA ***************************************************
+  
+  ///**************************************************** INICIO formato BORDES INICIAL Y FINAL **********************************************
+  $styleBordeFinal = array(
+      'fill' => array(
+          'color' => array ('rgb' => $GLOBALS["colorFondoBorde"]),
+          'fillType' => 'solid',
+      ),
+      'font' => array(
+          'bold' => true,
+          'underline' => true,
+          'color' => array('rgb' => $GLOBALS["colorTextoSubTitulo"]),
+          'size' => 15,
+        ),
+      'alignment' => array(
+       'wrap' => true,
+       'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+       'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+      ),
+  );
+  ///****************************************************** FIN formato BORDES INICIAL Y FINAL ***********************************************
+  
+  $rangoFilaBordeInicial = $colId.$filaBordeInicial.":".$colFinal.$filaBordeInicial;
+  $hoja->mergeCells($colId.$filaBordeInicial.':'.$colFinal.$filaBordeInicial);
+  $hoja->setCellValue($colId.$filaBordeInicial, "ALARMAS");
+  $hoja->getStyle($rangoFilaBordeInicial)->applyFromArray($styleBordeFinal);
   
   ///***************************************************************** INICIO CAMPOS *********************************************************
   // Agrego los títulos:
@@ -108,6 +138,8 @@ function generarExcelAlarmas($reg) {
       ),
     'font' => array(
         'bold' => true,
+        'color' => array ('rgb' => $GLOBALS["colorTextoCampos"]),
+        'size' => 14,
       ),
     'alignment' => array(
         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -118,8 +150,8 @@ function generarExcelAlarmas($reg) {
 
   ///***************************************************************** INICIO DATOS **********************************************************
   if ($nombreNodo === 'TODOS'){
-      $nodoAnterior = '';
-    }
+    $nodoAnterior = '';
+  }
   
   /// Defino estilos para los nodos:
   $styleNodo = array(
@@ -130,6 +162,7 @@ function generarExcelAlarmas($reg) {
       'font' => array(
         'bold' => true,
         'color' => array ('rgb' => $GLOBALS["colorTextoNodo"]),
+        'size' => 14,
       ),
   );
   
@@ -191,9 +224,32 @@ function generarExcelAlarmas($reg) {
     $hoja->fromArray($fila, '""', $celda);
     $j++;
   }
+  
+  $bordeFinal = $colId.$j.":".$colFinal.$j;
+  $hoja->getStyle($bordeFinal)->applyFromArray($styleBordeFinal);
+  
   $filaFinal = $j - 1;
   ///******************************************************************* FIN DATOS ***********************************************************
 
+  /// ******************************************************** INICIO formato GENERAL ********************************************************
+  /// Defino el rango de celdas con datos para poder darle formato a todas juntas:
+  $rango = $colId.$filaEncabezado.":".$colFinal.$filaFinal;
+  /// Defino el formato para las celdas:
+  $styleGeneral = array(
+      'borders' => array(
+          'allBorders' => array(
+              'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+              'color' => array('rgb' => $GLOBALS["colorBordeRegular"]),
+          ),
+      ),
+      'alignment' => array(
+         'wrap' => true,
+         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+      ),
+  );
+  $hoja->getStyle($rango)->applyFromArray($styleGeneral);
+  /// ********************************************************** FIN formato GENERAL *********************************************************
+  
   /// ***************************************************** INICIO ESTILOS TIPO DE ALARMAS ***************************************************
   /// Defino estilos para los tipo de alarmas:
   $styleMJ = array(
@@ -240,44 +296,28 @@ function generarExcelAlarmas($reg) {
 
   /// Aplico color de fondo de la columna tipo de alarma según el valor:
   for ($k = $filaEncabezado + 1; $k <= $filaFinal; $k++) {
+    $fila = $colId.$k.':'.$colFinal.$k;
     $celda = $colTipoAlarma.$k;
     $valorCelda = $hoja->getCell($celda)->getValue();
     switch ($valorCelda){
-      case 'CR': $hoja->getStyle($celda)->applyFromArray($styleCR);
+      case 'CR': $hoja->getStyle($fila)->applyFromArray($styleCR);
                  break;
-      case 'MN':  $hoja->getStyle($celda)->applyFromArray($styleMN);
+      case 'MN':  $hoja->getStyle($fila)->applyFromArray($styleMN);
                   break;
-      case 'MJ':  $hoja->getStyle($celda)->applyFromArray($styleMJ);
+      case 'MJ':  $hoja->getStyle($fila)->applyFromArray($styleMJ);
                   break;
-      case 'WR':  $hoja->getStyle($celda)->applyFromArray($styleWR);
+      case 'WR':  $hoja->getStyle($fila)->applyFromArray($styleWR);
                   break;
-      case 'NA':  $hoja->getStyle($celda)->applyFromArray($styleNA);
+      case 'NA':  $hoja->getStyle($fila)->applyFromArray($styleNA);
                   break;
-      case 'NR':  $hoja->getStyle($celda)->applyFromArray($styleNR);
+      case 'NR':  $hoja->getStyle($fila)->applyFromArray($styleNR);
                   break;          
       default: break;  
     }
   }  
   /// ***************************************************** FIN ESTILOS TIPO DE ALARMAS ******************************************************
   
-  /// ******************************************************** INICIO formato GENERAL ********************************************************
-  /// Defino el rango de celdas con datos para poder darle formato a todas juntas:
-  $rango = $colId.$filaEncabezado.":".$colFinal.$filaFinal;
-  /// Defino el formato para las celdas:
-  $styleGeneral = array(
-      'borders' => array(
-          'allBorders' => array(
-              'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-              'color' => array('rgb' => $GLOBALS["colorBordeRegular"]),
-          ),
-      ),
-      'alignment' => array(
-         'wrap' => true,
-         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-      )
-  );
-  $hoja->getStyle($rango)->applyFromArray($styleGeneral);
-  /// ********************************************************** FIN formato GENERAL *********************************************************
+  
   
   /// ****************************************************** INICIO AUTOAJUSTE COLUMNAS ******************************************************
   /// Ajusto el auto size para que las celdas no se vean cortadas:

@@ -19,7 +19,7 @@ if(!isset($_SESSION))
 <?php 
 require_once ('head.php');
 ?>
-<body>
+<body onload='foco()'>
 <?php
   require_once ('header.php');
   require_once('data/pdo.php');
@@ -129,8 +129,8 @@ require_once ('head.php');
   $observacionesOriginal = $datosMostrar['observaciones'];
 ?>
 <main>
-  <script>
-    window.location = '#tituloEditarNodo';
+  <script lang='text/javascript'>
+//    window.location = '#tituloEditarNodo';
   </script>
   
   <div id='main-content' class='container-fluid'>
@@ -167,7 +167,7 @@ require_once ('head.php');
                 case 'nombre':  echo "<tr>
                                         <th scope='row' class='text-left'>Nombre</th>
                                         <td>
-                                          <input type='text' name='nombre' id='nombre' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el nombre.' value='".$datosMostrar[$indice]."'>
+                                          <input type='text' name='nombre' autofocus id='nombre' class='agrandar form-control form-control-sm' rows='5' placeholder='Ingrese el nombre.' value='".$datosMostrar[$indice]."'>
                                           <input name='nombreOriginal' id='nombreOriginal' type='hidden' value='".$nombreOriginal."'>  
                                         </td>
                                     </tr>"; 

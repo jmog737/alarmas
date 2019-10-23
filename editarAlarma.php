@@ -19,7 +19,7 @@ if(!isset($_SESSION))
 <?php 
 require_once ('head.php');
 ?>
-<body onload='foco()'>
+<body>
 <?php
   require_once ('header.php');
   require_once('data/pdo.php');
@@ -117,6 +117,10 @@ require_once ('head.php');
   $diaMostrar1 = $temp1[2]."/".$temp1[1]."/".$temp1[0];
 ?>
 <main> 
+  <script>
+//    window.location = '#tituloEditarAlarma';
+  </script>
+  
   <div id='main-content' class='container-fluid'>
     <?php
     if (isset($_POST['btnEditarAlarma'])){
@@ -124,6 +128,7 @@ require_once ('head.php');
     }
     ?>
     <br>
+    
     <h2 id="tituloEditarAlarma">Datos de la alarma <?php echo $idMostrar?></h2>
 
     <form id='frmEditarAlarma' name='frmEditarAlarma' method='post'>
