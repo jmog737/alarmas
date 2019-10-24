@@ -187,6 +187,7 @@ $colorTextoTitulo = 'ff0000';
 $colorFondoBorde = '45a955';
 $colorTextoSubTitulo = 'ffffff';
 $colorTextoDatos = '8c8080';
+$colorFondoDatos = 'ffeeba';
 
 //$colorFondoCampos = 'AEE2FA';
 $colorFondoCampos = '17a2b8';
@@ -212,6 +213,7 @@ $colorFondoCR = 'f5c6cb';
 $colorFondoWR = 'bee5eb';
 $colorFondoNA = '9FB685';
 $colorFondoNR = '999999';
+
 $colorFondoNodo = '77bd82';
 $colorTextoNodo = 'ffffff';
 

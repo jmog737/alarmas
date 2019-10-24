@@ -47,9 +47,9 @@ function generarExcelAlarmas($reg) {
   $hoja->getTabColor()->setRGB($GLOBALS["colorTabAlarmas"]);
   
   $colId = 'A';
-  $filaEncabezado = '4';
   $filaBordeInicial = '3';
-  
+  $filaEncabezado = '4';
+    
   $totalCampos = 0;
   $nombreCampos = array();
   foreach ($camposAlarmas as $ind => $fila ) {
@@ -79,12 +79,12 @@ function generarExcelAlarmas($reg) {
           'color' => array('rgb' => $GLOBALS["colorTextoTitulo"]),
           'size' => 16,
         ),
-      'borders' => array(
-              'allBorders' => array(
-                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                'color' => array('rgb' => $GLOBALS["colorBordeTitulo"]),
-                ),
-              ), 
+//      'borders' => array(
+//              'allBorders' => array(
+//                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+//                'color' => array('rgb' => $GLOBALS["colorBordeTitulo"]),
+//                ),
+//              ), 
       'alignment' => array(
          'wrap' => true,
          'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -394,7 +394,8 @@ function generarExcelNodos($reg) {
   $hoja->getTabColor()->setRGB($GLOBALS["colorTabAlarmas"]);
   
   $colId = 'A';
-  $filaEncabezado = '3';
+  $filaBordeInicial = '3';
+  $filaEncabezado = '4';
   
   $colIp = '';
   $totalCampos = 0;
@@ -416,53 +417,64 @@ function generarExcelNodos($reg) {
   
   /// Formato del mensaje con el tipo de consulta:
   $mensajeTipo = $colId.'1:'.$colFinal.'1';
-
   $styleMensajeTipo = array(
       'font' => array(
           'bold' => true,
           'underline' => true,
+          'color' => array('rgb' => $GLOBALS["colorTextoTitulo"]),
+          'size' => 16,
         ),
-      'borders' => array(
-              'allBorders' => array(
-                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                'color' => array('rgb' => $GLOBALS["colorBordeTitulo"]),
-                ),
-              ), 
+//      'borders' => array(
+//              'allBorders' => array(
+//                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+//                'color' => array('rgb' => $GLOBALS["colorBordeTitulo"]),
+//                ),
+//              ), 
       'alignment' => array(
          'wrap' => true,
          'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
          'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
       ),
-      'fill' => array(
-          'color' => array('rgb' => $GLOBALS["colorFondoTitulo"]),
-          'fillType' => 'solid',
-        ),
+    // Comento porque ahora está con fondo blanco!:
+//      'fill' => array(
+//          'color' => array('rgb' => $GLOBALS["colorFondoTitulo"]),
+//          'fillType' => 'solid',
+//        ),
       );
   $hoja->getStyle($mensajeTipo)->applyFromArray($styleMensajeTipo);
   ///*********************************************************** FIN formato TIPO CONSULTA ***************************************************
+  
+  ///**************************************************** INICIO formato BORDES INICIAL Y FINAL **********************************************
+  $styleBordeFinal = array(
+      'fill' => array(
+          'color' => array ('rgb' => $GLOBALS["colorFondoBorde"]),
+          'fillType' => 'solid',
+      ),
+      'font' => array(
+          'bold' => true,
+          'underline' => true,
+          'color' => array('rgb' => $GLOBALS["colorTextoSubTitulo"]),
+          'size' => 15,
+        ),
+      'alignment' => array(
+       'wrap' => true,
+       'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+       'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+      ),
+  );
+  ///****************************************************** FIN formato BORDES INICIAL Y FINAL ***********************************************
+  
+  $rangoFilaBordeInicial = $colId.$filaBordeInicial.":".$colFinal.$filaBordeInicial;
+  $hoja->mergeCells($colId.$filaBordeInicial.':'.$colFinal.$filaBordeInicial);
+  $hoja->setCellValue($colId.$filaBordeInicial, "NODOS");
+  $hoja->getStyle($rangoFilaBordeInicial)->applyFromArray($styleBordeFinal);
   
   ///***************************************************************** INICIO CAMPOS *********************************************************
   // Agrego los títulos:
   $celda0 = $colId.$filaEncabezado;
   $hoja->fromArray($nombreCampos, '""', $celda0);
-  
-  /// Formato de los títulos:
-  $header = $colId.$filaEncabezado.':'.$colFinal.$filaEncabezado;
-  $styleHeader = array(
-    'fill' => array(
-        'color' => array('rgb' => $GLOBALS["colorFondoCampos"]),
-        'fillType' => 'solid',
-      ),
-    'font' => array(
-        'bold' => true,
-      ),
-    'alignment' => array(
-        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-      ),
-  );
-  $hoja->getStyle($header)->applyFromArray($styleHeader);
   ///******************************************************************* FIN CAMPOS **********************************************************
-
+  
   ///***************************************************************** INICIO DATOS **********************************************************  
   $j = $filaEncabezado + 1;
 
@@ -496,6 +508,54 @@ function generarExcelNodos($reg) {
   $filaFinal = $j - 1;
   ///******************************************************************* FIN DATOS ***********************************************************
   
+  ///************************************************************ AGREGO BORDE FINAL *********************************************************
+  $bordeFinal = $colId.$j.":".$colFinal.$j;
+  $hoja->getStyle($bordeFinal)->applyFromArray($styleBordeFinal);
+  ///************************************************************** FIN BORDE FINAL **********************************************************
+
+  /// ******************************************************** INICIO formato GENERAL ********************************************************
+  /// Defino el rango de celdas con datos para poder darle formato a todas juntas:
+  $rango = $colId.$filaEncabezado.":".$colFinal.$filaFinal;
+  /// Defino el formato para las celdas:
+  $styleGeneral = array(
+    'borders' => array(
+        'allBorders' => array(
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+            'color' => array('rgb' => $GLOBALS["colorBordeRegular"]),
+        ),
+    ),
+    'alignment' => array(
+       'wrap' => true,
+       'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+    ),
+    'fill' => array(
+      'color' => array('rgb' => $GLOBALS["colorFondoDatos"]),
+      'fillType' => 'solid',
+    ),
+  );
+  $hoja->getStyle($rango)->applyFromArray($styleGeneral);
+  /// ********************************************************** FIN formato GENERAL *********************************************************
+  
+  ///********************************************************** INICIO FORMATO CAMPOS ********************************************************
+  /// Formato de los títulos:
+  $header = $colId.$filaEncabezado.':'.$colFinal.$filaEncabezado;
+  $styleHeader = array(
+    'fill' => array(
+        'color' => array('rgb' => $GLOBALS["colorFondoCampos"]),
+        'fillType' => 'solid',
+      ),
+    'font' => array(
+        'bold' => true,
+        'color' => array ('rgb' => $GLOBALS["colorTextoCampos"]),
+        'size' => 14,
+      ),
+    'alignment' => array(
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+      ),
+  );
+  $hoja->getStyle($header)->applyFromArray($styleHeader);
+  ///*********************************************************** FIN FORMATO CAMPOS **********************************************************
+  
   ///************************************************************* INICIO HIPERVÍNCULO *******************************************************
   $k = $filaEncabezado + 1;
   while ($k <= $filaFinal){
@@ -505,25 +565,36 @@ function generarExcelNodos($reg) {
   }
   ///*************************************************************** FIN HIPERVÍNCULO ********************************************************
   
-  /// ******************************************************** INICIO formato GENERAL ********************************************************
-  /// Defino el rango de celdas con datos para poder darle formato a todas juntas:
-  $rango = $colId.$filaEncabezado.":".$colFinal.$filaFinal;
-  /// Defino el formato para las celdas:
-  $styleGeneral = array(
-      'borders' => array(
-          'allBorders' => array(
-              'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-              'color' => array('rgb' => $GLOBALS["colorBordeRegular"]),
-          ),
-      ),
-      'alignment' => array(
-         'wrap' => true,
-         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-      )
-  );
-  $hoja->getStyle($rango)->applyFromArray($styleGeneral);
-  /// ********************************************************** FIN formato GENERAL *********************************************************
+  ///*************************************************************** INICIO ALINEACIÓN *******************************************************
+  $inicioDatos = $filaEncabezado + 1;
+  $colNombre = chr(ord($colId) + 1);
+  $colLocalidad = chr(ord($colId) + 3);
+
+  $alIzq = $colNombre.$inicioDatos.':'.$colNombre.$filaFinal;
+  $alIzq1 = $colLocalidad.$inicioDatos.':'.$colLocalidad.$filaFinal;
+  $alIzq2 = $colIp.$inicioDatos.':'.$colIp.$filaFinal;
   
+  $styleIzq = array(
+//    'fill' => array(
+//        'color' => array('rgb' => $GLOBALS["colorFondoCampos"]),
+//        'fillType' => 'solid',
+//      ),
+//    'font' => array(
+//        'bold' => true,
+//        'color' => array ('rgb' => $GLOBALS["colorTextoCampos"]),
+//        'size' => 14,
+//      ),
+    'alignment' => array(
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+      ),
+  );
+
+  $hoja->getStyle($alIzq)->applyFromArray($styleIzq);
+  $hoja->getStyle($alIzq1)->applyFromArray($styleIzq);
+  $hoja->getStyle($alIzq2)->applyFromArray($styleIzq);
+  
+  ///***************************************************************** FIN ALINEACIÓN ********************************************************
+    
   /// ****************************************************** INICIO AUTOAJUSTE COLUMNAS ******************************************************
   /// Ajusto el auto size para que las celdas no se vean cortadas:
   for ($col = ord(''.$colId.''); $col <= ord(''.$colFinal.''); $col++)
@@ -599,7 +670,8 @@ function generarExcelUsuarios($reg) {
   $hoja->getTabColor()->setRGB($GLOBALS["colorTabAlarmas"]);
   
   $colId = 'A';
-  $filaEncabezado = '3';
+  $filaBordeInicial = '3';
+  $filaEncabezado = '4';
   
   $totalCampos = 0;
   $nombreCampos = array();
@@ -614,56 +686,67 @@ function generarExcelUsuarios($reg) {
   ///******************************************************** INICIO formato TIPO CONSULTA ***************************************************
   $hoja->mergeCells($colId.'1:'.$colFinal.'1');
   $hoja->setCellValue($colId."1", $tituloReporte);
-  
+
   /// Formato del mensaje con el tipo de consulta:
   $mensajeTipo = $colId.'1:'.$colFinal.'1';
-
   $styleMensajeTipo = array(
       'font' => array(
           'bold' => true,
           'underline' => true,
+          'color' => array('rgb' => $GLOBALS["colorTextoTitulo"]),
+          'size' => 16,
         ),
-      'borders' => array(
-              'allBorders' => array(
-                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                'color' => array('rgb' => $GLOBALS["colorBordeTitulo"]),
-                ),
-              ), 
+//      'borders' => array(
+//              'allBorders' => array(
+//                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+//                'color' => array('rgb' => $GLOBALS["colorBordeTitulo"]),
+//                ),
+//              ), 
       'alignment' => array(
          'wrap' => true,
          'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
          'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
       ),
-      'fill' => array(
-          'color' => array('rgb' => $GLOBALS["colorFondoTitulo"]),
-          'fillType' => 'solid',
-        ),
+    // Comento porque ahora está con fondo blanco!:
+//      'fill' => array(
+//          'color' => array('rgb' => $GLOBALS["colorFondoTitulo"]),
+//          'fillType' => 'solid',
+//        ),
       );
   $hoja->getStyle($mensajeTipo)->applyFromArray($styleMensajeTipo);
   ///*********************************************************** FIN formato TIPO CONSULTA ***************************************************
+  
+   ///**************************************************** INICIO formato BORDES INICIAL Y FINAL **********************************************
+  $styleBordeFinal = array(
+      'fill' => array(
+          'color' => array ('rgb' => $GLOBALS["colorFondoBorde"]),
+          'fillType' => 'solid',
+      ),
+      'font' => array(
+          'bold' => true,
+          'underline' => true,
+          'color' => array('rgb' => $GLOBALS["colorTextoSubTitulo"]),
+          'size' => 15,
+        ),
+      'alignment' => array(
+       'wrap' => true,
+       'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+       'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+      ),
+  );
+  ///****************************************************** FIN formato BORDES INICIAL Y FINAL ***********************************************
+  
+  $rangoFilaBordeInicial = $colId.$filaBordeInicial.":".$colFinal.$filaBordeInicial;
+  $hoja->mergeCells($colId.$filaBordeInicial.':'.$colFinal.$filaBordeInicial);
+  $hoja->setCellValue($colId.$filaBordeInicial, "USUARIOS");
+  $hoja->getStyle($rangoFilaBordeInicial)->applyFromArray($styleBordeFinal);
   
   ///***************************************************************** INICIO CAMPOS *********************************************************
   // Agrego los títulos:
   $celda0 = $colId.$filaEncabezado;
   $hoja->fromArray($nombreCampos, '""', $celda0);
-  
-  /// Formato de los títulos:
-  $header = $colId.$filaEncabezado.':'.$colFinal.$filaEncabezado;
-  $styleHeader = array(
-    'fill' => array(
-        'color' => array('rgb' => $GLOBALS["colorFondoCampos"]),
-        'fillType' => 'solid',
-      ),
-    'font' => array(
-        'bold' => true,
-      ),
-    'alignment' => array(
-        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-      ),
-  );
-  $hoja->getStyle($header)->applyFromArray($styleHeader);
   ///******************************************************************* FIN CAMPOS **********************************************************
-
+  
   ///***************************************************************** INICIO DATOS ********************************************************** 
   $j = $filaEncabezado + 1;
 
@@ -698,24 +781,53 @@ function generarExcelUsuarios($reg) {
   $filaFinal = $j - 1;
   ///******************************************************************* FIN DATOS ***********************************************************
 
+  ///************************************************************ AGREGO BORDE FINAL *********************************************************
+  $bordeFinal = $colId.$j.":".$colFinal.$j;
+  $hoja->getStyle($bordeFinal)->applyFromArray($styleBordeFinal);
+  ///************************************************************** FIN BORDE FINAL **********************************************************
+  
   /// ******************************************************** INICIO formato GENERAL ********************************************************
   /// Defino el rango de celdas con datos para poder darle formato a todas juntas:
   $rango = $colId.$filaEncabezado.":".$colFinal.$filaFinal;
   /// Defino el formato para las celdas:
   $styleGeneral = array(
-      'borders' => array(
-          'allBorders' => array(
-              'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-              'color' => array('rgb' => $GLOBALS["colorBordeRegular"]),
-          ),
-      ),
-      'alignment' => array(
-         'wrap' => true,
-         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-      )
+    'borders' => array(
+        'allBorders' => array(
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+            'color' => array('rgb' => $GLOBALS["colorBordeRegular"]),
+        ),
+    ),
+    'alignment' => array(
+       'wrap' => true,
+       'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+    ),
+    'fill' => array(
+      'color' => array('rgb' => $GLOBALS["colorFondoDatos"]),
+      'fillType' => 'solid',
+    ),
   );
   $hoja->getStyle($rango)->applyFromArray($styleGeneral);
   /// ********************************************************** FIN formato GENERAL *********************************************************
+  
+  ///********************************************************** INICIO FORMATO CAMPOS ********************************************************
+  /// Formato de los títulos:
+  $header = $colId.$filaEncabezado.':'.$colFinal.$filaEncabezado;
+  $styleHeader = array(
+    'fill' => array(
+        'color' => array('rgb' => $GLOBALS["colorFondoCampos"]),
+        'fillType' => 'solid',
+      ),
+    'font' => array(
+        'bold' => true,
+        'color' => array ('rgb' => $GLOBALS["colorTextoCampos"]),
+        'size' => 14,
+      ),
+    'alignment' => array(
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+      ),
+  );
+  $hoja->getStyle($header)->applyFromArray($styleHeader);
+  ///*********************************************************** FIN FORMATO CAMPOS **********************************************************
   
   /// ****************************************************** INICIO AUTOAJUSTE COLUMNAS ******************************************************
   /// Ajusto el auto size para que las celdas no se vean cortadas:
