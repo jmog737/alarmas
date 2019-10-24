@@ -59,14 +59,19 @@ body {
 /****************************** HEADER **************************************/
 header {
   background-color: #023184;
-  /*background-color: #18265a;*/
   border-radius: 0;
   border: 0;
   width: 100%;
-  position: absolute;
+  /*position: absolute;*/
   top: 0;
   margin: 0;
   height: 120px;
+  position: fixed;
+  z-index: 1;
+}
+
+#header-nav {
+  padding: 0px;
 }
 .container {
   width: 100%;
@@ -213,11 +218,12 @@ a.detailObject:focus, a.detailObject:hover {
 .panel-footer {
   padding-top: 2px;
   padding-bottom: 2px;
-  background-color: #023184;
   border-top: 0;
-  position: absolute;
   bottom: 0;
   width: 100%;
+  background-color: #023184;
+ position: absolute;
+  /*position: fixed;*/
   height: 110px;
 }
 .panel-footer div.row {
@@ -225,7 +231,6 @@ a.detailObject:focus, a.detailObject:hover {
 }
 
 #fechaActual{
-  color: #38ff1d;
   color: #ccce8b;
 }
 /**************************** END FOOTER ************************************/
@@ -299,6 +304,7 @@ hr {
 .tituloTabla {
   border-radius: 25px 25px 0 0;
   text-align: center;
+  font-weight: 800 !important;
 }
 .pieTabla {
   border-radius: 0 0 25px 25px;
@@ -354,10 +360,12 @@ hr {
   text-align: center;
   color: #000;
   border-collapse: separate;
-  margin: 0 auto;
+  margin: auto;
   border-radius: 25px;
-  max-width: 60% !important;
+  max-width: 80% !important;
   padding: 0px;
+  max-height: 200px;
+  overflow-x: scroll !important;
 }
 .tabla2 caption {
   display: table-caption;
@@ -368,6 +376,7 @@ hr {
 } 
 .tabla2 th {
   background-color: #0066cc;
+  background-color: #17a2b8;
   color: #ffff00;
   border: #c0c0c0 1px solid;
   margin: 0px;
@@ -375,6 +384,7 @@ hr {
   max-width: 100%;
   text-align: center;
   padding: 5px !important;
+  font-weight: 700;
 }
 .tabla2 tr {
   border: #c0c0c0 1px solid;
@@ -385,6 +395,7 @@ hr {
   border: #c0c0c0 1px solid;
   border-collapse: separate;
   padding: 1px;
+  vertical-align: middle;
   /*font-size: 0.9em;*/
 }
 .tabla2 td input[type="text"] {
@@ -410,44 +421,30 @@ hr {
   padding: 0px;
 }
 .tabla2 textarea {
-/*  border: #c0c0c0 1px solid;
-  border-collapse: separate;
-  text-align: center;
-  padding: 0px;
-  background-color: #ffffac;
-  min-height: 80px;
-  max-width: 100px;
-box-sizing: border-box;*/
 	overflow: hidden;
 	box-sizing: border-box; 
+  border: 0px;
+  max-width: 120px;
 }
 
 .tabla2 .subTituloTabla1 {
-  background-color:#57805e;
   background-color: #28ce44;
+  background-color: #88b38f;
+  background-color:#77bd82;
   text-align: center;
-  color: #071c40;
+/*  color: #071c40;*/
+  color: #ffffff;
+  font-weight: 800;
   /*font-size: 10pt;*/
 }
 .tabla2 .subTituloTabla2 {
   background-color:#9fadea;
   background-color: #f5d684;
   text-align: center;
-  color: #071c40;
+  /*  color: #071c40;*/
+  color: #ffffff;
   font-size: 10pt;
-}
-
-.tabla2 label {
-  margin: 0px;
-  padding: 0px;
-  vertical-align: middle;
-  text-align: left !important; 
-  font-weight: bold;
-  background-color: #0066cc;
-  color: #ffff00;
-  border: #c0c0c0 1px solid;
-  line-height:none;
-  width: 100%;
+  font-weight: 800;
 }
 
 .tabla2 .enc {
@@ -462,14 +459,68 @@ box-sizing: border-box;*/
   font-weight: bold;
 }
 
+.tabla2 input[type=radio]+label{
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 10px;
+  margin: 0px;
+  background-color: grey;
+  font-weight:bolder;
+  color:#ffffff;
+}
+.tabla2 input[type=radio].visible:checked+label{
+  background-color: #17a2b8; /* info */
+  background-color: #ffc107; /* warning */
+  background-color: #28a745; /* success */
+  background-color: #ff3547; /* danger */
+  font-weight:bolder;
+  color:#ffffff;
+}
+
+/***************************************************************************************************/
+/* NUEVOS ESTILOS MDB */
+div[name=table-content] {
+  width: 99%;
+  margin: auto;
+  padding: 0px;
+}
+table.table td{
+  padding: 0px;
+}
+table.table textArea{
+  border: 0px;
+  min-width: 100px;
+  padding: 0px;
+  margin: 0px;
+}
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before {
+bottom: .8em;
+}
+/***************************************************************************************************/
+
 /******************************* FIN TABLAS ***********************************/
 
 /************************************ ALARMAS *********************************/
 .alCritica {
-  background-color:#fd5151;
+  background-color:#f5c6cb;
 }
 .alMajor {
   background-color:#ffa929;
+  background-color: #ffbb55;
+}
+.table-hover .alMajor:hover {
+  background-color:#ff7609;
 }
 .alMinor {
   background-color:#ffff7c;
@@ -484,15 +535,17 @@ box-sizing: border-box;*/
   background-color:#999999;
 }
 .procesada {
-  background-color: #85ca5e;
+  background-color: #85ca5e !important;
 }
 .sinProcesar {
-  background-color:#f7ff00;
+  background-color:#f7ff00 !important;
 }
+
 /****************************** FIN ALARMAS ***********************************/
 
 .btn {
-  padding: .3rem .75rem !important;
+  /*padding: .3rem .75rem !important;*/
+  border-radius: 25px 25px 25px 25px;
 }
 
 #snapshot {
@@ -515,6 +568,10 @@ box-sizing: border-box;*/
 }
 .naranja {
   color: #ecb127;
+}
+
+.nomostrar {
+  display: none;
 }
 
 .usuarioIndex {
@@ -693,12 +750,12 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 }
 
 /******************************** MODAL **************************************/
-.tituloModal {
+/*.tituloModal {
   background-color: #023184;
 }
 .tblModal {
   color: #000;
-}
+}*/
 
 #modalExportar .modal-header {
   background-color: #e44040;
@@ -905,7 +962,7 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 
 @keyframes fadeIn {
     from {opacity: 0;}
-    to {opacity:1 ;}
+    to {opacity: 1 ;}
 }
 
 .arrow {
@@ -924,12 +981,12 @@ a.linkHistorialGeneral:hover, a.linkHistorialProducto:hover{
 }  
   
 .arrow-bottom {
-  top: 2em;
+  top: 7em;
   right: 0em;      
 }
         
 .arrow-top {
-  bottom: 9em;
+  bottom: 6em;
   right: 0em;
 }  
 
