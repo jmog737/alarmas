@@ -802,7 +802,7 @@ function generarExcelUsuarios($reg) {
        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
     ),
     'fill' => array(
-      'color' => array('rgb' => $GLOBALS["colorFondoDatos"]),
+      'color' => array('rgb' => $GLOBALS["colorFondoDatosCeleste"]),
       'fillType' => 'solid',
     ),
   );

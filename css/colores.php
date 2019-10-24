@@ -188,6 +188,7 @@ $colorFondoBorde = '45a955';
 $colorTextoSubTitulo = 'ffffff';
 $colorTextoDatos = '8c8080';
 $colorFondoDatos = 'ffeeba';
+$colorFondoDatosCeleste = 'bee5eb';
 
 //$colorFondoCampos = 'AEE2FA';
 $colorFondoCampos = '17a2b8';

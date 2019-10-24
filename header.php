@@ -35,8 +35,8 @@
               <a class="dropdown-item" title="Realizar Consultas" href="consultas.php">Consultas</a>
               <a class="dropdown-item" title="Ver Nodos" href="nodos.php">Nodos</a>
               <a class="dropdown-item" title="Ver Usuarios" href="usuarios.php">Usuarios</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" title="Ver Estad&iacute;siticas" href="estadisticas.php">Estadisticas</a>
+<!--              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" title="Ver Estad&iacute;siticas" href="estadisticas.php">Estadisticas</a>-->
 <!--              <li role="separator" class="divider"></li>
               <li><a href="#">Administrar</a></li>-->
             </div>
@@ -45,7 +45,7 @@
             <a class='d-block d-sm-none' title="Realizar Consultas" href="consultas.php">Consultas</a>
             <a class='d-block d-sm-none' title="Ver Nodos" href="nodos.php">Nodos</a>
             <a class='d-block d-sm-none' title="Ver Usuarios" href="usuarios.php">Usuarios</a>
-            <a class='d-block d-sm-none' title="Ver Estad&iacute;siticas" href="estadisticas.php">Estadisticas</a> 
+            <!--<a class='d-block d-sm-none' title="Ver Estad&iacute;siticas" href="estadisticas.php">Estadisticas</a>--> 
           </li>
           <?php
           }
