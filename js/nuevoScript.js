@@ -896,10 +896,10 @@ function validarBusqueda(){
       var mensajeTemp = mensaje.split('Alarmas ');
       var estadoMostrar = '';
       if (estado === 'Procesada'){
-        estadoMostrar = 'procesadas';
+        estadoMostrar = '"procesadas"';
       }
       else {
-        estadoMostrar = 'sin procesar';
+        estadoMostrar = '"sin procesar"';
       }
       mensaje = "Alarmas "+estadoMostrar+' '+mensajeTemp[1];
     }
@@ -1460,6 +1460,9 @@ $(document).on("hidden.bs.modal", "#modalAdvertencia", function() {
                         var textarea = $(tr).find('[name=solucion]');
                         $(textarea).focus();
                         break;
+    case "badExtension":  $("#frmSubir")[0].reset();
+                          $("#uploadedFile").focus();
+                          break;
     default: break;                       
   }
 });
@@ -1575,6 +1578,50 @@ $(document).on("click", "#btnCargar", function() {
   validarSubmitCargar();
 });
 /********** fin on("click", "#btnCargar", function() **********/
+
+///Disparar función al CAMBIAR OPCIÓN en el form para cargar el archivo.
+///La idea es mostrar solo las opciones compatibles según lo elegido.
+$(document).on("change", "#uploadedFile", function() {
+  var dir = $(this).val();
+  var elegido = dir.split('\\');
+  var sep = elegido[2].split('.');
+  var extension = sep[1];
+  if ((extension !== 'csv')&&(extension !== 'xls')){
+    $("#tituloAdvertencia").html('ATENCIÓN');
+    $("#mensajeAdvertencia").html('Extensión NO válida.<br>¡Por favor verifique!.');
+    $("#modalAdvertencia").modal("show");
+    $("#caller").val("badExtension");
+  }
+  else {
+    $("#nodo option").each(function(){
+      var nombreCorto = $(this).attr('nombreCorto');
+      var sep1 = nombreCorto.indexOf('#');
+      if (nombreCorto !== 'nada'){
+        /// Si da -1 quiere decir que NO está en el string por lo cual es un PSS32
+        if (sep1 === -1){
+          //alert(nombreCorto+' - NO es OCS');
+          if (extension === 'csv'){
+            $(this).hide();
+          }
+          else {
+            $(this).show();
+          }
+        }
+        /// Si NO da -1 quiere decir que está en el string por lo cual es un OCS
+        else {
+          //alert(nombreCorto+' - es OCS');
+          if (extension === 'xls'){
+            $(this).hide();
+          }
+          else {
+            $(this).show();
+          }
+        }
+      }
+    });
+  }
+});
+/********** fin on("change", "#uploadedFile", function() **********/
 
 /*****************************************************************************************************************************
 /// **************************************************** FIN SUBIR ARCHIVO ***************************************************
