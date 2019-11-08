@@ -82,7 +82,7 @@ require_once ('head.php');
   /// ************************************* FIN GENERACIÓN NAVEGACIÓN ************************************************************************
 
   /// Chequeo si vengo del listado de alarmas para editarla, o de la propia página luego de la edición:
-  if (isset($_POST['btnEditarAlarma'])){echo "<br>post seteado<br>";
+  if (isset($_POST['btnEditarAlarma'])){
     $causa = htmlentities($_POST['causa']);
     $solucion = htmlentities($_POST['sln']);
     $query = "update alarmas set causa=?, solucion=?, estado='Procesada' where idalarma=?";

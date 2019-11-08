@@ -1799,6 +1799,68 @@ $(document).on("click", "[name=btnActualizar]", function() {
 });
 /********** fin on("click", "#btnActualizar", function() *********/
 
+///Disparar función al hacer SUBMIT del form para actualizar TODOS los datos.
+$(document).on("click", "[name=btnActualizarTodo]", function() {
+  var query = "update alarmas set ";
+  var param = []; 
+  var registro;
+  $("input[type=checkbox]").each(function(){
+    var idal = $(this).val();
+    var causa = $("textarea[idalarma="+idal+"][name='causa']").val();
+    var solucion = $("textarea[idalarma="+idal+"][name='solucion']").val();
+    if (!(((causa === undefined)||(causa === ''))&&(solucion === undefined)||(solucion === ''))){
+      registro = {idalarma: idal, causa: causa, solucion: solucion};
+      param.push(registro);
+    } 
+  });
+  var modificadas = param.length;
+  if (modificadas > 0){
+    var sigo = true;
+    var query = '';
+    if (sigo === true){      
+      query = "update alarmas set causa = CASE";
+      param.forEach(function agregaridAlarma(id){
+        query += ' when (idalarma='+id.idalarma+') then "'+id.causa+'"';  
+      });
+      query += " END, ";
+      query += "solucion = CASE";
+      param.forEach(function agregarCausa(id){
+        query += ' when (idalarma='+id.idalarma+') then "'+id.solucion+'"';  
+      });
+      query += " END";
+      query += " where idalarma in ("+param[0].idalarma;
+      param.forEach(function agregarSln(id){
+        if (id.idalarma !== param[0].idalarma){
+          query += ', '+id.idalarma;  
+        }
+      });
+      query += ')';
+      //alert(query);
+      var url = "data/updateJSON.php";
+      var log = "NO";
+      $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
+        if (resultado === "OK") {
+          $("#tituloSuccess").text('ÉXITO');
+          $("#mensajeSuccess").html('¡Los datos se AGREGARON/ACTUALIZARON correctamente!.');
+          $("#modalSuccess").modal("show");
+          $("#caller").val("actualizarBien");
+        }
+        else {
+          $("#tituloAviso").text('AVISO');
+          $("#mensajeAviso").html('¡Hubo un problema en la actualización. Por favor verifique.');
+          $("#modalAviso").modal("show");
+        }
+      });
+    }  
+  }
+  else {
+    $("#tituloAdvertencia").html('ATENCIÓN');
+    $("#mensajeAdvertencia").html('No se seleccionaron alarmas.<br>¡Por favor verifique!.');
+    $("#modalAdvertencia").modal("show");                                 
+  }
+});
+/********** fin on("click", "#btnActualizarTodo", function() *********/
+
 /*****************************************************************************************************************************
 /// ************************************************** FIN MUESTRA ALARMAS ***************************************************
 ******************************************************************************************************************************
