@@ -31,7 +31,7 @@ if(!isset($_SESSION))
         <p id="mensajeAviso"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-info btn-outline-info waves-effect" title="Cerrar ventana" data-dismiss="modal">Cerrar</button>
+        <button type="button" name="btnCerrar" autofocus="autofocus" class="btn btn-sm btn-info btn-outline-info waves-effect" title="Cerrar ventana" data-dismiss="modal">Cerrar</button>
       </div>
     </div>   
   </div>

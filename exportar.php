@@ -53,7 +53,7 @@ $vida_session = time() - $_SESSION['tiempo'];
 
 if($vida_session < DURACION ) {
   require_once('data/pdo.php');
-  require_once('data/config.php');
+//  require_once('data/config.php');
   require_once('generarExcel.php');
   require_once('generarPdfs.php');
   require_once('enviarMails.php');
@@ -402,9 +402,17 @@ if($vida_session < DURACION ) {
   ini_set('display_errors',1);
 } /// Fin if(isset($_SESSION['tiempo']))
 else {
-  echo '<script type="text/javascript">'
-  . 'alert("Tú sesión expiró.\n¡Por favor vuelve a loguearte!.");window.close();
-    window.location.assign("salir.php");
-     </script>';
+  require_once("scripts.php");
+  require_once("alertas.php");
+  require 'vendor/autoload.php';
+  require_once("head.php");
+
+  echo '<script type="text/javascript">';
+  echo '
+      $("#tituloAdvertencia").html("ATENCIÓN");
+      $("#mensajeAdvertencia").html("Tú sesión expiró.<br>¡Por favor vuelve a loguearte!.");
+      $("#modalAdvertencia").modal("show");
+      $("#caller").val("exportar");';
+  echo '</script>';
 }
 ?>

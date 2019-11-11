@@ -17,7 +17,7 @@ define('DURACION', 3600);
 /**
   \param TIEMPOCOOKIE Constante que indica el tiempo de vida del cookie a setear (en segundos).
 */
-define('TIEMPOCOOKIE', 3603);
+define('TIEMPOCOOKIE', 3610);
 
 /**
   \param TAM_ARCHIVO Constante que define el tamaño máximo permitido del archivo a cargar en la base de datos (en bytes).

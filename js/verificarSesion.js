@@ -51,47 +51,65 @@ function verificarSesion(mensaje, cookie) {
       var temp = String(timestamp).substr(-3);
 
       if (sesion === 'expirada'){
-        var mostrarSesion = '';
-        ///Se comenta siguiente línea usada para las pruebas:
-        //var tempSesion = prompt('Ingrese el tiempo deseado para la sesión: \n');   
-        var horas = Math.floor( duracionSesion / 3600 );  
-        var minutos = Math.floor( (duracionSesion % 3600) / 60 );
-        var segs = duracionSesion % 60;
-        //Anteponiendo un 0 a los minutos si son menos de 10 
-        //minutos = minutos < 10 ? '0' + minutos : minutos;
-        //Anteponiendo un 0 a los segundos si son menos de 10 
-        //segs = segs < 10 ? '0' + segs : segs;
-        if (horas === 0){
-          if (minutos === 0){
-            mostrarSesion = segs+' segs';
-          }
-          else {
-            if (segs === 0){
-              mostrarSesion = minutos+'min';
-            }
-            else {
-              mostrarSesion = minutos+'min '+segs+'segs';
-            }
-          }
+        var mensajeExpirada = '';
+        var tituloExpirada = '';
+        if (usuarioViejo === 'NO LOGUEADO'){
+          mensajeExpirada = "NO has iniciado sesión<br>Por favor, loguéate.";
+          tituloExpirada = "ATENCIÓN";
         }
         else {
-          if ((minutos === 0)&&(segs === 0)){
-            mostrarSesion = horas+'h';
-          }
-          else {
-            if (segs === 0){
-              mostrarSesion = horas+'h '+minutos+'min';
+          var mostrarSesion = '';
+          tituloExpirada = '¡¡ATENCIÓN '+usuarioViejo.toUpperCase()+'!!';
+          ///Se comenta siguiente línea usada para las pruebas:
+          //var tempSesion = prompt('Ingrese el tiempo deseado para la sesión: \n');   
+          var horas = Math.floor( duracionSesion / 3600 );  
+          var minutos = Math.floor( (duracionSesion % 3600) / 60 );
+          var segs = duracionSesion % 60;
+          //Anteponiendo un 0 a los minutos si son menos de 10 
+          //minutos = minutos < 10 ? '0' + minutos : minutos;
+          //Anteponiendo un 0 a los segundos si son menos de 10 
+          //segs = segs < 10 ? '0' + segs : segs;
+          if (horas === 0){
+            if (minutos === 0){
+              mostrarSesion = segs+' segs';
             }
             else {
-              mostrarSesion = horas+'h '+minutos+'min '+segs+'segs';
+              if (segs === 0){
+                mostrarSesion = minutos+'min';
+              }
+              else {
+                mostrarSesion = minutos+'min '+segs+'segs';
+              }
             }
-          }  
+          }
+          else {
+            if ((minutos === 0)&&(segs === 0)){
+              mostrarSesion = horas+'h';
+            }
+            else {
+              if (segs === 0){
+                mostrarSesion = horas+'h '+minutos+'min';
+              }
+              else {
+                mostrarSesion = horas+'h '+minutos+'min '+segs+'segs';
+              }
+            }  
+          }
+          
+          if (user === 'COOKIE'){
+            mensajeExpirada = "Sesión inactiva "+mostrarSesion+".<br>Por seguridad, ¡vuelve a loguearte!.<br><br>"+'Motivo: '+user;
+            
+          }
+          else {
+            mensajeExpirada = "Sesión inactiva "+mostrarSesion+".<br>Por seguridad, ¡vuelve a loguearte!.<br><br>"+'Motivo: '+user+"<br>Último tiempo: "+oldTime+'<br>Tiempo actual: '+temp;
+          }   
         }
-        alert(usuarioViejo.toUpperCase()+":\n\nTú sesión ha estado inactiva por más de "+mostrarSesion+"\nPor favor, por seguridad, ¡vuelve a loguearte!.\n\n"+'Motivo: '+user+"\nTiempo seteado: "+oldTime+'\nTiempo actual: '+temp);
-        window.location.assign("salir.php");
+        $("#tituloAdvertencia").html(tituloExpirada);
+        $("#mensajeAdvertencia").html(mensajeExpirada);
+        $("#modalAdvertencia").modal("show");
+        $("#caller").val("cookie");
       }
       else {
-//        $("#main-content").focus();
         document.getElementById("usuarioSesion").value = user;
         document.getElementById("userID").value = user_id;
         document.getElementById("timestampSesion").value = timestamp;

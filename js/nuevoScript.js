@@ -149,7 +149,6 @@ function vaciarFrmLogin(){
  * \brief Función que valida los datos de ingreso (por ahora, solo que se haya ingresado el usuario).
  */
 function validarIngreso () {
-  verificarSesion('', 's');
   var usuario = $("#nombreUsuario").val();
   if ((usuario === ' ')||(usuario === "null")||(usuario === '')){ 
     //alert('¡Debe ingresar el nombre de usuario!');
@@ -1393,6 +1392,10 @@ $(document).on("keypress", "#pw2", function(e) {
 });
 /********** fin on("keypress", "#pw2", function(e) **********/
        
+$(document).on('shown.bs.modal', "#modalAdvertencia", function () {
+  $(this).find('button').focus();
+});       
+       
 ///Disparar función al cerrarse el modal con mensajes de ADVERTENCIA
 ///Detecta quien llamó y actúa en consecuencia
 $(document).on("hidden.bs.modal", "#modalAdvertencia", function() {
@@ -1463,6 +1466,10 @@ $(document).on("hidden.bs.modal", "#modalAdvertencia", function() {
     case "badExtension":  $("#frmSubir")[0].reset();
                           $("#uploadedFile").focus();
                           break;
+    case "cookie":  window.location.assign("salir.php");
+                    break;
+    case "exportar": window.close();
+                     break;                
     default: break;                       
   }
 });
