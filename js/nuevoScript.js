@@ -1448,7 +1448,7 @@ $(document).on("hidden.bs.modal", "#modalAdvertencia", function() {
     case "areaMetroEditarNodo": $("#areaMetro").val($("#areaMetroOriginal").val());
                                 $("#areaMetro").focus(); 
                                 break;
-    case "fechaIntervalo":  S
+    case "fechaIntervalo":  
     case "fechaInicioMayor":  $("#inicio").focus();
                               break;      
     case "nodoConsulta": $("#nodo").focus();
@@ -1466,6 +1466,8 @@ $(document).on("hidden.bs.modal", "#modalAdvertencia", function() {
     case "badExtension":  $("#frmSubir")[0].reset();
                           $("#uploadedFile").focus();
                           break;
+    case "nologueado":
+    case "timeout":                       
     case "cookie":  window.location.assign("salir.php");
                     break;
     case "exportar": window.close();
@@ -1758,6 +1760,7 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                     $("#caller").val("sinSolucion");
                                     sigo = false;
                                   }
+                                  
                                   var query = '';
                                   if (sigo === true){
                                     query = "update alarmas set causa='"+causaTemp+"', solucion='"+solucionTemp+"', estado='Procesada' where (idalarma="+param[0].idalarma;

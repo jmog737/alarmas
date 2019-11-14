@@ -157,9 +157,9 @@ $totalUsuarios = $datos['rows'];
               </tr>
               <tr>
                 <td colspan='5'>
-                  <input type="radio" name="origenFecha" id="origenFechaAlarma" value="alarma" class="nomostrar visible" checked>
+                  <input type="radio" name="origenFecha" id="origenFechaAlarma" value="alarma" class="nomostrar visible">
                   <label for="origenFechaAlarma" title="Elegir si se quiere filtrar por la fecha de la ALARMA.">DE LA ALARMA</label> 
-                  <input type="radio" name="origenFecha" id="origenFechaCarga" value="carga" class="nomostrar visible">
+                  <input type="radio" name="origenFecha" id="origenFechaCarga" value="carga" class="nomostrar visible" checked>
                   <label for="origenFechaCarga" title="Elegir si se quiere filtrar por la fecha de CARGA del archivo.">DE CARGA</label> 
                 </td>
               </tr>

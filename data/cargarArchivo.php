@@ -14,6 +14,7 @@ if(!isset($_SESSION))
 *******************************************************/
 require_once("pdo.php");
 require_once("escribirLog.php");
+require_once("consultarLargosAlarmas.php");
 
 function cargarArchivo($archivo){
   if (file_exists($archivo)){
@@ -76,6 +77,8 @@ function cargarArchivo($archivo){
       }/// Fin if (gestor)  
     }/// Fin del else del HTML 
     
+    $largosAlarmas = consultarLargosAlarmas();
+    $avisoRegistros = '';
     foreach ($filas as $filita){
       if ($origenPSS32){
         $cols = $filita->getElementsByTagName('td');
@@ -183,49 +186,74 @@ function cargarArchivo($archivo){
         $filtroALM = $temp[14];
         $filtroAID = $temp[15];
       }
+
+      $seguir = true;
+      foreach ($largosAlarmas as $ind => $valor){
+        if ($seguir){
+          /// Se evita la validación de los campos: estado y archivo por NO ser manejados por el usuario y ser válidos; y
+          /// los campos: causa y solución por NO cargarse desde el archivo:
+          if (($valor['nombre'] !== 'causa')&&($valor['nombre'] !== 'solucion')&&($valor['nombre'] !== 'estado')&&($valor['nombre'] !== 'archivo')){
+            $temp = ${$valor['nombre']};
+            if ($valor['nombre'] === 'archivo'){
+              $t0 = explode("/", $temp);
+              $largo = count($t0);
+              $temp = $t0[$largo-1];
+            }     
+            $tempTam = strlen($temp);
+            if ($tempTam > $valor['tam']){
+              //array_push($lineasMal, $i);
+              $seguir = false;
+              $avisoRegistros .= "<strong>Registro ".$i.":</strong> campo ".$valor['nombre']." (".$temp.") tiene un largo de ".$tempTam.", mayor al establecido de ".$valor['tam']."<br>";
+            }
+          }
+        }  
+      }
       
       $i++;
-
-      $existeRegistro = "select count(*) from alarmas where dia=? and hora=? and descripcion=? and tipoCondicion=?";
-      $paramExiste = array($fecha, $hora, $descripcion, $tipoCondicion);
-      $datosExiste = json_decode(hacerSelect($existeRegistro, $log, $paramExiste), true);
-      $cuenta = (int)$datosExiste['rows'];
-      /// Seteo cuenta a 0 para OBLIGAR a que se haga el insert en TODOS los casos, sin importar si existe o no la alarma:
-      //$cuenta = 0;
-      //echo $i." - ".$paramExiste[0]." - ".$paramExiste[1]." - ".$paramExiste[2]." - ".$cuenta."<br>";
-      if ($cuenta !== 0){
-        $duplicados++;
-        $lineas++;
-        if ($resultado["mensaje"] === ''){
-          $resultado["mensaje"] = "L&iacute;nea/s con la/s duplicada/s: ";
-        }
-        $dup = $i - 1;
-        $resultado["mensaje"] .= $dup." ";
-      }
-      else {
-        $agregarRegistro = "insert into alarmas set usuario=?, nodo=?, archivo=?, fechaCarga=?, estado='Sin procesar', dia=?, hora=?, causa='', solucion='', nombre='".$nombre."', compound='".$compound."', tipoAID='".$tipoAID."', tipoAlarma='".$tipoAlarma."', tipoCondicion='".$tipoCondicion."', descripcion='".$descripcion."', "
-        . "                 afectacionServicio='".$afectacionServicio."', ubicacion='".$ubicacion."', direccion='".$direccion."', valorMonitoreado='".$valorMonitoreado."', nivelUmbral='".$nivelUmbral."', periodo='".$periodo."', "
-        . "                 datos='".$datos."', filtroALM='".$filtroALM."', filtroAID='".$filtroAID."'";
-        $paramAgregar = array($_SESSION['user_id'], $_SESSION['idnodo'], $_SESSION['archivo'], $fechaCarga, $fecha, $hora);
-        //echo $i."-".$agregarRegistro."<br>$fecha - $hora<br>";
-        //echo "cuenta no >0 - id: $i<br>";
-        $resultadoInsert = json_decode(hacerUpdate($agregarRegistro, $log, $paramAgregar), true);
-        if ($resultadoInsert === 'ERROR'){
-          $resultado["mensaje"] .= "Hubo un problema con la carga de la línea: $linea.<br>";
-          $errores++;
+      
+      if ($seguir){
+        $existeRegistro = "select count(*) from alarmas where dia=? and hora=? and descripcion=? and tipoCondicion=?";
+        $paramExiste = array($fecha, $hora, $descripcion, $tipoCondicion);
+        $datosExiste = json_decode(hacerSelect($existeRegistro, $log, $paramExiste), true);
+        $cuenta = (int)$datosExiste['rows'];
+        /// Seteo cuenta a 0 para OBLIGAR a que se haga el insert en TODOS los casos, sin importar si existe o no la alarma:
+        //$cuenta = 0;
+        //echo $i." - ".$paramExiste[0]." - ".$paramExiste[1]." - ".$paramExiste[2]." - ".$cuenta."<br>";
+        if ($cuenta !== 0){
+          $duplicados++;
           $lineas++;
+          if ($resultado["mensaje"] === ''){
+            $resultado["mensaje"] = "L&iacute;nea/s con la/s duplicada/s: ";
+          }
+          $dup = $i - 1;
+          $resultado["mensaje"] .= $dup." ";
         }
         else {
-          $cargados++;
-          $lineas++;
-        }
-      } /// Fin else $cuenta > 0 
-    }
-    
+          $agregarRegistro = "insert into alarmas set usuario=?, nodo=?, archivo=?, fechaCarga=?, estado='Sin procesar', dia=?, hora=?, causa='', solucion='', nombre='".$nombre."', compound='".$compound."', tipoAID='".$tipoAID."', tipoAlarma='".$tipoAlarma."', tipoCondicion='".$tipoCondicion."', descripcion='".$descripcion."', "
+          . "                 afectacionServicio='".$afectacionServicio."', ubicacion='".$ubicacion."', direccion='".$direccion."', valorMonitoreado='".$valorMonitoreado."', nivelUmbral='".$nivelUmbral."', periodo='".$periodo."', "
+          . "                 datos='".$datos."', filtroALM='".$filtroALM."', filtroAID='".$filtroAID."'";
+          $paramAgregar = array($_SESSION['user_id'], $_SESSION['idnodo'], $_SESSION['archivo'], $fechaCarga, $fecha, $hora);
+          //echo $i."-".$agregarRegistro."<br>$fecha - $hora<br>";
+          //echo "cuenta no >0 - id: $i<br>";
+          $resultadoInsert = json_decode(hacerUpdate($agregarRegistro, $log, $paramAgregar), true);
+          if ($resultadoInsert === 'ERROR'){
+            $resultado["mensaje"] .= "Hubo un problema con la carga de la línea: $linea.<br>";
+            $errores++;
+            $lineas++;
+          }
+          else {
+            $cargados++;
+            $lineas++;
+          }
+        } /// Fin else $cuenta > 0 
+      } /// Fin if ($seguir) 
+    } /// Fin foreach($filas as $filita) ---  FIN carga de registros
+      
     $resultado["cargados"] = $cargados;
     $resultado["duplicados"] = $duplicados;
     $resultado["errores"] = $errores;
     $resultado["lineas"] = $lineas;
+    $resultado["largoRegistros"] = $avisoRegistros;
 
     $temp = explode("/", $archivo);
     $tot = count($temp);

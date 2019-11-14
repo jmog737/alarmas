@@ -272,6 +272,10 @@ require_once ('data/cargarArchivo.php');
           $mensajeNuevo = $tituloReporte."<br>(Total: ".$totalDatos.")";
           
           echo "<h4>".$mensaje."</h4><br>";
+          if ($carga["largoRegistros"] !== ''){
+            echo "<h3>Los siguientes registros NO fueron cargados y requieren su atención:</h3><br>";
+            echo "<h5>".$carga["largoRegistros"]."</h5><br>";
+          }
           echo "<h3>".$mensajeNuevo."</h3>";
           echo "<br>";
           

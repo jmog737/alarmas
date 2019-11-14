@@ -56,6 +56,7 @@ function verificarSesion(mensaje, cookie) {
         if (usuarioViejo === 'NO LOGUEADO'){
           mensajeExpirada = "NO has iniciado sesión<br>Por favor, loguéate.";
           tituloExpirada = "ATENCIÓN";
+          $("#caller").val("nologueado");
         }
         else {
           var mostrarSesion = '';
@@ -98,16 +99,16 @@ function verificarSesion(mensaje, cookie) {
           
           if (user === 'COOKIE'){
             mensajeExpirada = "Sesión inactiva "+mostrarSesion+".<br>Por seguridad, ¡vuelve a loguearte!.<br><br>"+'Motivo: '+user;
-            
+            $("#caller").val("cookie");
           }
           else {
             mensajeExpirada = "Sesión inactiva "+mostrarSesion+".<br>Por seguridad, ¡vuelve a loguearte!.<br><br>"+'Motivo: '+user+"<br>Último tiempo: "+oldTime+'<br>Tiempo actual: '+temp;
+            $("#caller").val("timeout");
           }   
         }
         $("#tituloAdvertencia").html(tituloExpirada);
         $("#mensajeAdvertencia").html(mensajeExpirada);
-        $("#modalAdvertencia").modal("show");
-        $("#caller").val("cookie");
+        $("#modalAdvertencia").modal("show");        
       }
       else {
         document.getElementById("usuarioSesion").value = user;

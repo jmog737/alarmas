@@ -24,6 +24,7 @@ require_once ('head.php');
   require_once ('header.php');
   require_once('data/pdo.php');
   require_once('data/camposAlarmas.php');
+  require_once('data/consultarLargosAlarmas.php');
   
   if (isset($_GET['al'])){
     $idalarma = base64_decode($_GET['al']);
@@ -85,16 +86,36 @@ require_once ('head.php');
   if (isset($_POST['btnEditarAlarma'])){
     $causa = htmlentities($_POST['causa']);
     $solucion = htmlentities($_POST['sln']);
-    $query = "update alarmas set causa=?, solucion=?, estado='Procesada' where idalarma=?";
-    $paramUpdate = array($causa, $solucion, $idalarma);
-    $log = "SI";
-    $resultadoInsert = json_decode(hacerUpdate($query, $log, $paramUpdate), true);
-    if ($resultadoInsert === 'ERROR'){
-      $mensaje = "Hubo un problema al actualizar los datos.<br>Por favor verifique.";
+    $tamCausa = strlen($causa);
+    $tamSolucion = strlen($solucion);
+    
+    $largosAlarmas = consultarLargosAlarmas();var_dump($largosAlarmas);
+    $sigo = true;
+    $test = array_keys($largosAlarmas, 'causa');var_dump($test);
+    if ($tamCausa > $largosAlarmas[0]['causa']['tam']){
+      $sigo = false;
+      $mensaje .= "La CAUSA para la alarma tiene un largo de ".$tamCausa.", mayor al establecido de ".$largosAlarmas[0]['causa']['tam']."<br>";
     }
     else {
-      $mensaje = "¡Datos editados correctamente!";
+      if ($tamSolucion > $largosAlarmas['registro']['solucion']['tam']){
+        $sigo = false;
+        $mensaje .= "La SOLUCIÓN para la alarma tiene un largo de ".$tamSolucion.", mayor al establecido de ".$largosAlarmas[0]['solucion']['tam']."<br>";
+      }
+      else {
+        $query = "update alarmas set causa=?, solucion=?, estado='Procesada' where idalarma=?";
+        $paramUpdate = array($causa, $solucion, $idalarma);
+        $log = "SI";
+        $resultadoInsert = json_decode(hacerUpdate($query, $log, $paramUpdate), true);
+        if ($resultadoInsert === 'ERROR'){
+          $mensaje = "Hubo un problema al actualizar los datos.<br>Por favor verifique.";
+        }
+        else {
+          $mensaje = "¡Datos editados correctamente!";
+        }
+      }
     }
+        
+    
   } /// Fin isset($_POST)
 
   /// Luego de la posible actualización, consulto los datos del registro en cuestión: 

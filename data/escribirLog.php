@@ -42,8 +42,13 @@ function escribirLog($query){
   
   //armo nombre del arhivo según fecha y hora actuales:
   $archivo = $dirLog."log_".$fecha.".txt";//."@".$hora;
-  $query = "[".$_SESSION['username']."] ".$horaLog." - ".$query."\r\n";
-  
+  /// Reviso si estoy saliendo de la sesión por algún motivo, o si estoy intentando acceder sin estar logueado:
+  if (strpos($query, "Intento") === FALSE){
+    $query = "[".$_SESSION['username']."] ".$horaLog." - ".$query."\r\n";
+  }
+  else {
+    $query = "[---] ".$horaLog." - ".$query."\r\n";
+  }
   /// *********** ** AGREGADO PARA ESCRIBIR LINEAS AL INICIO EN LUGAR DE AL FINAL *******************************
   /// Chequeo primero si el archivo existe, si es así recupero contenido y agrego consulta al inicio. De lo contrario
   /// agrego solo la consulta.

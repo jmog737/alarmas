@@ -74,6 +74,7 @@ else {
   $myObj->sesion = '';
   $myObj->duracion = 0;
   $myObj->sesion = 'expirada';
+  $_SESSION['motivo'] = "NOLOGUEADO";
 }
 
 //if (isset($_COOKIE['tiempo'])){
