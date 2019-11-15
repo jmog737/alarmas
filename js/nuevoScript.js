@@ -936,6 +936,22 @@ function resizeTextArea() {
 }
 /********** fin resizeTextArea() **********/
 
+/**
+ * \brief Función que consulta a la BD los largos de los campos para poder validarlos.
+ */
+function consultarLargos(){
+  var url = "data/getJSON.php";
+  var query = "select column_name as campo, character_maximum_length as tam from information_schema.columns where table_name = 'alarmas' and data_type = 'varchar'";
+  var log = "NO";
+  $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
+    var resultado = request["resultado"];
+    resultado.forEach(function mostrar(item, index){
+      alert(index+'---'+item['campo']+'+++'+item['tam']);
+    });
+  });
+}
+/********** fin consultarLargos() **********/
+
 /***********************************************************************************************************************
 /// ************************************************* FUNCIONES USUARIOS ***********************************************
 ************************************************************************************************************************
@@ -1690,10 +1706,12 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                 }
                                 else {
                                   elemento = $("#frmResultado");
-                                }
-                                
+                                }                             
     case 'btnActualizarBuscar': var param = []; 
                                 var registro;
+                                var tamCausa = 15;
+                                var tamSolucion = 15;
+                                consultarLargos();
                                 $("input[type=checkbox]:checked").each(function(){
                                   var idal = $(this).val();
                                   var causa = $("textarea[idalarma="+idal+"][name='causa']").val();
@@ -1744,6 +1762,9 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                       }
                                     }  
                                   });
+                                  
+                                  var tamRealCausa = causaTemp.length;
+                                  var tamRealSolucion = solucionTemp.length;
                                   if (causaTemp === ''){
 //                                    alert('La Causa no fue ingresada.');
                                     $("#tituloAdvertencia").text('ATENCIÓN');
@@ -1752,10 +1773,26 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                     $("#caller").val("sinCausa");
                                     sigo = false;
                                   }
+                                  if ((tamRealCausa > tamCausa)&&(sigo === true)){
+//                                    alert('La Causa no fue ingresada.');
+                                    $("#tituloAdvertencia").text('ATENCIÓN');
+                                    $("#mensajeAdvertencia").html('La Causa tiene un largo de '+tamRealCausa+', mayor al permitido de '+tamCausa+'.<br>Por favor verifique.');
+                                    $("#modalAdvertencia").modal("show");
+                                    $("#caller").val("sinCausa");
+                                    sigo = false;
+                                  }
                                   if ((solucionTemp === '')&&(sigo === true)){
 //                                    alert('La solución no fue ingresada.');
                                     $("#tituloAdvertencia").text('ATENCIÓN');
-                                    $("#mensajeAdvertencia").html('La solución no fue ingresada.<br>Por favor verifique.');
+                                    $("#mensajeAdvertencia").html('La Solución no fue ingresada.<br>Por favor verifiquemm.');
+                                    $("#modalAdvertencia").modal("show");
+                                    $("#caller").val("sinSolucion");
+                                    sigo = false;
+                                  }
+                                  if ((tamRealSolucion > tamSolucion)&&(sigo === true)){
+//                                    alert('La solución no fue ingresada.');
+                                    $("#tituloAdvertencia").text('ATENCIÓN');
+                                    $("#mensajeAdvertencia").html('La Solución tiene un largo de '+tamRealSolucion+', mayor al permitido de '+tamSolucion+'.<br>Por favor verifique..');
                                     $("#modalAdvertencia").modal("show");
                                     $("#caller").val("sinSolucion");
                                     sigo = false;

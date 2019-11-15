@@ -188,22 +188,21 @@ function cargarArchivo($archivo){
       }
 
       $seguir = true;
-      foreach ($largosAlarmas as $ind => $valor){
+      foreach ($largosAlarmas as $campo => $valor){
         if ($seguir){
           /// Se evita la validación de los campos: estado y archivo por NO ser manejados por el usuario y ser válidos; y
           /// los campos: causa y solución por NO cargarse desde el archivo:
-          if (($valor['nombre'] !== 'causa')&&($valor['nombre'] !== 'solucion')&&($valor['nombre'] !== 'estado')&&($valor['nombre'] !== 'archivo')){
-            $temp = ${$valor['nombre']};
-            if ($valor['nombre'] === 'archivo'){
+          if (($campo !== 'causa')&&($campo !== 'solucion')&&($campo !== 'estado')&&($campo !== 'archivo')){
+            $temp = ${$campo};
+            if ($campo === 'archivo'){
               $t0 = explode("/", $temp);
               $largo = count($t0);
               $temp = $t0[$largo-1];
             }     
             $tempTam = strlen($temp);
-            if ($tempTam > $valor['tam']){
-              //array_push($lineasMal, $i);
+            if ($tempTam > $valor){
               $seguir = false;
-              $avisoRegistros .= "<strong>Registro ".$i.":</strong> campo ".$valor['nombre']." (".$temp.") tiene un largo de ".$tempTam.", mayor al establecido de ".$valor['tam']."<br>";
+              $avisoRegistros .= "<strong>Registro ".$i.":</strong> campo ".$campo." (".$temp.") tiene un largo de ".$tempTam.", mayor al establecido de ".$valor."<br>";
             }
           }
         }  

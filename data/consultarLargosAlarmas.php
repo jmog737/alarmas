@@ -20,13 +20,9 @@ function consultarLargosAlarmas(){
   $consultaLargos = "select column_name as campo, character_maximum_length as tam from information_schema.columns where table_name = 'alarmas' and data_type = 'varchar'";
   $datos = json_decode(hacerSelect($consultaLargos, $log), true);
   $datosLargos = $datos["resultado"]; 
-  $arrayLargos = array();
-  $registro = array();
+  $registros = array();
   foreach ($datosLargos as $ind => $valor){
-    $registro['tam'] = $valor['tam'];
-    $registro['nombre'] = $valor['campo'];
-    $arrayLargos[] = $registro;
+    $registros[$valor['campo']] = $valor['tam'];
   }
-  return $arrayLargos;
+  return $registros;
 }
-

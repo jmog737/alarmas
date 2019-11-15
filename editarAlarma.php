@@ -60,6 +60,7 @@ require_once ('head.php');
   $ultimo = base64_encode($keys[$totalFilas-1]);
   $inhabilitarPrimero = '';
   $inhabilitarUltimo = '';
+  $mensaje = '';
 
   if ($id !== false){
     if ($id === 0){
@@ -89,17 +90,16 @@ require_once ('head.php');
     $tamCausa = strlen($causa);
     $tamSolucion = strlen($solucion);
     
-    $largosAlarmas = consultarLargosAlarmas();var_dump($largosAlarmas);
+    $largosAlarmas = consultarLargosAlarmas();
     $sigo = true;
-    $test = array_keys($largosAlarmas, 'causa');var_dump($test);
-    if ($tamCausa > $largosAlarmas[0]['causa']['tam']){
+    if ($tamCausa > $largosAlarmas['causa']){
       $sigo = false;
-      $mensaje .= "La CAUSA para la alarma tiene un largo de ".$tamCausa.", mayor al establecido de ".$largosAlarmas[0]['causa']['tam']."<br>";
+      $mensaje .= "La CAUSA para la alarma tiene un largo de ".$tamCausa.", mayor al establecido de ".$largosAlarmas['causa']."<br>";
     }
     else {
-      if ($tamSolucion > $largosAlarmas['registro']['solucion']['tam']){
+      if ($tamSolucion > $largosAlarmas['solucion']){
         $sigo = false;
-        $mensaje .= "La SOLUCIÓN para la alarma tiene un largo de ".$tamSolucion.", mayor al establecido de ".$largosAlarmas[0]['solucion']['tam']."<br>";
+        $mensaje .= "La SOLUCIÓN para la alarma tiene un largo de ".$tamSolucion.", mayor al establecido de ".$largosAlarmas['solucion']."<br>";
       }
       else {
         $query = "update alarmas set causa=?, solucion=?, estado='Procesada' where idalarma=?";
