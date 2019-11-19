@@ -6,6 +6,8 @@ var tamPagina = parseInt($("#tamPagina").val(), 10);
 var limiteSelects = parseInt($("#limiteSelects").val(), 10);
 var maxTamPagina = parseInt($("#maxTamPagina").val(), 10);
 var maxLimiteSelects = parseInt($("#maxLimiteSelects").val(), 10);
+var causaMal = 0;
+var solucionMal = 0;
 
 /**
 ///  \file script.js
@@ -945,9 +947,10 @@ function consultarLargos(){
   var log = "NO";
   $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
     var resultado = request["resultado"];
-    resultado.forEach(function mostrar(item, index){
-      alert(index+'---'+item['campo']+'+++'+item['tam']);
-    });
+//    resultado.forEach(function mostrar(item, index){
+//      alert(index+'---'+item['campo']+'+++'+item['tam']);
+//    });
+    return resultado;
   });
 }
 /********** fin consultarLargos() **********/
@@ -1487,7 +1490,23 @@ $(document).on("hidden.bs.modal", "#modalAdvertencia", function() {
     case "cookie":  window.location.assign("salir.php");
                     break;
     case "exportar": window.close();
-                     break;                
+                     break; 
+    case "largoCausa":  var tr = $(":checked:first").closest('tr');
+                        var textarea = $(tr).find('[name=causa]');
+                        $(textarea).focus();
+                        break;
+    case "largoSolucion": var tr = $(":checked:first").closest('tr');
+                          var textarea = $(tr).find('[name=solucion]');
+                          $(textarea).focus();
+                          break;
+    case "largoCausaTodos": var tr = $("input[type=checkbox][value="+causaMal+"]").closest('tr');
+                            var textarea = $(tr).find('[name=causa]');
+                            $(textarea).focus();
+                            break;
+    case "largoSolucionTodos":  var tr = $("input[type=checkbox][value="+solucionMal+"]").closest('tr');
+                                var textarea = $(tr).find('[name=solucion]');
+                                $(textarea).focus();
+                                break;                      
     default: break;                       
   }
 });
@@ -1709,130 +1728,130 @@ $(document).on("click", "[name=btnActualizar]", function() {
                                 }                             
     case 'btnActualizarBuscar': var param = []; 
                                 var registro;
-                                var tamCausa = 15;
-                                var tamSolucion = 15;
-                                consultarLargos();
-                                $("input[type=checkbox]:checked").each(function(){
-                                  var idal = $(this).val();
-                                  var causa = $("textarea[idalarma="+idal+"][name='causa']").val();
-                                  if (causa === undefined){
-                                    causa = '';
-                                  }
-                                  var solucion = $("textarea[idalarma="+idal+"][name='solucion']").val();
-                                  if (solucion === undefined){
-                                    solucion = '';
-                                  }
-                                  registro = {idalarma: idal, causa: causa, solucion: solucion};
-                                  param.push(registro);
-                                });
-                                var modificadas = param.length;
-                                if (modificadas > 0){
-                                  var causaTemp = param[0]['causa'];
-                                  var solucionTemp = param[0]['solucion'];
-                                  var sigo = true;
-                                  param.forEach(function callback(item){
-                                    if (sigo === true){
-                                      if (item.causa !== ''){
-                                        if ((causaTemp !== item.causa)&&(causaTemp !== '')){
-//                                          alert('Si se selecciona más de 1 alarma DEBEN tener la misma causa');
-                                          $("#tituloAdvertencia").text('ATENCIÓN');
-                                          $("#mensajeAdvertencia").html('Si se selecciona más de 1 alarma DEBEN tener la MISMA CAUSA.<br>Por favor verifique.');
-                                          $("#modalAdvertencia").modal("show");
-                                          $("#caller").val("mismaCausa");
-                                          sigo = false;
-                                          return;
-                                        }
-                                        else {
-                                          causaTemp = item.causa;
-                                        } 
-                                      }
-                                      if (item.solucion !== ''){
-                                        if ((solucionTemp !== item.solucion)&&(solucionTemp !== '')){
-//                                          alert('Si se selecciona más de 1 alarma DEBEN tener la misma solución');
-                                          $("#tituloAdvertencia").text('ATENCIÓN');
-                                          $("#mensajeAdvertencia").html('Si se selecciona más de 1 alarma DEBEN tener la MISMA SOLUCIÓN.<br>Por favor verifique.');
-                                          $("#modalAdvertencia").modal("show");
-                                          $("#caller").val("mismaSolucion");
-                                          sigo = false;
-                                          return;
-                                        }
-                                        else {
-                                          solucionTemp = item.solucion;
-                                        }  
-                                      }
-                                    }  
+                                var url = "data/getJSON.php";
+                                var query = "select column_name as campo, character_maximum_length as tam from information_schema.columns where table_name = 'alarmas' and data_type = 'varchar'";
+                                var log = "NO";
+                                $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
+                                  var resultado = request["resultado"];
+                                  var largosCampos = new Object();
+                                  resultado.forEach(function mostrar(item, index){
+                                    var campo = item['campo'];
+                                    largosCampos[campo] = item['tam'];
                                   });
-                                  
-                                  var tamRealCausa = causaTemp.length;
-                                  var tamRealSolucion = solucionTemp.length;
-                                  if (causaTemp === ''){
-//                                    alert('La Causa no fue ingresada.');
-                                    $("#tituloAdvertencia").text('ATENCIÓN');
-                                    $("#mensajeAdvertencia").html('La Causa no fue ingresada.<br>Por favor verifique.');
-                                    $("#modalAdvertencia").modal("show");
-                                    $("#caller").val("sinCausa");
-                                    sigo = false;
-                                  }
-                                  if ((tamRealCausa > tamCausa)&&(sigo === true)){
-//                                    alert('La Causa no fue ingresada.');
-                                    $("#tituloAdvertencia").text('ATENCIÓN');
-                                    $("#mensajeAdvertencia").html('La Causa tiene un largo de '+tamRealCausa+', mayor al permitido de '+tamCausa+'.<br>Por favor verifique.');
-                                    $("#modalAdvertencia").modal("show");
-                                    $("#caller").val("sinCausa");
-                                    sigo = false;
-                                  }
-                                  if ((solucionTemp === '')&&(sigo === true)){
-//                                    alert('La solución no fue ingresada.');
-                                    $("#tituloAdvertencia").text('ATENCIÓN');
-                                    $("#mensajeAdvertencia").html('La Solución no fue ingresada.<br>Por favor verifiquemm.');
-                                    $("#modalAdvertencia").modal("show");
-                                    $("#caller").val("sinSolucion");
-                                    sigo = false;
-                                  }
-                                  if ((tamRealSolucion > tamSolucion)&&(sigo === true)){
-//                                    alert('La solución no fue ingresada.');
-                                    $("#tituloAdvertencia").text('ATENCIÓN');
-                                    $("#mensajeAdvertencia").html('La Solución tiene un largo de '+tamRealSolucion+', mayor al permitido de '+tamSolucion+'.<br>Por favor verifique..');
-                                    $("#modalAdvertencia").modal("show");
-                                    $("#caller").val("sinSolucion");
-                                    sigo = false;
-                                  }
-                                  
-                                  var query = '';
-                                  if (sigo === true){
-                                    query = "update alarmas set causa='"+causaTemp+"', solucion='"+solucionTemp+"', estado='Procesada' where (idalarma="+param[0].idalarma;
-                                    param.forEach(function agregarAlarma(id){
-                                      if (id.idalarma !== param[0].idalarma){
-                                        query += ' or idalarma='+id.idalarma;
-                                      }
+                                  var tamCausa = largosCampos['causa'];
+                                  var tamSolucion = largosCampos['solucion'];
+                                  $("input[type=checkbox]:checked").each(function(){
+                                    var idal = $(this).val();
+                                    var causa = $("textarea[idalarma="+idal+"][name='causa']").val();
+                                    if (causa === undefined){
+                                      causa = '';
+                                    }
+                                    var solucion = $("textarea[idalarma="+idal+"][name='solucion']").val();
+                                    if (solucion === undefined){
+                                      solucion = '';
+                                    }
+                                    registro = {idalarma: idal, causa: causa, solucion: solucion};
+                                    param.push(registro);
+                                  });
+                                  var modificadas = param.length;
+                                  if (modificadas > 0){
+                                    var causaTemp = param[0]['causa'];
+                                    var solucionTemp = param[0]['solucion'];
+                                    var sigo = true;
+                                    param.forEach(function callback(item){
+                                      if (sigo === true){
+                                        if (item.causa !== ''){
+                                          if ((causaTemp !== item.causa)&&(causaTemp !== '')){
+                                            $("#tituloAdvertencia").text('ATENCIÓN');
+                                            $("#mensajeAdvertencia").html('Si se selecciona más de 1 alarma DEBEN tener la MISMA CAUSA.<br>Por favor verifique.');
+                                            $("#modalAdvertencia").modal("show");
+                                            $("#caller").val("largoCausa");
+                                            sigo = false;
+                                            return;
+                                          }
+                                          else {
+                                            causaTemp = item.causa;
+                                          } 
+                                        }
+                                        if (item.solucion !== ''){
+                                          if ((solucionTemp !== item.solucion)&&(solucionTemp !== '')){
+                                            $("#tituloAdvertencia").text('ATENCIÓN');
+                                            $("#mensajeAdvertencia").html('Si se selecciona más de 1 alarma DEBEN tener la MISMA SOLUCIÓN.<br>Por favor verifique.');
+                                            $("#modalAdvertencia").modal("show");
+                                            $("#caller").val("mismaSolucion");
+                                            sigo = false;
+                                            return;
+                                          }
+                                          else {
+                                            solucionTemp = item.solucion;
+                                          }      
+                                        }
+                                      }  
                                     });
-                                    query += ")";
-                                    var url = "data/updateJSON.php";
-                                    var log = "NO";
-                                    $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
-                                      if (resultado === "OK") {
-//                                        alert('Los datos se modificaron correctamente!.');
-                                        $("#tituloSuccess").text('ÉXITO');
-                                        $("#mensajeSuccess").html('¡Los datos se modificaron correctamente!.');
-                                        $("#modalSuccess").modal("show");
-                                        $("#caller").val("actualizarBien");
-//                                        location.reload();
-                                      }
-                                      else {
-//                                        alert('Hubo un problema en la actualización. Por favor verifique.');
-                                        $("#tituloAviso").text('AVISO');
-                                        $("#mensajeAviso").html('¡Hubo un problema en la actualización. Por favor verifique.');
-                                        $("#modalAviso").modal("show");
-                                      }
-                                    });
-                                  }  
-                                }
-                                else {
-//                                  alert('No se han seleccionado alarmas.\nPor favor verifique.');
-                                  $("#tituloAdvertencia").html('ATENCIÓN');
-                                  $("#mensajeAdvertencia").html('No se seleccionaron alarmas.<br>¡Por favor verifique!.');
-                                  $("#modalAdvertencia").modal("show");                                 
-                                }
+
+                                    var tamRealCausa = causaTemp.length;
+                                    var tamRealSolucion = solucionTemp.length;
+                                    if (causaTemp === ''){
+                                      $("#tituloAdvertencia").text('ATENCIÓN');
+                                      $("#mensajeAdvertencia").html('La CAUSA no fue ingresada.<br>Por favor verifique.');
+                                      $("#modalAdvertencia").modal("show");
+                                      $("#caller").val("sinCausa");
+                                      sigo = false;
+                                    }
+                                    if ((tamRealCausa > tamCausa)&&(sigo === true)){
+                                      $("#tituloAdvertencia").text('ATENCIÓN');
+                                      $("#mensajeAdvertencia").html('La CAUSA tiene un largo de '+tamRealCausa+', mayor al permitido de '+tamCausa+'.<br>Por favor verifique.');
+                                      $("#modalAdvertencia").modal("show");
+                                      $("#caller").val("sinCausa");
+                                      sigo = false;
+                                    }
+                                    if ((solucionTemp === '')&&(sigo === true)){
+                                      $("#tituloAdvertencia").text('ATENCIÓN');
+                                      $("#mensajeAdvertencia").html('La SOLUCIÓN no fue ingresada.<br>Por favor verifique.');
+                                      $("#modalAdvertencia").modal("show");
+                                      $("#caller").val("sinSolucion");
+                                      sigo = false;
+                                    }
+                                    if ((tamRealSolucion > tamSolucion)&&(sigo === true)){
+                                      $("#tituloAdvertencia").text('ATENCIÓN');
+                                      $("#mensajeAdvertencia").html('La SOLUCIÓN tiene un largo de '+tamRealSolucion+', mayor al permitido de '+tamSolucion+'.<br>Por favor verifique.');
+                                      $("#modalAdvertencia").modal("show");
+                                      $("#caller").val("sinSolucion");
+                                      sigo = false;
+                                    }
+
+                                    var query = '';
+                                    if (sigo === true){
+                                      query = "update alarmas set causa='"+causaTemp+"', solucion='"+solucionTemp+"', estado='Procesada' where (idalarma="+param[0].idalarma;
+                                      param.forEach(function agregarAlarma(id){
+                                        if (id.idalarma !== param[0].idalarma){
+                                          query += ' or idalarma='+id.idalarma;
+                                        }
+                                      });
+                                      query += ")";
+                                      var url = "data/updateJSON.php";
+                                      var log = "NO";
+                                      $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
+                                        if (resultado === "OK") {
+                                          $("#tituloSuccess").text('ÉXITO');
+                                          $("#mensajeSuccess").html('¡Los datos se modificaron correctamente!.');
+                                          $("#modalSuccess").modal("show");
+                                          $("#caller").val("actualizarBien");
+                                        }
+                                        else {
+                                          $("#tituloAviso").text('AVISO');
+                                          $("#mensajeAviso").html('¡Hubo un problema en la actualización. Por favor verifique.');
+                                          $("#modalAviso").modal("show");
+                                        }
+                                      });
+                                    }  
+                                  }
+                                  else {
+                                    $("#tituloAdvertencia").html('ATENCIÓN');
+                                    $("#mensajeAdvertencia").html('No se seleccionaron alarmas.<br>¡Por favor verifique!.');
+                                    $("#modalAdvertencia").modal("show");                                 
+                                  }
+                                });
                                 break;
     case 'btnActualizarUsuarios': elemento = $("#frmUsuarios"); 
                                   break;
@@ -1851,6 +1870,7 @@ $(document).on("click", "[name=btnActualizarTodo]", function() {
   var query = "update alarmas set ";
   var param = []; 
   var registro;
+     
   $("input[type=checkbox]").each(function(){
     var idal = $(this).val();
     var causa = $("textarea[idalarma="+idal+"][name='causa']").val();
@@ -1862,49 +1882,87 @@ $(document).on("click", "[name=btnActualizarTodo]", function() {
   });
   var modificadas = param.length;
   if (modificadas > 0){
-    var sigo = true;
-    var query = '';
-    if (sigo === true){      
-      query = "update alarmas set causa = CASE";
-      param.forEach(function agregaridAlarma(id){
-        query += ' when (idalarma='+id.idalarma+') then "'+id.causa+'"';  
+    var url = "data/getJSON.php";
+    var query = "select column_name as campo, character_maximum_length as tam from information_schema.columns where table_name = 'alarmas' and data_type = 'varchar'";
+    var log = "NO";
+    $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
+      var resultado = request["resultado"];
+      var largosCampos = new Object();
+      resultado.forEach(function mostrar(item, index){
+        var campo = item['campo'];
+        largosCampos[campo] = item['tam'];
       });
-      query += " END, ";
-      query += "solucion = CASE";
-      param.forEach(function agregarCausa(id){
-        query += ' when (idalarma='+id.idalarma+') then "'+id.solucion+'"';  
+      var tamCausa = largosCampos['causa'];
+      var tamSolucion = largosCampos['solucion'];
+      var sigo = true;
+      param.forEach(function revisarLargos(id, index){
+        if (sigo === true){
+          var tamRealCausa = id.causa.length;
+          var tamRealSolucion = id.solucion.length;
+          //alert('idalarma: '+id.idalarma+'\nreal causa: '+tamRealCausa+'\nreal solucion: '+tamRealSolucion+'\n'+id.causa+'\n\n'+id.solucion);
+          if (tamRealCausa > tamCausa){
+            causaMal = id.idalarma;
+            $("#tituloAdvertencia").text('ATENCIÓN');
+            $("#mensajeAdvertencia").html('La CAUSA tiene un largo de '+tamRealCausa+', mayor al permitido de '+tamCausa+'.<br>Por favor verifique.');
+            $("#modalAdvertencia").modal("show");
+            $("#caller").val("largoCausaTodos");
+            sigo = false;
+          }
+
+          if ((tamRealSolucion > tamSolucion)&&(sigo === true)){
+            solucionMal = id.idalarma;
+            $("#tituloAdvertencia").text('ATENCIÓN');
+            $("#mensajeAdvertencia").html('La SOLUCIÓN tiene un largo de '+tamRealSolucion+', mayor al permitido de '+tamSolucion+'.<br>Por favor verifique.');
+            $("#modalAdvertencia").modal("show");
+            $("#caller").val("largoSolucionTodos");
+            sigo = false;
+          } 
+        }     
       });
-      query += " END";
-      query += " where idalarma in ("+param[0].idalarma;
-      param.forEach(function agregarSln(id){
-        if (id.idalarma !== param[0].idalarma){
-          query += ', '+id.idalarma;  
-        }
-      });
-      query += ')';
-      //alert(query);
-      var url = "data/updateJSON.php";
-      var log = "NO";
-      $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
-        if (resultado === "OK") {
-          $("#tituloSuccess").text('ÉXITO');
-          $("#mensajeSuccess").html('¡Los datos se AGREGARON/ACTUALIZARON correctamente!.');
-          $("#modalSuccess").modal("show");
-          $("#caller").val("actualizarBien");
-        }
-        else {
-          $("#tituloAviso").text('AVISO');
-          $("#mensajeAviso").html('¡Hubo un problema en la actualización. Por favor verifique.');
-          $("#modalAviso").modal("show");
-        }
-      });
-    }  
+      
+      var query = '';
+      if (sigo === true){
+        query = "update alarmas set causa = CASE";
+        param.forEach(function agregaridAlarma(id){
+          query += ' when (idalarma='+id.idalarma+') then "'+id.causa+'"';  
+        });
+        query += " END, ";
+        query += "solucion = CASE";
+        param.forEach(function agregarCausa(id){
+          query += ' when (idalarma='+id.idalarma+') then "'+id.solucion+'"';  
+        });
+        query += " END";
+        query += " where idalarma in ("+param[0].idalarma;
+        param.forEach(function agregarSln(id){
+          if (id.idalarma !== param[0].idalarma){
+            query += ', '+id.idalarma;  
+          }
+        });
+        query += ')';
+        alert(query);
+        var url = "data/updateJSON.php";
+        var log = "NO";
+        $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
+          if (resultado === "OK") {
+            $("#tituloSuccess").text('ÉXITO');
+            $("#mensajeSuccess").html('¡Los datos se AGREGARON/ACTUALIZARON correctamente!.');
+            $("#modalSuccess").modal("show");
+            $("#caller").val("actualizarBien");
+          }
+          else {
+            $("#tituloAviso").text('AVISO');
+            $("#mensajeAviso").html('¡Hubo un problema en la actualización. Por favor verifique.');
+            $("#modalAviso").modal("show");
+          }
+        });
+      }  
+    });
   }
   else {
     $("#tituloAdvertencia").html('ATENCIÓN');
     $("#mensajeAdvertencia").html('No se seleccionaron alarmas.<br>¡Por favor verifique!.');
     $("#modalAdvertencia").modal("show");                                 
-  }
+  }  
 });
 /********** fin on("click", "#btnActualizarTodo", function() *********/
 

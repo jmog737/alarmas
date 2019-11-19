@@ -12,39 +12,53 @@ if(!isset($_SESSION))
 *  @date Agosto 2019
 *
 *******************************************************/
+
+require_once ('data/config.php');
+require_once ('data/pdo.php');
 ?>
 
 <!DOCTYPE html>
 <html>
 <?php 
 require_once ('head.php');
-require_once ('data/config.php');
-require_once ('data/pdo.php');
-
+?>
+  
+<body onload="resizeTextArea()">
+<?php
+  require_once ('header.php');
+  
 /// Recupero los parámetros pasados:
-$mensaje = $_POST['mensaje'];
-$consulta = $_POST['query'];
-$offset = $_POST['offset'];
+if (isset($_POST['mensaje'])){
+  $mensaje = $_POST['mensaje'];
+};
+if (isset($_POST['query'])){
+  $consulta = $_POST['query'];
+}  
+if (isset($_POST['offset'])){
+  $offset = $_POST['offset'];
+}  
 
 /// Parámetros asociados a la consulta:
-$param = $_POST["param"];
-$t = stripos($param, "&");
-if ($t === FALSE){
-  $paramArray = unserialize($param);
+if (isset($_POST["param"])){
+  $param = $_POST["param"];
+  $t = stripos($param, "&");
+  if ($t === FALSE){
+    $paramArray = unserialize($param);
+  }
+  else {
+    $paramArray = explode("&", $param);
+  }
+  
+  $source = $paramArray[0];
+  $inicio = $paramArray[1];
+  $fin = $paramArray[2];
+  $tipo = $paramArray[3];
+  $user = $paramArray[4];
+  $nombreAlarma = $paramArray[5];
+  $conditionAlarma = $paramArray[6];
+  $aidAlarma = $paramArray[7];
+  $estado = $paramArray[8];
 }
-else {
-  $paramArray = explode("&", $param);
-}
-
-$source = $paramArray[0];
-$inicio = $paramArray[1];
-$fin = $paramArray[2];
-$tipo = $paramArray[3];
-$user = $paramArray[4];
-$nombreAlarma = $paramArray[5];
-$conditionAlarma = $paramArray[6];
-$aidAlarma = $paramArray[7];
-$estado = $paramArray[8];
 
 $log = "NO";
 /// Armo array con los parámetros según corresponda acorde a la consulta:
@@ -132,6 +146,23 @@ $consultaTotal = "select count(*) from".$temp0[1];
 $datosTotal = json_decode(hacerSelect($consultaTotal, $log, $parametros), true);
 $totalDatos = $datosTotal['rows'];
 
+/// Rearmo la consulta SOLO para conocer el total de alarmas YA procesadas:
+$consultaProcesados0 = "select count(*) from".$temp0[1];
+$busco = strpos($consultaProcesados0, "where ");
+if ($busco !== FALSE){
+  $temp00 = explode("where ", $consultaProcesados0);
+  $consultaProcesados = $temp00[0]." where estado='Procesada' and ".$temp00[1];
+}
+else {
+  $t0 = explode("from ", $consultaProcesados0);
+  $t1 = explode(" ", $t0[1]);
+  $tabla = array_shift($t1);
+  $t2 = implode(" ", $t1);
+  $consultaProcesados = $t0[0]."from ".$tabla." where estado='Procesada' ".$t2;
+}
+$datosProcesados = json_decode(hacerSelect($consultaProcesados, $log, $parametros), true);
+$totalProcesados = $datosProcesados['rows'];
+
 $tamPagina = $_SESSION['tamPagina'];
 $totalPaginas = (int)ceil($totalDatos/$tamPagina);
 if (!isset($_POST['page'])){
@@ -163,15 +194,12 @@ else {
 $datos = json_decode(hacerSelect($consultaNueva, $log, $parametros), true);
 $mensajeNuevo = '';
 ?>
-  <body onload="resizeTextArea()">
-<?php
-  require_once ('header.php');
-?>
+  
   <main>
     <div id='main-content' class='container-fluid'>
       <br>  
       <h2>Resultado de la consulta:</h2>
-      <h3><?php $mensajeNuevo = $mensaje." (Total: ".$totalDatos.")"; echo $mensajeNuevo ?></h3>
+      <h3><?php $mensajeNuevo = $mensaje." (Procesadas: ".$totalProcesados."/".$totalDatos.")"; echo $mensajeNuevo ?></h3>
       
       <?php
       /// Si hay datos los muestro:

@@ -151,7 +151,7 @@
   </div>
 </div><!-- FIN Modal para cambiar los parámetros -->
 <?php 
-
-require_once("scripts.php");
-require_once("alertas.php");
+//
+//require_once("scripts.php");
+//require_once("alertas.php");
 ?>

@@ -60,11 +60,12 @@
     </div><!-- .container -->
   </nav><!-- #header-nav -->
   
-  <script lang="javasript/text">
+  <script type="text/javascript">
     var dir = window.location.pathname;
     var temp = dir.split("/");
     var tam = temp.length;
     var pagina = temp[tam-1];
+    
     if (pagina !== 'index.php'){
       verificarSesion('', 's');
       var duracion0 = <?php echo DURACION ?>;
@@ -81,7 +82,9 @@
       //setTimeout(function(){vaciarFrmLogin()}, 600);
     }
   </script>
-
 </header>
 
-
+<?php 
+require_once("scripts.php");
+require_once("alertas.php");
+?>

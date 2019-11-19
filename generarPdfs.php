@@ -136,7 +136,7 @@ class PDF extends PDF_MC_Table
   }
     
   function armarTablaAlarmas(){
-    global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $arrayNodos, $nombreNodo, $camposAlarmas;
+    global $tituloReporte, $tituloTabla, $h, $hFooter, $registros, $totalFilas, $totalProcesados, $arrayNodos, $nombreNodo, $camposAlarmas;
     
     $hTitulo = 10;
     $tamPagina = $this->GetPageWidth();
@@ -189,7 +189,7 @@ class PDF extends PDF_MC_Table
     $this->Ln(0.1);
     $this->SetX($xTituloReporte);
     
-    $tituloTotal = "(Total: ".$totalFilas.")";
+    $tituloTotal = "(Procesadas: ".$totalProcesados."/".$totalFilas.")";
     $this->Cell($anchoTitulo, $hTitulo/3, utf8_decode($tituloTotal), 0, 1,'C', false);
     
     $this->Ln(5);
@@ -245,7 +245,11 @@ class PDF extends PDF_MC_Table
       $nodoAnterior = '';
     }
     $j = 1;
+    
     foreach ($registros as $indice => $fila) {
+      $hayCambioNodo = false;
+      $cambioPagina = false;
+      $margen = 0.28;
       /// ************************************************** Detección cambio de nodo ********************************************************
       /// Para el caso en que se consultan TODOS los nodos, detecto el cambio de nodo y agrego subtítulo indicando el  nuevo nodo:
       if (isset($nodoAnterior)&&($nodoAnterior === '')){
@@ -257,11 +261,13 @@ class PDF extends PDF_MC_Table
       }
       $nodoActual = $fila['nodo'];
       if (isset($nodoAnterior)&&($nodoActual !== $nodoAnterior)){
-        $nodoAnterior = $nodoActual;
-        $this->SetFont('Courier', 'B', 12);
-        $this->SetTextColor(colorSubtituloTablaTexto[0], colorSubtituloTablaTexto[1], colorSubtituloTablaTexto[2]);
-        $this->setFillColor(colorSubtituloTablaFondo[0], colorSubtituloTablaFondo[1], colorSubtituloTablaFondo[2]);
-        $this->Cell($anchoTabla, $h, trim(utf8_decode(html_entity_decode($arrayNodos[$nodoAnterior]))), 1, 10, 'C', true);
+        $hayCambioNodo = true;
+        $margen += $h;
+//        $nodoAnterior = $nodoActual;
+////        $this->SetFont('Courier', 'B', 12);
+////        $this->SetTextColor(colorSubtituloTablaTexto[0], colorSubtituloTablaTexto[1], colorSubtituloTablaTexto[2]);
+////        $this->setFillColor(colorSubtituloTablaFondo[0], colorSubtituloTablaFondo[1], colorSubtituloTablaFondo[2]);
+////        $this->Cell($anchoTabla, $h, trim(utf8_decode(html_entity_decode($arrayNodos[$nodoAnterior]))), 1, 10, 'C', true);
         //$j = 1;
       }
       $this->SetFont('Courier', '', 9); 
@@ -287,7 +293,7 @@ class PDF extends PDF_MC_Table
       ///******************** FIN Cálculo del alto de la fila *******************************************************************************
       
       ///*************************************** ENCABEZADO DE PÁGINA (pageBreak) ***********************************************************
-      if($this->GetY()+$h0+0.58>$this->PageBreakTrigger){
+      if($this->GetY()+$h0+$margen>$this->PageBreakTrigger){
         $this->AddPage($this->CurOrientation);
         $this->SetAutoPageBreak(true, $hFooter);
         ///****************************************************** TITULO (pageBreak) ********************************************************
@@ -320,7 +326,7 @@ class PDF extends PDF_MC_Table
         $this->Ln(0.1);
         $this->SetX($xTituloReporte);
 
-        $tituloTotal = "(Total: ".$totalFilas.")";
+        $tituloTotal = "(Procesadas: ".$totalProcesados."/".$totalFilas.")";
         $this->Cell($anchoTitulo, $hTitulo/3, utf8_decode($tituloTotal), 0, 1,'C', false);
 
         $this->Ln(5);
@@ -344,8 +350,25 @@ class PDF extends PDF_MC_Table
         $this->SetX($xTabla);
         $this->SetTextColor(0); 
         ///******************************************** FIN CAMPOS TABLA (pageBreak) *********************************************************
+        
+        if ($hayCambioNodo === true){
+          $cambioPagina = true;
+          $nodoAnterior = $nodoActual;
+          $this->SetFont('Courier', 'B', 12);
+          $this->SetTextColor(colorSubtituloTablaTexto[0], colorSubtituloTablaTexto[1], colorSubtituloTablaTexto[2]);
+          $this->setFillColor(colorSubtituloTablaFondo[0], colorSubtituloTablaFondo[1], colorSubtituloTablaFondo[2]);
+          $this->Cell($anchoTabla, $h, trim(utf8_decode(html_entity_decode($arrayNodos[$nodoAnterior]))), 1, 10, 'C', true);
+        }
       }
-      ///*************************************** FIN ENCABEZADO DE PÁGINA (pageBreak) *******************************************************
+      ///*************************************** FIN ENCABEZADO DE PÁGINA (pageBreak) ********************************************************
+       
+      if (($hayCambioNodo === true)&&(!$cambioPagina)){
+        $nodoAnterior = $nodoActual;
+        $this->SetFont('Courier', 'B', 12);
+        $this->SetTextColor(colorSubtituloTablaTexto[0], colorSubtituloTablaTexto[1], colorSubtituloTablaTexto[2]);
+        $this->setFillColor(colorSubtituloTablaFondo[0], colorSubtituloTablaFondo[1], colorSubtituloTablaFondo[2]);
+        $this->Cell($anchoTabla, $h, trim(utf8_decode(html_entity_decode($arrayNodos[$nodoAnterior]))), 1, 10, 'C', true);
+      }
       
       $this->SetTextColor(colorRegistrosTexto[0], colorRegistrosTexto[1], colorRegistrosTexto[2]);
       $this->setFillColor(colorRegistrosFondo[0], colorRegistrosFondo[1], colorRegistrosFondo[2]);

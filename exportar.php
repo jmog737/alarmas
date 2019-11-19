@@ -150,6 +150,23 @@ if($vida_session < DURACION ) {
 //echo "fin: <br>nombreNodo: ".$nombreNodo."<br>nombreCorto: ".$nombreCorto."<br>";
     if ($seguir){
       $log = "NO";
+      
+      /// Rearmo la consulta SOLO para conocer el total de alarmas YA procesadas:
+      $busco = strpos($consulta, "where ");
+      if ($busco !== FALSE){
+        $temp00 = explode("where ", $consulta);
+        $consultaProcesados = $temp00[0]." where estado='Procesada' and ".$temp00[1];
+      }
+      else {
+        $t0 = explode("from ", $consulta);
+        $t1 = explode(" ", $t0[1]);
+        $tabla = array_shift($t1);
+        $t2 = implode(" ", $t1);
+        $consultaProcesados = $t0[0]."from ".$tabla." where estado='Procesada' ".$t2;
+      }
+      $datosProcesados = json_decode(hacerSelect($consultaProcesados, $log, $param), true);
+      $totalProcesados = $datosProcesados['rows'];
+      
       $datos = json_decode(hacerSelect($consulta, $log, $param), true);
       $registros = $datos['resultado'];
       $totalFilas = $datos['rows'];

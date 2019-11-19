@@ -15,7 +15,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 function generarExcelAlarmas($reg) {
-  global $nombreReporte, $tituloReporte, $camposAlarmas, $nombreNodo, $arrayNodos;
+  global $nombreReporte, $tituloReporte, $totalProcesados, $camposAlarmas, $nombreNodo, $arrayNodos;
   
   /// ****************************************************** INICIO GENERAL HOJA DE DATOS ****************************************************
   $spreadsheet = new Spreadsheet();
@@ -67,7 +67,7 @@ function generarExcelAlarmas($reg) {
   ///******************************************************** INICIO formato TIPO CONSULTA ***************************************************
   $hoja->mergeCells($colId.'1:'.$colFinal.'1');
   $totalDatos = count($reg);
-  $hoja->setCellValue($colId."1", $tituloReporte." (Total: ".$totalDatos.")");
+  $hoja->setCellValue($colId."1", $tituloReporte." (Procesadas: ".$totalProcesados."/".$totalDatos.")");
   
   /// Formato del mensaje con el tipo de consulta:
   $mensajeTipo = $colId.'1:'.$colFinal.'1';
