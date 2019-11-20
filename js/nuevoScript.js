@@ -1871,57 +1871,62 @@ $(document).on("click", "[name=btnActualizarTodo]", function() {
   var param = []; 
   var registro;
      
-  $("input[type=checkbox]").each(function(){
-    var idal = $(this).val();
-    var causa = $("textarea[idalarma="+idal+"][name='causa']").val();
-    var solucion = $("textarea[idalarma="+idal+"][name='solucion']").val();
-    if (!(((causa === undefined)||(causa === ''))&&(solucion === undefined)||(solucion === ''))){
-      registro = {idalarma: idal, causa: causa, solucion: solucion};
-      param.push(registro);
-    } 
-  });
-  var modificadas = param.length;
-  if (modificadas > 0){
-    var url = "data/getJSON.php";
-    var query = "select column_name as campo, character_maximum_length as tam from information_schema.columns where table_name = 'alarmas' and data_type = 'varchar'";
-    var log = "NO";
-    $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {
-      var resultado = request["resultado"];
-      var largosCampos = new Object();
-      resultado.forEach(function mostrar(item, index){
-        var campo = item['campo'];
-        largosCampos[campo] = item['tam'];
-      });
-      var tamCausa = largosCampos['causa'];
-      var tamSolucion = largosCampos['solucion'];
-      var sigo = true;
-      param.forEach(function revisarLargos(id, index){
-        if (sigo === true){
-          var tamRealCausa = id.causa.length;
-          var tamRealSolucion = id.solucion.length;
-          //alert('idalarma: '+id.idalarma+'\nreal causa: '+tamRealCausa+'\nreal solucion: '+tamRealSolucion+'\n'+id.causa+'\n\n'+id.solucion);
-          if (tamRealCausa > tamCausa){
-            causaMal = id.idalarma;
-            $("#tituloAdvertencia").text('ATENCIÓN');
-            $("#mensajeAdvertencia").html('La CAUSA tiene un largo de '+tamRealCausa+', mayor al permitido de '+tamCausa+'.<br>Por favor verifique.');
-            $("#modalAdvertencia").modal("show");
-            $("#caller").val("largoCausaTodos");
-            sigo = false;
-          }
-
-          if ((tamRealSolucion > tamSolucion)&&(sigo === true)){
-            solucionMal = id.idalarma;
-            $("#tituloAdvertencia").text('ATENCIÓN');
-            $("#mensajeAdvertencia").html('La SOLUCIÓN tiene un largo de '+tamRealSolucion+', mayor al permitido de '+tamSolucion+'.<br>Por favor verifique.');
-            $("#modalAdvertencia").modal("show");
-            $("#caller").val("largoSolucionTodos");
-            sigo = false;
-          } 
-        }     
-      });
+  var url = "data/getJSON.php";
+  var query = "select column_name as campo, character_maximum_length as tam from information_schema.columns where table_name = 'alarmas' and data_type = 'varchar'";
+  var log = "NO";
+  $.getJSON(url, {query: ""+query+"", log: log}).done(function(request) {   
+    var resultado = request["resultado"];
+    var largosCampos = new Object();
+    resultado.forEach(function mostrar(item){
+      var campo = item['campo'];
+      largosCampos[campo] = item['tam'];
+    });
+    var tamCausa = largosCampos['causa'];
+    var tamSolucion = largosCampos['solucion'];
+    
+    var sigoChequeando = true;
+    var actualizar = true;
+    
+    $("input[type=checkbox]").each(function(){
+      var idal = $(this).val();
+      var causa = $("textarea[idalarma="+idal+"][name='causa']").val();
+      var solucion = $("textarea[idalarma="+idal+"][name='solucion']").val();
+      var tamRealCausa = causa.length;
+      var tamRealSolucion = solucion.length;
       
-      var query = '';
-      if (sigo === true){
+      if (((tamRealCausa > 0)||(tamRealSolucion > 0))&&(actualizar === true)){
+        //alert('idalarma: '+idal+'\nreal causa: '+tamRealCausa+'\nreal solucion: '+tamRealSolucion+'\n'+causa+'\n'+solucion);
+        if (tamRealCausa > tamCausa){
+          causaMal = idal;
+          $("#tituloAdvertencia").text('ATENCIÓN');
+          $("#mensajeAdvertencia").html('Una CAUSA tiene un largo de '+tamRealCausa+', mayor al permitido de '+tamCausa+'.<br>Por favor verifique.');
+          $("#modalAdvertencia").modal("show");
+          $("#caller").val("largoCausaTodos");
+          actualizar = false;
+          return;
+        }
+
+        if ((tamRealSolucion > tamSolucion)&&(actualizar === true)){
+          solucionMal = idal;
+          $("#tituloAdvertencia").text('ATENCIÓN');
+          $("#mensajeAdvertencia").html('Una SOLUCIÓN tiene un largo de '+tamRealSolucion+', mayor al permitido de '+tamSolucion+'.<br>Por favor verifique.');
+          $("#modalAdvertencia").modal("show");
+          $("#caller").val("largoSolucionTodos");
+          actualizar = false;
+          return;
+        }
+        if (actualizar === true){
+          registro = {idalarma: idal, causa: causa, solucion: solucion};
+          param.push(registro);
+        }
+      }
+    });
+    
+    var modificadas = param.length;
+    
+    var query = '';
+    if (actualizar === true){
+      if (modificadas > 0){
         query = "update alarmas set causa = CASE";
         param.forEach(function agregaridAlarma(id){
           query += ' when (idalarma='+id.idalarma+') then "'+id.causa+'"';  
@@ -1939,7 +1944,7 @@ $(document).on("click", "[name=btnActualizarTodo]", function() {
           }
         });
         query += ')';
-        alert(query);
+        //alert(query);
         var url = "data/updateJSON.php";
         var log = "NO";
         $.getJSON(url, {query: ""+query+"", log: log}).done(function(resultado) {
@@ -1955,14 +1960,14 @@ $(document).on("click", "[name=btnActualizarTodo]", function() {
             $("#modalAviso").modal("show");
           }
         });
-      }  
-    });
-  }
-  else {
-    $("#tituloAdvertencia").html('ATENCIÓN');
-    $("#mensajeAdvertencia").html('No se seleccionaron alarmas.<br>¡Por favor verifique!.');
-    $("#modalAdvertencia").modal("show");                                 
-  }  
+      } 
+      else {
+        $("#tituloAdvertencia").html('ATENCIÓN');
+        $("#mensajeAdvertencia").html('No se ingresaron/actualizaron alarmas.<br>¡Por favor verifique!.');
+        $("#modalAdvertencia").modal("show");  
+      }
+    }
+  });   
 });
 /********** fin on("click", "#btnActualizarTodo", function() *********/
 
