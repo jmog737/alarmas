@@ -1927,7 +1927,7 @@ $(document).on("click", "[name=btnActualizarTodo]", function() {
     var query = '';
     if (actualizar === true){
       if (modificadas > 0){
-        query = "update alarmas set causa = CASE";
+        query = "update alarmas set estado='Procesada', causa = CASE";
         param.forEach(function agregaridAlarma(id){
           query += ' when (idalarma='+id.idalarma+') then "'+id.causa+'"';  
         });
