@@ -203,10 +203,10 @@ function validarSubmitCargar(){
       
       var posOcs = nombreNodoCorto.search("#");
       if (posOcs === -1){
-        if (extension === 'csv'){
+        if (extension.toLowerCase() === 'csv'){
           //alert('Se seleccionó un archivo de OCS (.csv) para un PSS32 ('+nombreNodoCorto+').\n¡Por favor verifique!.');
           $("#tituloAdvertencia").html('ATENCIÓN');
-          $("#mensajeAdvertencia").html('Se seleccionó un archivo de OCS (.csv) para un PSS32 ('+nombreNodoCorto+').<br>¡Por favor verifique!.');
+          $("#mensajeAdvertencia").html('Se seleccionó un archivo de OCS (.csv/.CSV) para un PSS32 ('+nombreNodoCorto+').<br>¡Por favor verifique!.');
           $("#modalAdvertencia").modal("show");
           $("#caller").val("noNodo");
 //          $("#nodo").focus();
@@ -214,10 +214,10 @@ function validarSubmitCargar(){
         }
       }
       else {
-        if (extension === 'xls'){
+        if (extension.toLowerCase() === 'xls'){
           //alert('Se seleccionó un archivo de PSS32 (.xls) para un OCS ('+nombreNodoCorto+').\n¡Por favor verifique!.');
           $("#tituloAdvertencia").html('ATENCIÓN');
-          $("#mensajeAdvertencia").html('Se seleccionó un archivo de PSS32 (.xls) para un OCS ('+nombreNodoCorto+').<br>¡Por favor verifique!.');
+          $("#mensajeAdvertencia").html('Se seleccionó un archivo de PSS32 (.xls/.XLS) para un OCS ('+nombreNodoCorto+').<br>¡Por favor verifique!.');
           $("#modalAdvertencia").modal("show");
           $("#caller").val("noNodo");
 //          $("#nodo").focus();
@@ -1630,7 +1630,7 @@ $(document).on("change", "#uploadedFile", function() {
   var elegido = dir.split('\\');
   var sep = elegido[2].split('.');
   var extension = sep[1];
-  if ((extension !== 'csv')&&(extension !== 'xls')){
+  if ((extension.toLowerCase() !== 'csv')&&(extension.toLowerCase() !== 'xls')){
     $("#tituloAdvertencia").html('ATENCIÓN');
     $("#mensajeAdvertencia").html('Extensión NO válida.<br>¡Por favor verifique!.');
     $("#modalAdvertencia").modal("show");
@@ -1644,7 +1644,7 @@ $(document).on("change", "#uploadedFile", function() {
         /// Si da -1 quiere decir que NO está en el string por lo cual es un PSS32
         if (sep1 === -1){
           //alert(nombreCorto+' - NO es OCS');
-          if (extension === 'csv'){
+          if (extension.toLowerCase() === 'csv'){
             $(this).hide();
           }
           else {
@@ -1654,7 +1654,7 @@ $(document).on("change", "#uploadedFile", function() {
         /// Si NO da -1 quiere decir que está en el string por lo cual es un OCS
         else {
           //alert(nombreCorto+' - es OCS');
-          if (extension === 'xls'){
+          if (extension.toLowerCase() === 'xls'){
             $(this).hide();
           }
           else {
