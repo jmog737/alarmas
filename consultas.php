@@ -103,7 +103,7 @@ $totalUsuarios = $datos['rows'];
                 </td>
                 <th scope='row' class='text-left'>Entre:</th>
                 <td>
-                  <input type="date" name="inicio" id="inicio" tabindex="3" title="Elegir la fecha de inicio. Sólo si se optó por una consulta por fechas." tabindex="6" style="width:100%; text-align: center" min="2019-08-01">
+                  <input type="date" name="inicio" id="inicio" tabindex="3" title="Elegir la fecha de inicio. Sólo si se optó por una consulta por fechas." tabindex="6" style="width:100%; text-align: center" min="2019-08-01" value="<?php echo date('Y-m-d');?>">
                 </td>
                 <td>y:</td>
                 <td>

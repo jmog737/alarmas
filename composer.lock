@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "components/jquery",
-            "version": "3.3.1",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/components/jquery.git",
-                "reference": "459648cda77875519c5da3ae1dd0ed5d170aa649"
+                "reference": "901828b7968b18319e377dc23d466f28426ee083"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/components/jquery/zipball/459648cda77875519c5da3ae1dd0ed5d170aa649",
-                "reference": "459648cda77875519c5da3ae1dd0ed5d170aa649",
+                "url": "https://api.github.com/repos/components/jquery/zipball/901828b7968b18319e377dc23d466f28426ee083",
+                "reference": "901828b7968b18319e377dc23d466f28426ee083",
                 "shasum": ""
             },
             "type": "component",
@@ -46,7 +46,7 @@
             ],
             "description": "jQuery JavaScript Library",
             "homepage": "http://jquery.com",
-            "time": "2018-03-04T13:23:48+00:00"
+            "time": "2019-10-23T05:15:13+00:00"
         },
         {
             "name": "fpdf/fpdf",
@@ -256,16 +256,16 @@
         },
         {
             "name": "phpmailer/phpmailer",
-            "version": "v6.1.1",
+            "version": "v6.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "26bd96350b0b2fcbf0ef4e6f0f9cf3528302a9d8"
+                "reference": "c5e61d0729507049cec9673aa1a679f9adefd683"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/26bd96350b0b2fcbf0ef4e6f0f9cf3528302a9d8",
-                "reference": "26bd96350b0b2fcbf0ef4e6f0f9cf3528302a9d8",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/c5e61d0729507049cec9673aa1a679f9adefd683",
+                "reference": "c5e61d0729507049cec9673aa1a679f9adefd683",
                 "shasum": ""
             },
             "require": {
@@ -274,13 +274,9 @@
                 "php": ">=5.5.0"
             },
             "require-dev": {
-                "doctrine/annotations": "1.2.*",
+                "doctrine/annotations": "^1.2",
                 "friendsofphp/php-cs-fixer": "^2.2",
-                "phpdocumentor/phpdocumentor": "2.*",
-                "phpunit/phpunit": "^4.8 || ^5.7",
-                "zendframework/zend-eventmanager": "3.0.*",
-                "zendframework/zend-i18n": "2.7.3",
-                "zendframework/zend-serializer": "2.7.*"
+                "phpunit/phpunit": "^4.8 || ^5.7"
             },
             "suggest": {
                 "ext-mbstring": "Needed to send email in multibyte encoding charset",
@@ -318,20 +314,20 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2019-09-27T21:33:43+00:00"
+            "time": "2019-12-10T11:17:38+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.9.0",
+            "version": "1.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "8dea03eaf60a349b6097e4bcad11f894668280df"
+                "reference": "1648dc9ebef6ebe0c5a172e16cf66732918416e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/8dea03eaf60a349b6097e4bcad11f894668280df",
-                "reference": "8dea03eaf60a349b6097e4bcad11f894668280df",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/1648dc9ebef6ebe0c5a172e16cf66732918416e0",
+                "reference": "1648dc9ebef6ebe0c5a172e16cf66732918416e0",
                 "shasum": ""
             },
             "require": {
@@ -349,19 +345,19 @@
                 "ext-zip": "*",
                 "ext-zlib": "*",
                 "markbaker/complex": "^1.4",
-                "markbaker/matrix": "^1.1",
+                "markbaker/matrix": "^1.2",
                 "php": "^7.1",
                 "psr/simple-cache": "^1.0"
             },
             "require-dev": {
-                "dompdf/dompdf": "^0.8.0",
-                "friendsofphp/php-cs-fixer": "@stable",
+                "dompdf/dompdf": "^0.8.3",
+                "friendsofphp/php-cs-fixer": "^2.16",
                 "jpgraph/jpgraph": "^4.0",
-                "mpdf/mpdf": "^7.0.0",
-                "phpcompatibility/php-compatibility": "^8.0",
+                "mpdf/mpdf": "^8.0",
+                "phpcompatibility/php-compatibility": "^9.3",
                 "phpunit/phpunit": "^7.5",
-                "squizlabs/php_codesniffer": "^3.3",
-                "tecnickcom/tcpdf": "^6.2"
+                "squizlabs/php_codesniffer": "^3.5",
+                "tecnickcom/tcpdf": "^6.3"
             },
             "suggest": {
                 "dompdf/dompdf": "Option for rendering PDF with PDF Writer",
@@ -377,7 +373,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL-2.1-or-later"
+                "MIT"
             ],
             "authors": [
                 {
@@ -411,7 +407,7 @@
                 "xls",
                 "xlsx"
             ],
-            "time": "2019-08-17T22:24:35+00:00"
+            "time": "2019-12-01T23:13:51+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -463,16 +459,16 @@
         },
         {
             "name": "rulin132/jpgraph",
-            "version": "v4.2.8-p1",
+            "version": "v4.2.10-p3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rulin132/JpGraph.git",
-                "reference": "74f7801b69faca802de5c7275b67091b753ef23f"
+                "reference": "4ffa586382e8006d8f59dcbd5a8ff5f5d612b4e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rulin132/JpGraph/zipball/74f7801b69faca802de5c7275b67091b753ef23f",
-                "reference": "74f7801b69faca802de5c7275b67091b753ef23f",
+                "url": "https://api.github.com/repos/rulin132/JpGraph/zipball/4ffa586382e8006d8f59dcbd5a8ff5f5d612b4e8",
+                "reference": "4ffa586382e8006d8f59dcbd5a8ff5f5d612b4e8",
                 "shasum": ""
             },
             "type": "library",
@@ -499,20 +495,20 @@
                 "jpgraph",
                 "pie"
             ],
-            "time": "2019-09-06T06:12:51+00:00"
+            "time": "2019-11-27T01:02:41+00:00"
         },
         {
             "name": "twbs/bootstrap",
-            "version": "v4.3.1",
+            "version": "v4.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "8fa0d3010112dca5dd6dd501173415856001ba8b"
+                "reference": "dca1ab7d877bc4b664b43604657a2b5fbe2b4ecb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/8fa0d3010112dca5dd6dd501173415856001ba8b",
-                "reference": "8fa0d3010112dca5dd6dd501173415856001ba8b",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/dca1ab7d877bc4b664b43604657a2b5fbe2b4ecb",
+                "reference": "dca1ab7d877bc4b664b43604657a2b5fbe2b4ecb",
                 "shasum": ""
             },
             "replace": {
@@ -530,12 +526,12 @@
             ],
             "authors": [
                 {
-                    "name": "Jacob Thornton",
-                    "email": "jacobthornton@gmail.com"
-                },
-                {
                     "name": "Mark Otto",
                     "email": "markdotto@gmail.com"
+                },
+                {
+                    "name": "Jacob Thornton",
+                    "email": "jacobthornton@gmail.com"
                 }
             ],
             "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
@@ -550,7 +546,7 @@
                 "sass",
                 "web"
             ],
-            "time": "2019-02-13T16:01:40+00:00"
+            "time": "2019-11-28T12:59:49+00:00"
         }
     ],
     "packages-dev": [],

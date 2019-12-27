@@ -44,7 +44,7 @@ require_once ('data/cargarArchivo.php');
       /// Chequeo variable para saber desde donde vengo; si desde subirArchivo, desde el menú, desde editarAlarma o desde el propio cargar
       /// Si es desde el primero, hago las validaciones y cargo el archivo pasado
       /// En todos los casos, muestro en pantalla los datos
-      if (((!(isset($_GET['i']))||($inicio === 1))&&(!isset($_POST['offset'])))){    
+      if (((!(isset($_GET['i']))||($inicio === 1))&&(!isset($_POST['offset'])))){
         $nombreArchivo0 = $_FILES['uploadedFile']['name'];
         $temp = explode('.', $nombreArchivo0);
         $nombre = $temp[0];
@@ -178,7 +178,7 @@ require_once ('data/cargarArchivo.php');
         }/// Fin if $seguir 
         
       }/// Fin del caso en que vengo desde subirArchivo. Fin de la carga (u error de la misma)
-      
+     
       /// Si no hubo problemas con la validación o vengo desde editarAlarma sigo:
       if ($seguir){    
         if (!(isset($_SESSION['nodo']))){
@@ -272,7 +272,7 @@ require_once ('data/cargarArchivo.php');
           $mensajeNuevo = $tituloReporte."<br>(Total: ".$totalDatos.")";
           
           echo "<h4>".$mensaje."</h4><br>";
-          if ($carga["largoRegistros"] !== ''){
+          if ((isset($carga))&&($carga["largoRegistros"] !== '')){
             echo "<h3>Los siguientes registros NO fueron cargados y requieren su atención:</h3><br>";
             echo "<h5>".$carga["largoRegistros"]."</h5><br>";
           }

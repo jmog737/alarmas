@@ -38,9 +38,9 @@ define('MAX_LIMITESELECTS', 15);
 $hostname = getHostName();
 $ip = 'http://192.168.200.146';
 
-$unidad = "D:";
+$unidad = "C:";
 if (!file_exists($unidad)) {
-  $unidad = "C:";
+  $unidad = "D:";
 }
 $dirCargados = $unidad."/ArchivosCargados";
 $dirReportes = $unidad."/Reportes/";
@@ -52,7 +52,7 @@ $rutaFotos = "images/snapshots";
 
 
 if (!file_exists($dirReportes)){
-  echo "No existe la carpeta: $dir. <br>Por favor verifique.";
+  echo "No existe la carpeta: $dirReportes. <br>Por favor verifique.";
 }
 
 if (!isset($_SESSION["tamPagina"])){

@@ -98,7 +98,7 @@ function cargarArchivo($archivo){
         $fechaTemp = trim($cols[$primero]->nodeValue," \t\n\r\0\x0B\xC2\xA0");
         $fechaTemp1 = explode(" ", $fechaTemp);
         $horaTemp = explode(":", $fechaTemp1[1]);
-        if ($fechaTemp1[2] === "PM"){
+        if (($fechaTemp1[2] === "PM")&&($horaTemp[0] !== 12)){
           $hora1 = $horaTemp[0] + 12;
         }
         else {
