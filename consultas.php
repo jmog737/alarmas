@@ -98,7 +98,7 @@ $totalUsuarios = $datos['rows'];
               <tr>
                 <td>
                   <div class="input-group-text fondoNaranja">
-                    <input type="radio" name="criterioFecha" title="Elegir el período a buscar. Seleccionar si se quiere buscar por fechas." value="intervalo">
+                    <input type="radio" name="criterioFecha" title="Elegir el período a buscar. Seleccionar si se quiere buscar por fechas." value="intervalo" checked="checked">
                   </div>
                 </td>
                 <th scope='row' class='text-left'>Entre:</th>
@@ -150,7 +150,7 @@ $totalUsuarios = $datos['rows'];
               <tr>
                 <td>
                   <div class="input-group-text fondoNaranja">
-                    <input type="radio" name="criterioFecha" title="Elegir el período a buscar. Seleccionar si se quieren TODOS los movimientos" value="todos" checked="checked">
+                    <input type="radio" name="criterioFecha" title="Elegir el período a buscar. Seleccionar si se quieren TODOS los movimientos" value="todos">
                   </div>
                 </td>
                 <th scope='row' class='text-left'>TODOS</th>
