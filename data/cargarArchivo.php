@@ -119,8 +119,8 @@ function cargarArchivo($archivo){
         else {
           $dia = $fechaTemp2[1];
         }
-        $year = strftime("%Y", time());
-        $fecha = $year."-".$mes."-".$dia;
+//        $year = strftime("%Y", time());
+//        $fecha = $year."-".$mes."-".$dia;
         
         //echo "fechaTemp1[0]:$fechaTemp1[0]<br>fechaTemp1[1]:$fechaTemp1[1]<br>fechaTemp1[2]:$fechaTemp1[2]<br>fechaTemp:$fechaTemp<br>hora:$hora<br>fecha:$fecha<br>";
         
@@ -167,9 +167,21 @@ function cargarArchivo($archivo){
         $horaTemp1 = explode("-", $temp0[1]);
         $hora = $horaTemp1[0].":".$horaTemp1[1].":".$horaTemp1[2];
         $fecha1 = explode("-", $temp0[0]);
-        $year = strftime("%Y", time());
-        $fecha = $year."-".$fecha1[0]."-".$fecha1[1];
-      
+        if ($fecha1[0] < 10){
+          $mes = "0".$fecha1[0];
+        }
+        else {
+          $mes = $fecha1[0];
+        }
+        if ($fecha1[1] < 10){
+          $dia = "0".$fecha1[1];
+        }
+        else {
+          $dia = $fecha1[1];
+        }
+//        $mes = $fecha1[0];
+//        $dia = $fecha1[1];
+              
         $nombre = $temp[0];
         $compound = $temp[1];
         $tipoAID = $temp[2];
@@ -187,6 +199,21 @@ function cargarArchivo($archivo){
         $filtroAID = $temp[15];
       }
 
+      /// Veo si la fecha de la alarma es del año actual o del anterior, para asì no "generar alarmas futuras":
+      /// Fecha actual:
+      $añoActual = strftime("%Y", time());
+      $mesActual = strftime("%m", time());
+      $diaActual = strftime("%d", time());
+      
+      $añoAnterior = $añoActual - 1;
+      
+      if (($mes > $mesActual)||(($mes === $mesActual)&&($dia > $diaActual))){
+        $fecha = $añoAnterior."-".$mes."-".$dia; 
+      }
+      else {
+         $fecha = $añoActual."-".$mes."-".$dia; 
+      }
+            
       $seguir = true;
       foreach ($largosAlarmas as $campo => $valor){
         if ($seguir){
@@ -211,8 +238,8 @@ function cargarArchivo($archivo){
       $i++;
       
       if ($seguir){
-        $existeRegistro = "select count(*) from alarmas where dia=? and hora=? and descripcion=? and tipoCondicion=?";
-        $paramExiste = array($fecha, $hora, $descripcion, $tipoCondicion);
+        $existeRegistro = "select count(*) from alarmas where dia=? and hora=? and descripcion=? and tipoCondicion=? and nombre=?";
+        $paramExiste = array($fecha, $hora, $descripcion, $tipoCondicion, $nombre);
         $datosExiste = json_decode(hacerSelect($existeRegistro, $log, $paramExiste), true);
         $cuenta = (int)$datosExiste['rows'];
         /// Seteo cuenta a 0 para OBLIGAR a que se haga el insert en TODOS los casos, sin importar si existe o no la alarma:

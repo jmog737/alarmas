@@ -97,7 +97,7 @@ $totalUsuarios = $datos['rows'];
               </tr>
               <tr>
                 <td>
-                  <div class="input-group-text fondoNaranja">  
+                  <div class="input-group-text fondoNaranja">    
                     <input type="radio" name="criterioFecha" title="Elegir el período a buscar. Seleccionar si se quiere buscar por fechas." value="intervalo" checked="checked">
                   </div>
                 </td>
