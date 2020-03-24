@@ -1870,7 +1870,7 @@ $(document).on("click", "[name=btnActualizarTodo]", function() {
   var query = "update alarmas set ";
   var param = []; 
   var registro;
-     
+  alert('en actualizar todo');   
   var url = "data/getJSON.php";
   var query = "select column_name as campo, character_maximum_length as tam from information_schema.columns where table_name = 'alarmas' and data_type = 'varchar'";
   var log = "NO";
@@ -1923,7 +1923,7 @@ $(document).on("click", "[name=btnActualizarTodo]", function() {
     });
     
     var modificadas = param.length;
-    
+    alert('modificadas: '+modificadas);
     var query = '';
     if (actualizar === true){
       if (modificadas > 0){

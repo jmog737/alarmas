@@ -369,7 +369,7 @@ $mensajeNuevo = '';
         echo "  <td class='pieTabla' colspan='$totalCamposMostrar'>";
         echo "    <button type='button' title='Para generar el reporte en PDF/EXCEL.' id='btnExportarBuscar' name='btnExportar' class='btn btn-dark-green btn-md' value=''>Exportar</button>";
         echo "    <button type='button' title='Usar para Actualizar SOLO las alarmas QUE SE HAYAN MARCADO como similares, y que tienen misma causa/solución.\n\n¡¡¡SOLO hay que agregar la causa/solución en una de ellas!!!.' id='btnActualizarBuscar' name='btnActualizar' class='btn blue accent-4 btn-md white-text' value=''>Actualizar SMILARES</button>";
-        echo "    <button type='button' title='Usar para Actualizar TODOS los registros sin importar si tienen misma causa/solución' name='btnActualizarTodo' class='btn btn-md btn-danger white-text' value=''>Actualizar TODOS</button>";
+        echo "    <button type='button' title='Usar para Actualizar TODOS los registros sin importar si tienen misma causa/solución' id='btnActualizarTodoBuscar' name='btnActualizarTodo' class='btn btn-md btn-danger white-text' value=''>Actualizar TODOS</button>";
         echo "  </td>";
         echo "</tr>";
         echo "</tfoot>";

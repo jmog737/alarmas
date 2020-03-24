@@ -426,13 +426,14 @@ require_once ('data/cargarArchivo.php');
             } /// Fin del procesamiento de las filas con datos
             echo "</tbody>";
             
-            echo "<tfoot>";
-            echo "<tr>"
-            . "     <td class='pieTabla' colspan='$totalCamposMostrar'>"
-            . "       <input type='button' id='btnExportarCargar' name='btnExportar' class='btn btn-sm btn-dark-green' value='Exportar'>"
-            . "       <input type='button' id='btnActualizarCargar' name='btnActualizar' class='btn btn-sm btn-blue accent-4' value='Actualizar'>"  
-            . "     </td>"
-            . "   </tr>";
+            echo "<tfoot>";           
+            echo "<tr>";
+            echo "  <td class='pieTabla' colspan='$totalCamposMostrar'>";
+            echo "    <button type='button' title='Para generar el reporte en PDF/EXCEL.' id='btnExportarCargar' name='btnExportar' class='btn btn-dark-green btn-md' value=''>Exportar</button>";
+            echo "    <button type='button' title='Usar para Actualizar SOLO las alarmas QUE SE HAYAN MARCADO como similares, y que tienen misma causa/solución.\n\n¡¡¡SOLO hay que agregar la causa/solución en una de ellas!!!.' id='btnActualizarCargar' name='btnActualizar' class='btn blue accent-4 btn-md white-text' value=''>Actualizar SMILARES</button>";
+            echo "    <button type='button' title='Usar para Actualizar TODOS los registros sin importar si tienen misma causa/solución' id='btnActualizarTodoCargar' name='btnActualizarTodo' class='btn btn-md btn-danger white-text' value=''>Actualizar TODOS</button>";
+            echo "  </td>";
+            echo "</tr>";    
             echo "</tfoot>";
             
             echo "</table>";

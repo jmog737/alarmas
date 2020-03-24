@@ -85,8 +85,7 @@ if($vida_session < DURACION ) {
       $param = null;
     }
     if (isset($_POST['query'])){
-      $consulta = html_entity_decode($_POST['query']);
-      
+      $consulta = html_entity_decode($_POST['query']);   
     }
     else {
       $seguir = false;
@@ -151,19 +150,27 @@ if($vida_session < DURACION ) {
     if ($seguir){
       $log = "NO";
       
-      /// Rearmo la consulta SOLO para conocer el total de alarmas YA procesadas:
-      $busco = strpos($consulta, "where ");
-      if ($busco !== FALSE){
-        $temp00 = explode("where ", $consulta);
-        $consultaProcesados = $temp00[0]." where estado='Procesada' and ".$temp00[1];
+      /// Chequeo si vengo de consultas (origen = buscar) ó si vengo de usuarios/nodos
+      /// De ser el primero rearmo consulta para saber solo el total:
+      if ($origen == "buscar"){   
+        /// Rearmo la consulta SOLO para conocer el total de alarmas YA procesadas:
+        $busco = strpos($consulta, "where ");
+        if ($busco !== FALSE){
+          $temp00 = explode("where ", $consulta);
+          $consultaProcesados = $temp00[0]." where estado='Procesada' and ".$temp00[1];
+        }
+        else {
+          $t0 = explode("from ", $consulta);
+          $t1 = explode(" ", $t0[1]);
+          $tabla = array_shift($t1);
+          $t2 = implode(" ", $t1);
+          $consultaProcesados = $t0[0]."from ".$tabla." where estado='Procesada' ".$t2;
+        }
       }
       else {
-        $t0 = explode("from ", $consulta);
-        $t1 = explode(" ", $t0[1]);
-        $tabla = array_shift($t1);
-        $t2 = implode(" ", $t1);
-        $consultaProcesados = $t0[0]."from ".$tabla." where estado='Procesada' ".$t2;
+        $consultaProcesados = $consulta;
       }
+
       $datosProcesados = json_decode(hacerSelect($consultaProcesados, $log, $param), true);
       $totalProcesados = $datosProcesados['rows'];
       

@@ -137,8 +137,8 @@ $totalUsuarios = $datos['rows'];
                 <th>Año:</th>
                 <td>
                   <select id="año" name="año" tabindex="6" class='custom-select-sm custom-select' title="Elegir el año. Sólo si se optó por una consulta por mes y/o año." tabindex="9" style="width:100%">
-                    <option value="2019" selected="yes">2019</option>
-                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2020" selected="yes">2020</option>
                     <option value="2021">2021</option>
                     <option value="2022">2022</option>
                     <option value="2023">2023</option>
